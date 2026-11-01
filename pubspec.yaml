@@ -1,0 +1,50 @@
+name: sdv_vehicle_architecture
+description: Monorepo do Software-Defined Vehicle (apps de HMI + pacotes de domínio e simulação zonal).
+publish_to: none
+
+environment:
+  sdk: ^3.10.7
+
+workspace:
+  - packages/vss_gen
+  - packages/vehicle_domain
+  - packages/vehicle_profiles
+  - packages/zonal_system
+  - packages/vehicle_ui_kit
+  - apps/infotainment
+  - apps/digital_cluster
+
+melos:
+  scripts:
+    generate:
+      description: Roda o build_runner (Riverpod + VSS) em ordem topológica.
+      run: dart run build_runner build --delete-conflicting-outputs
+      exec:
+        concurrency: 1
+        orderDependents: true
+      packageFilters:
+        dependsOn: build_runner
+    analyze:
+      description: Analisa todos os pacotes.
+      run: dart analyze --fatal-infos .
+      exec:
+        concurrency: 1
+    test:dart:
+      description: Testes dos pacotes Dart puros.
+      run: dart test
+      exec:
+        concurrency: 1
+      packageFilters:
+        flutter: false
+        dirExists: test
+    test:flutter:
+      description: Testes dos pacotes e apps Flutter.
+      run: flutter test
+      exec:
+        concurrency: 1
+      packageFilters:
+        flutter: true
+        dirExists: test
+dev_dependencies:
+  melos: ^8.10.0
+  lints: ^6.1.0

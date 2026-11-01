@@ -2,7 +2,8 @@ name: infotainment
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
+resolution: workspace
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -24,14 +25,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^3.3.2
+  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^3.1.0
   vehicle_domain:
     path: ../../packages/vehicle_domain
   vehicle_profiles:
     path: ../../packages/vehicle_profiles
+  zonal_system:
+    path: ../../packages/zonal_system
   vehicle_ui_kit:
     path: ../../packages/vehicle_ui_kit
-  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
