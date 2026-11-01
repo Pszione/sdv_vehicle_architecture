@@ -2,7 +2,7 @@ import 'package:vehicle_domain/vehicle_domain.dart';
 
 import 'vehicle_zone.dart';
 
-/// Endereço físico de um atuador: zona + dispositivo.
+/// Physical address of an actuator: zone + device.
 final class ZonalRoute {
   const ZonalRoute(this.zone, this.deviceId);
 
@@ -11,7 +11,7 @@ final class ZonalRoute {
   final VehicleZone zone;
   final String deviceId;
 
-  /// Rota do sinal na topologia E/E. Sinais sem entrada vão para a ECU central.
+  /// Route of the signal in the E/E topology. Signals without an entry go to the central ECU.
   static ZonalRoute of(VssSignal<Object> signal) => _routingTable[signal] ?? fallback;
 
   static final Map<VssSignal<Object>, ZonalRoute> _routingTable = {

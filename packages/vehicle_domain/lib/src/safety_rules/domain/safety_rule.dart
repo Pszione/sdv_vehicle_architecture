@@ -2,18 +2,18 @@ import '../../broker/signal_reader.dart';
 import '../../dispatcher/domain/vehicle_commands.dart';
 import '../../vss/vss_signal.dart';
 
-/// Regra de segurança avaliada pelo `CommandDispatcher` antes de qualquer
-/// comando chegar ao barramento zonal.
+/// Safety rule evaluated by the `CommandDispatcher` before any command reaches
+/// the zonal bus.
 ///
-/// O dispatcher só chama [validate] quando o comando é para [target] e esse
-/// sinal existe no perfil, então a regra não precisa checar a capacidade do alvo.
+/// The dispatcher only calls [validate] when the command targets [target] and
+/// that signal exists in the profile, so rules never need to check the target's capability.
 abstract interface class SafetyRule {
-  /// Atuador ao qual a regra se aplica.
+  /// Actuator this rule applies to.
   VssSignal<Object> get target;
 
-  /// Sinais lidos em [validate]. O `canDispatchProvider` só reavalia quando eles mudam.
+  /// Signals read by [validate]. `canDispatchProvider` only re-evaluates when they change.
   Set<VssSignal<Object>> get inputs;
 
-  /// `null` se o comando é seguro; `CommandResult.rejected(motivo)` caso contrário.
+  /// `null` if the command is safe; `CommandResult.rejected(reason)` otherwise.
   CommandResult? validate(VehicleCommand<Object> command, SignalReader signals);
 }

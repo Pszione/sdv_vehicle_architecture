@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// Fonte: luxury_ev_suv.profile.json
+// Source: luxury_ev_suv.profile.json
 // ignore_for_file: type=lint
 
 part of 'factory_profiles.dart';
@@ -97,5 +97,6 @@ const luxuryEvSuvProfile = VehicleProfile(
     'Vehicle.ADAS.LaneKeepingAssist.RightLaneOffsetMeters',
     'Vehicle.ADAS.ObstacleDetection.LeadVehicle',
     'Vehicle.Powertrain.Transmission.SelectedGear',
+    'Vehicle.Exterior.AirTemperature',
   },
 );

@@ -1,6 +1,6 @@
 {
   "id": "flagship",
-  "trimName": "Flagship (spec master)",
+  "trimName": "Flagship (full spec)",
   "driverSide": "left",
   "signals": [
     "Vehicle.Speed",

@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// Fonte: flagship.profile.json
+// Source: flagship.profile.json
 // ignore_for_file: type=lint
 
 part of 'factory_profiles.dart';
 
-/// Flagship (spec master)
+/// Flagship (full spec)
 const flagshipProfile = VehicleProfile(
   id: 'flagship',
-  trimName: 'Flagship (spec master)',
+  trimName: 'Flagship (full spec)',
   driverSide: DriverSide.left,
   supportedPaths: {
     'Vehicle.Speed',

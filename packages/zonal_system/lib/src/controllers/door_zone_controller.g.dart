@@ -8,15 +8,15 @@ part of 'door_zone_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// ECU de uma zona lateral (west/east): travas das portas daquele lado.
+/// Side zone ECU (west/east): door locks on that side.
 
 @ProviderFor(DoorZoneController)
 final doorZoneControllerProvider = DoorZoneControllerFamily._();
 
-/// ECU de uma zona lateral (west/east): travas das portas daquele lado.
+/// Side zone ECU (west/east): door locks on that side.
 final class DoorZoneControllerProvider
     extends $NotifierProvider<DoorZoneController, void> {
-  /// ECU de uma zona lateral (west/east): travas das portas daquele lado.
+  /// Side zone ECU (west/east): door locks on that side.
   DoorZoneControllerProvider._({
     required DoorZoneControllerFamily super.from,
     required VehicleZone super.argument,
@@ -64,7 +64,7 @@ final class DoorZoneControllerProvider
 String _$doorZoneControllerHash() =>
     r'e4ca7721221685e12ae402648fa4e52fe6a7a898';
 
-/// ECU de uma zona lateral (west/east): travas das portas daquele lado.
+/// Side zone ECU (west/east): door locks on that side.
 
 final class DoorZoneControllerFamily extends $Family
     with
@@ -84,7 +84,7 @@ final class DoorZoneControllerFamily extends $Family
         isAutoDispose: false,
       );
 
-  /// ECU de uma zona lateral (west/east): travas das portas daquele lado.
+  /// Side zone ECU (west/east): door locks on that side.
 
   DoorZoneControllerProvider call(VehicleZone zone) =>
       DoorZoneControllerProvider._(argument: zone, from: this);
@@ -93,7 +93,7 @@ final class DoorZoneControllerFamily extends $Family
   String toString() => r'doorZoneControllerProvider';
 }
 
-/// ECU de uma zona lateral (west/east): travas das portas daquele lado.
+/// Side zone ECU (west/east): door locks on that side.
 
 abstract class _$DoorZoneController extends $Notifier<void> {
   late final _$args = ref.$arg as VehicleZone;

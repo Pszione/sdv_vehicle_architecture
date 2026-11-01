@@ -1,7 +1,7 @@
-/// API VSS tipada gerada a partir de `vehicle.vss.json` (spec mestre).
+/// Typed VSS API generated from `vehicle.vss.json` (the master spec).
 ///
-/// Para adicionar sinais, edite o JSON e rode o build_runner. Nunca edite o
-/// arquivo `.vss.g.dart` à mão.
+/// To add signals, edit the JSON and run build_runner. Never edit the
+/// `.vss.g.dart` file by hand.
 library;
 
 import 'vss_signal.dart';

@@ -11,18 +11,18 @@ import 'domain/vehicle_commands.dart';
 
 part 'command_dispatcher.g.dart';
 
-/// Para onde vão os comandos aprovados. O app liga ao barramento zonal.
+/// Where approved commands go. The app wires it to the zonal bus.
 @Riverpod(keepAlive: true)
 CommandSink commandSink(Ref ref) =>
-    throw UnimplementedError('Sobrescreva commandSinkProvider no ProviderScope do app (ex: ZonalCommandSink).');
+    throw UnimplementedError('Override commandSinkProvider in the app ProviderScope (e.g. ZonalCommandSink).');
 
-/// Ponto de entrada único para comandos ao veículo.
+/// Single entry point for vehicle commands.
 @Riverpod(keepAlive: true)
 class CommandDispatcher extends _$CommandDispatcher {
   @override
   void build() {}
 
-  /// Valida e, se aprovado, envia o comando ao [CommandSink].
+  /// Validates the command and, if approved, sends it to the [CommandSink].
   CommandResult dispatch(VehicleCommand<Object> command) {
     final result = evaluate(command);
     final logger = ref.read(vehicleLoggerProvider.notifier);
@@ -32,13 +32,13 @@ class CommandDispatcher extends _$CommandDispatcher {
       return result;
     }
 
-    // Loga antes de enviar: o barramento pode confirmar a telemetria de forma síncrona.
+    // Log before sending: the bus may confirm the telemetry synchronously.
     logger.logCommand(command);
     ref.read(commandSinkProvider).send(command);
     return result;
   }
 
-  /// Dry run: avalia o comando contra o estado atual sem enviá-lo.
+  /// Dry run: evaluates the command against the current state without sending it.
   CommandResult evaluate(VehicleCommand<Object> command) => CommandValidator(
     profile: ref.read(activeVehicleProfileProvider),
     signals: SnapshotSignalReader(ref.read(vssBrokerProvider)),

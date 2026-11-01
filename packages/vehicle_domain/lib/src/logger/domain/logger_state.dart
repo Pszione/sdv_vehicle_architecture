@@ -1,4 +1,3 @@
-
 import 'log_entry.dart';
 
 class LoggerState {
@@ -7,13 +6,10 @@ class LoggerState {
 
   LoggerState({
     this.entries = const [],
-    this.maxCapacity = 500, // Limite para evitar estouro de memória no In-Memory Buffer
+    this.maxCapacity = 500, // Caps the in-memory buffer
   });
 
   LoggerState copyWith({List<LogEntry>? entries}) {
-    return LoggerState(
-      entries: entries ?? this.entries,
-      maxCapacity: maxCapacity,
-    );
+    return LoggerState(entries: entries ?? this.entries, maxCapacity: maxCapacity);
   }
 }

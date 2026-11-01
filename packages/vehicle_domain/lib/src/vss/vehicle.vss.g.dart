@@ -1,10 +1,10 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// Fonte: vehicle.vss.json (COVESA VSS)
+// Source: vehicle.vss.json (COVESA VSS)
 // ignore_for_file: type=lint
 
 part of 'vss.dart';
 
-/// Raiz tipada da árvore VSS. Ex: `Vss.Vehicle.Cabin.Sunroof.Position`.
+/// Typed root of the VSS tree, e.g. `Vss.Vehicle.Cabin.Sunroof.Position`.
 abstract final class Vss {
   static const Vehicle = _VssVehicle();
 }
@@ -60,7 +60,7 @@ final class _VssVehicleCabin {
 final class _VssVehicleCabinSunroof {
   const _VssVehicleCabinSunroof();
 
-  /// 0.0 = fechado, 1.0 = totalmente aberto.
+  /// 0.0 = closed, 1.0 = fully open.
   VssSignal<double> get Position => const VssSignal<double>('Vehicle.Cabin.Sunroof.Position');
 
   VssSignal<bool> get IsFaulted => const VssSignal<bool>('Vehicle.Cabin.Sunroof.IsFaulted');
@@ -263,7 +263,7 @@ final class _VssVehicleCabinGlovebox {
 final class _VssVehicleCabinConvertibleTop {
   const _VssVehicleCabinConvertibleTop();
 
-  /// 0.0 = fechada, 1.0 = totalmente aberta.
+  /// 0.0 = closed, 1.0 = fully open.
   VssSignal<double> get Position => const VssSignal<double>('Vehicle.Cabin.ConvertibleTop.Position');
 }
 
@@ -580,7 +580,7 @@ final class _VssVehicleADASACC {
 final class _VssVehicleADASObstacleDetection {
   const _VssVehicleADASObstacleDetection();
 
-  /// Objeto do veículo à frente serializado em JSON.
+  /// Lead vehicle object serialized as JSON.
   VssSignal<String> get LeadVehicle => const VssSignal<String>('Vehicle.ADAS.ObstacleDetection.LeadVehicle');
 }
 
@@ -612,7 +612,7 @@ final class _VssVehicleExterior {
   VssSignal<double> get AirTemperature => const VssSignal<double>('Vehicle.Exterior.AirTemperature');
 }
 
-/// Metadados de todos os sinais do spec, indexados pelo caminho VSS.
+/// Metadata of every signal in the spec, keyed by VSS path.
 const Map<String, VssSignalMeta> vssCatalog = {
   'Vehicle.Speed': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float', unit: 'km/h', min: 0, max: 300, defaultValue: 0.0),
   'Vehicle.DriveMode': VssSignalMeta(type: VssNodeType.actuator, datatype: 'string'),
@@ -677,28 +677,28 @@ const Map<String, VssSignalMeta> vssCatalog = {
   'Vehicle.Seat.Row2.Right.VentilationLevel': VssSignalMeta(type: VssNodeType.actuator, datatype: 'uint8'),
   'Vehicle.Seat.Row2.Right.Massage.Mode': VssSignalMeta(type: VssNodeType.actuator, datatype: 'string', allowed: ['OFF', 'WAVE', 'PULSE', 'STRETCH'], defaultValue: 'OFF'),
   'Vehicle.Seat.Row2.Right.Massage.Intensity': VssSignalMeta(type: VssNodeType.actuator, datatype: 'uint8'),
-  'Vehicle.Chassis.SteeringWheel.Angle': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float', unit: 'degrees', min: -540, max: 540),
+  'Vehicle.Chassis.SteeringWheel.Angle': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float', unit: 'degrees', min: -540, max: 540, defaultValue: 0.0),
   'Vehicle.Chassis.SteeringWheel.Heated': VssSignalMeta(type: VssNodeType.actuator, datatype: 'boolean'),
   'Vehicle.Chassis.RearAxleSteering.Angle': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float'),
-  'Vehicle.Chassis.Suspension.Height': VssSignalMeta(type: VssNodeType.actuator, datatype: 'string'),
+  'Vehicle.Chassis.Suspension.Height': VssSignalMeta(type: VssNodeType.actuator, datatype: 'string', allowed: ['LOW', 'NORMAL', 'HIGH', 'OFFROAD_MAX'], defaultValue: 'NORMAL'),
   'Vehicle.Chassis.Suspension.DampingMode': VssSignalMeta(type: VssNodeType.actuator, datatype: 'string'),
   'Vehicle.Chassis.Suspension.AutoLeveling.Status': VssSignalMeta(type: VssNodeType.sensor, datatype: 'string'),
   'Vehicle.Chassis.Brake.RegenMode': VssSignalMeta(type: VssNodeType.actuator, datatype: 'string'),
-  'Vehicle.Chassis.Axle.Row2.Differential.IsLocked': VssSignalMeta(type: VssNodeType.actuator, datatype: 'boolean'),
+  'Vehicle.Chassis.Axle.Row2.Differential.IsLocked': VssSignalMeta(type: VssNodeType.actuator, datatype: 'boolean', defaultValue: false),
   'Vehicle.Powertrain.TorqueSplit.RearPercent': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float'),
-  'Vehicle.Powertrain.TractionBattery.StateOfCharge': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float', unit: 'percent', min: 0, max: 100),
+  'Vehicle.Powertrain.TractionBattery.StateOfCharge': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float', unit: 'percent', min: 0, max: 100, defaultValue: 80.0),
   'Vehicle.Powertrain.TractionBattery.Power': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float'),
   'Vehicle.Powertrain.TractionBattery.Temperature': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float'),
   'Vehicle.Powertrain.TractionBattery.Preconditioning.Status': VssSignalMeta(type: VssNodeType.sensor, datatype: 'string'),
-  'Vehicle.Powertrain.TractionBattery.Preconditioning.IsEnabled': VssSignalMeta(type: VssNodeType.actuator, datatype: 'boolean'),
-  'Vehicle.Powertrain.TractionBattery.Charging.IsConnected': VssSignalMeta(type: VssNodeType.sensor, datatype: 'boolean'),
+  'Vehicle.Powertrain.TractionBattery.Preconditioning.IsEnabled': VssSignalMeta(type: VssNodeType.actuator, datatype: 'boolean', defaultValue: false),
+  'Vehicle.Powertrain.TractionBattery.Charging.IsConnected': VssSignalMeta(type: VssNodeType.sensor, datatype: 'boolean', defaultValue: false),
   'Vehicle.Powertrain.TractionBattery.Charging.IsCharging': VssSignalMeta(type: VssNodeType.sensor, datatype: 'boolean'),
   'Vehicle.Powertrain.TractionBattery.Charging.ChargePower': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float'),
   'Vehicle.Powertrain.TractionBattery.Charging.TargetSoC': VssSignalMeta(type: VssNodeType.actuator, datatype: 'float', unit: 'percent', min: 0, max: 100),
   'Vehicle.Powertrain.V2L.IsExportingPower': VssSignalMeta(type: VssNodeType.actuator, datatype: 'boolean'),
   'Vehicle.Powertrain.CombustionEngine.Speed': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float'),
   'Vehicle.Powertrain.Transmission.SelectedGear': VssSignalMeta(type: VssNodeType.actuator, datatype: 'string', allowed: ['PARK', 'REVERSE', 'NEUTRAL', 'DRIVE'], defaultValue: 'PARK'),
-  'Vehicle.Body.Trunk.IsAjar': VssSignalMeta(type: VssNodeType.sensor, datatype: 'boolean'),
+  'Vehicle.Body.Trunk.IsAjar': VssSignalMeta(type: VssNodeType.sensor, datatype: 'boolean', defaultValue: false),
   'Vehicle.Body.Trunk.PowerOpeningAngle': VssSignalMeta(type: VssNodeType.actuator, datatype: 'float'),
   'Vehicle.Body.Trailer.IsConnected': VssSignalMeta(type: VssNodeType.sensor, datatype: 'boolean'),
   'Vehicle.Body.Trailer.BrakeGain': VssSignalMeta(type: VssNodeType.actuator, datatype: 'float'),
@@ -716,5 +716,5 @@ const Map<String, VssSignalMeta> vssCatalog = {
   'Vehicle.ADAS.LaneKeepingAssist.LeftLaneOffsetMeters': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float'),
   'Vehicle.ADAS.LaneKeepingAssist.RightLaneOffsetMeters': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float'),
   'Vehicle.Software.OTA.Status': VssSignalMeta(type: VssNodeType.sensor, datatype: 'string'),
-  'Vehicle.Exterior.AirTemperature': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float', unit: 'celsius', min: -40, max: 60),
+  'Vehicle.Exterior.AirTemperature': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float', unit: 'celsius', min: -40, max: 60, defaultValue: 20.0),
 };

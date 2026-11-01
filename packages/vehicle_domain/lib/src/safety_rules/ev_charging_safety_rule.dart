@@ -4,7 +4,7 @@ import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import 'domain/safety_rule.dart';
 
-/// Impede tirar o carro de PARK/NEUTRAL com o cabo de recarga conectado.
+/// Prevents leaving PARK/NEUTRAL while the charging cable is connected.
 final class EvChargingSafetyRule implements SafetyRule {
   static const _stationaryGears = {'PARK', 'NEUTRAL'};
 
@@ -19,7 +19,7 @@ final class EvChargingSafetyRule implements SafetyRule {
     if (_stationaryGears.contains(command.value)) return null;
 
     if (signals.read(Vss.Vehicle.Powertrain.TractionBattery.Charging.IsConnected) ?? false) {
-      return const CommandResult.rejected('Impossível engatar marcha: cabo de recarga ainda conectado.');
+      return const CommandResult.rejected('Cannot engage a gear: the charging cable is still connected.');
     }
     return null;
   }

@@ -1,5 +1,5 @@
 name: vss_gen
-description: "Builders do build_runner que geram a API VSS tipada e os perfis de veículo a partir do spec JSON."
+description: "build_runner builders that generate the typed VSS API and vehicle profiles from the JSON spec."
 version: 0.0.1
 publish_to: none
 resolution: workspace

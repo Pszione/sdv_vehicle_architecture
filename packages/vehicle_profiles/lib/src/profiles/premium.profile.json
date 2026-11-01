@@ -1,6 +1,6 @@
 {
   "id": "premium",
-  "trimName": "Versão Premium (Highline)",
+  "trimName": "Premium (Highline)",
   "driverSide": "left",
   "signals": [
     "Vehicle.Speed",

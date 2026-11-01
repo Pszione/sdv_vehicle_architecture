@@ -4,7 +4,7 @@ import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import 'domain/safety_rule.dart';
 
-/// Altura máxima da suspensão pneumática (OFFROAD_MAX) só abaixo de 50 km/h.
+/// Maximum air suspension height (OFFROAD_MAX) is only available below 50 km/h.
 final class SuvAirSuspensionSafetyRule implements SafetyRule {
   static const maxSpeedKmh = 50.0;
   static const offroadMax = 'OFFROAD_MAX';
@@ -21,7 +21,9 @@ final class SuvAirSuspensionSafetyRule implements SafetyRule {
 
     final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
     if (speed > maxSpeedKmh) {
-      return CommandResult.rejected('Altura máxima de suspensão indisponível acima de ${maxSpeedKmh.toInt()} km/h.');
+      return CommandResult.rejected(
+        'Off-road max height is unavailable above ${maxSpeedKmh.toInt()} km/h (current: ${speed.toInt()} km/h).',
+      );
     }
     return null;
   }

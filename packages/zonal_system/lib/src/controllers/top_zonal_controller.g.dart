@@ -8,15 +8,15 @@ part of 'top_zonal_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// ECU da zona superior: teto solar.
+/// Top zone ECU: sunroof.
 
 @ProviderFor(TopZoneController)
 final topZoneControllerProvider = TopZoneControllerProvider._();
 
-/// ECU da zona superior: teto solar.
+/// Top zone ECU: sunroof.
 final class TopZoneControllerProvider
     extends $NotifierProvider<TopZoneController, void> {
-  /// ECU da zona superior: teto solar.
+  /// Top zone ECU: sunroof.
   TopZoneControllerProvider._()
     : super(
         from: null,
@@ -44,9 +44,9 @@ final class TopZoneControllerProvider
   }
 }
 
-String _$topZoneControllerHash() => r'595165663a40e58c1225006a06cc3cae8aed80ab';
+String _$topZoneControllerHash() => r'f56cd31ecda44002b8a6efb9dd967d07dd84fb64';
 
-/// ECU da zona superior: teto solar.
+/// Top zone ECU: sunroof.
 
 abstract class _$TopZoneController extends $Notifier<void> {
   void build();

@@ -1,4 +1,4 @@
-/// Simulação da arquitetura zonal: barramento, roteamento, ECUs zonais e atuadores.
+/// Zonal architecture simulation: bus, routing, zonal ECUs and actuators.
 library;
 
 export 'src/actuators/dumb_door_actuator.dart';

@@ -8,27 +8,27 @@ part of 'generic_zone_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// ECU genérica para atuadores ainda sem simulação física (HVAC, bancos,
-/// suspensão...): confirma o valor comandado como telemetria, sem latência.
+/// Generic ECU for actuators without a physical model yet (HVAC, seats,
+/// suspension...): confirms the commanded value as telemetry, without latency.
 ///
-/// Quando um atuador ganhar um modelo próprio (como o teto solar), ele deve
-/// ir para um controlador dedicado e sair da rota desta zona.
+/// When an actuator gets its own model (like the sunroof), move it to a
+/// dedicated controller and out of this zone's routes.
 
 @ProviderFor(GenericZoneController)
 final genericZoneControllerProvider = GenericZoneControllerFamily._();
 
-/// ECU genérica para atuadores ainda sem simulação física (HVAC, bancos,
-/// suspensão...): confirma o valor comandado como telemetria, sem latência.
+/// Generic ECU for actuators without a physical model yet (HVAC, seats,
+/// suspension...): confirms the commanded value as telemetry, without latency.
 ///
-/// Quando um atuador ganhar um modelo próprio (como o teto solar), ele deve
-/// ir para um controlador dedicado e sair da rota desta zona.
+/// When an actuator gets its own model (like the sunroof), move it to a
+/// dedicated controller and out of this zone's routes.
 final class GenericZoneControllerProvider
     extends $NotifierProvider<GenericZoneController, void> {
-  /// ECU genérica para atuadores ainda sem simulação física (HVAC, bancos,
-  /// suspensão...): confirma o valor comandado como telemetria, sem latência.
+  /// Generic ECU for actuators without a physical model yet (HVAC, seats,
+  /// suspension...): confirms the commanded value as telemetry, without latency.
   ///
-  /// Quando um atuador ganhar um modelo próprio (como o teto solar), ele deve
-  /// ir para um controlador dedicado e sair da rota desta zona.
+  /// When an actuator gets its own model (like the sunroof), move it to a
+  /// dedicated controller and out of this zone's routes.
   GenericZoneControllerProvider._({
     required GenericZoneControllerFamily super.from,
     required VehicleZone super.argument,
@@ -76,11 +76,11 @@ final class GenericZoneControllerProvider
 String _$genericZoneControllerHash() =>
     r'19df8c5fc40df3fb286ebce9608e0069814e5b31';
 
-/// ECU genérica para atuadores ainda sem simulação física (HVAC, bancos,
-/// suspensão...): confirma o valor comandado como telemetria, sem latência.
+/// Generic ECU for actuators without a physical model yet (HVAC, seats,
+/// suspension...): confirms the commanded value as telemetry, without latency.
 ///
-/// Quando um atuador ganhar um modelo próprio (como o teto solar), ele deve
-/// ir para um controlador dedicado e sair da rota desta zona.
+/// When an actuator gets its own model (like the sunroof), move it to a
+/// dedicated controller and out of this zone's routes.
 
 final class GenericZoneControllerFamily extends $Family
     with
@@ -100,11 +100,11 @@ final class GenericZoneControllerFamily extends $Family
         isAutoDispose: false,
       );
 
-  /// ECU genérica para atuadores ainda sem simulação física (HVAC, bancos,
-  /// suspensão...): confirma o valor comandado como telemetria, sem latência.
+  /// Generic ECU for actuators without a physical model yet (HVAC, seats,
+  /// suspension...): confirms the commanded value as telemetry, without latency.
   ///
-  /// Quando um atuador ganhar um modelo próprio (como o teto solar), ele deve
-  /// ir para um controlador dedicado e sair da rota desta zona.
+  /// When an actuator gets its own model (like the sunroof), move it to a
+  /// dedicated controller and out of this zone's routes.
 
   GenericZoneControllerProvider call(VehicleZone zone) =>
       GenericZoneControllerProvider._(argument: zone, from: this);
@@ -113,11 +113,11 @@ final class GenericZoneControllerFamily extends $Family
   String toString() => r'genericZoneControllerProvider';
 }
 
-/// ECU genérica para atuadores ainda sem simulação física (HVAC, bancos,
-/// suspensão...): confirma o valor comandado como telemetria, sem latência.
+/// Generic ECU for actuators without a physical model yet (HVAC, seats,
+/// suspension...): confirms the commanded value as telemetry, without latency.
 ///
-/// Quando um atuador ganhar um modelo próprio (como o teto solar), ele deve
-/// ir para um controlador dedicado e sair da rota desta zona.
+/// When an actuator gets its own model (like the sunroof), move it to a
+/// dedicated controller and out of this zone's routes.
 
 abstract class _$GenericZoneController extends $Notifier<void> {
   late final _$args = ref.$arg as VehicleZone;

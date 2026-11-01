@@ -1,5 +1,5 @@
-# Regras compartilhadas pelos pacotes Dart puros (vss_gen, vehicle_domain,
-# vehicle_profiles, zonal_system). Pacotes Flutter usam flutter_lints.
+# Shared rules for the pure Dart packages (vss_gen, vehicle_domain,
+# vehicle_profiles, zonal_system). Flutter packages use flutter_lints.
 include: package:lints/recommended.yaml
 
 formatter:

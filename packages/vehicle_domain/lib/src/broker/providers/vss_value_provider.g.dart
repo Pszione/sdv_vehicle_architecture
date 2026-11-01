@@ -8,26 +8,26 @@ part of 'vss_value_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Valor de um único sinal. Só notifica quando *este* sinal muda, então um
-/// widget do cluster não é reconstruído por telemetria de outros sinais.
+/// Value of a single signal. Only notifies when *this* signal changes, so a
+/// cluster widget is not rebuilt by telemetry of other signals.
 ///
-/// Prefira o acesso tipado `ref.watchSignal(Vss.Vehicle.Speed)` do vehicle_ui_kit.
+/// Prefer the typed `ref.watchSignal(Vss.Vehicle.Speed)` from vehicle_ui_kit.
 
 @ProviderFor(vssValue)
 final vssValueProvider = VssValueFamily._();
 
-/// Valor de um único sinal. Só notifica quando *este* sinal muda, então um
-/// widget do cluster não é reconstruído por telemetria de outros sinais.
+/// Value of a single signal. Only notifies when *this* signal changes, so a
+/// cluster widget is not rebuilt by telemetry of other signals.
 ///
-/// Prefira o acesso tipado `ref.watchSignal(Vss.Vehicle.Speed)` do vehicle_ui_kit.
+/// Prefer the typed `ref.watchSignal(Vss.Vehicle.Speed)` from vehicle_ui_kit.
 
 final class VssValueProvider
     extends $FunctionalProvider<Object?, Object?, Object?>
     with $Provider<Object?> {
-  /// Valor de um único sinal. Só notifica quando *este* sinal muda, então um
-  /// widget do cluster não é reconstruído por telemetria de outros sinais.
+  /// Value of a single signal. Only notifies when *this* signal changes, so a
+  /// cluster widget is not rebuilt by telemetry of other signals.
   ///
-  /// Prefira o acesso tipado `ref.watchSignal(Vss.Vehicle.Speed)` do vehicle_ui_kit.
+  /// Prefer the typed `ref.watchSignal(Vss.Vehicle.Speed)` from vehicle_ui_kit.
   VssValueProvider._({
     required VssValueFamily super.from,
     required VssSignal<Object> super.argument,
@@ -81,10 +81,10 @@ final class VssValueProvider
 
 String _$vssValueHash() => r'e5910392b6bc574761d6c1d78d62c73b32cbc18e';
 
-/// Valor de um único sinal. Só notifica quando *este* sinal muda, então um
-/// widget do cluster não é reconstruído por telemetria de outros sinais.
+/// Value of a single signal. Only notifies when *this* signal changes, so a
+/// cluster widget is not rebuilt by telemetry of other signals.
 ///
-/// Prefira o acesso tipado `ref.watchSignal(Vss.Vehicle.Speed)` do vehicle_ui_kit.
+/// Prefer the typed `ref.watchSignal(Vss.Vehicle.Speed)` from vehicle_ui_kit.
 
 final class VssValueFamily extends $Family
     with $FunctionalFamilyOverride<Object?, VssSignal<Object>> {
@@ -97,10 +97,10 @@ final class VssValueFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Valor de um único sinal. Só notifica quando *este* sinal muda, então um
-  /// widget do cluster não é reconstruído por telemetria de outros sinais.
+  /// Value of a single signal. Only notifies when *this* signal changes, so a
+  /// cluster widget is not rebuilt by telemetry of other signals.
   ///
-  /// Prefira o acesso tipado `ref.watchSignal(Vss.Vehicle.Speed)` do vehicle_ui_kit.
+  /// Prefer the typed `ref.watchSignal(Vss.Vehicle.Speed)` from vehicle_ui_kit.
 
   VssValueProvider call(VssSignal<Object> signal) =>
       VssValueProvider._(argument: signal, from: this);

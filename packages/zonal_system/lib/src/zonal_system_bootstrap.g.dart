@@ -8,19 +8,19 @@ part of 'zonal_system_bootstrap.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Liga uma ECU para cada zona. O app lê este provider no boot, antes do
-/// primeiro comando: sem isso, os controladores não existiriam para escutar o barramento.
+/// Starts one ECU per zone. The app reads this provider at boot, before the
+/// first command: otherwise no controller would exist to listen to the bus.
 
 @ProviderFor(zonalSystem)
 final zonalSystemProvider = ZonalSystemProvider._();
 
-/// Liga uma ECU para cada zona. O app lê este provider no boot, antes do
-/// primeiro comando: sem isso, os controladores não existiriam para escutar o barramento.
+/// Starts one ECU per zone. The app reads this provider at boot, before the
+/// first command: otherwise no controller would exist to listen to the bus.
 
 final class ZonalSystemProvider extends $FunctionalProvider<void, void, void>
     with $Provider<void> {
-  /// Liga uma ECU para cada zona. O app lê este provider no boot, antes do
-  /// primeiro comando: sem isso, os controladores não existiriam para escutar o barramento.
+  /// Starts one ECU per zone. The app reads this provider at boot, before the
+  /// first command: otherwise no controller would exist to listen to the bus.
   ZonalSystemProvider._()
     : super(
         from: null,

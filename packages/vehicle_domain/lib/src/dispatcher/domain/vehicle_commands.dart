@@ -8,20 +8,20 @@ enum CommandStatus { approved, rejectedBySafetyRule, notSupportedByVehicle, read
 final class CommandResult {
   const CommandResult._(this.status, [this.message]);
 
-  /// Comando aprovado e enviado ao barramento zonal. A confirmação física
-  /// chega depois, como telemetria no `VssBroker`.
+  /// Command approved and sent to the zonal bus. Physical confirmation arrives
+  /// later, as telemetry in the `VssBroker`.
   const CommandResult.approved() : this._(CommandStatus.approved);
 
   const CommandResult.rejected(String reason) : this._(CommandStatus.rejectedBySafetyRule, reason);
 
   CommandResult.notSupported(String vssPath)
-    : this._(CommandStatus.notSupportedByVehicle, 'O recurso "$vssPath" não existe neste veículo.');
+    : this._(CommandStatus.notSupportedByVehicle, '"$vssPath" is not available on this vehicle.');
 
   CommandResult.readOnly(String vssPath)
-    : this._(CommandStatus.readOnlySignal, '"$vssPath" é um sensor e não aceita comandos.');
+    : this._(CommandStatus.readOnlySignal, '"$vssPath" is a sensor and does not accept commands.');
 
   CommandResult.invalidPayload(String vssPath, Object value)
-    : this._(CommandStatus.invalidPayload, 'Valor "$value" fora do permitido para "$vssPath".');
+    : this._(CommandStatus.invalidPayload, 'Value "$value" is not allowed for "$vssPath".');
 
   final CommandStatus status;
   final String? message;
@@ -38,7 +38,7 @@ final class CommandResult {
   String toString() => 'CommandResult(${status.name}${message == null ? '' : ': $message'})';
 }
 
-/// Intenção de alterar um atuador. O tipo de [value] é garantido pelo sinal.
+/// Intent to change an actuator. The type of [value] is enforced by the signal.
 @immutable
 final class VehicleCommand<T extends Object> {
   const VehicleCommand({required this.signal, required this.value, this.source = 'UNKNOWN'});
@@ -46,7 +46,7 @@ final class VehicleCommand<T extends Object> {
   final VssSignal<T> signal;
   final T value;
 
-  /// Origem do comando. Ex: "INFOTAINMENT_UI", "MOBILE_APP", "ADAS".
+  /// Origin of the command, e.g. "INFOTAINMENT_UI", "MOBILE_APP", "ADAS".
   final String source;
 
   @override

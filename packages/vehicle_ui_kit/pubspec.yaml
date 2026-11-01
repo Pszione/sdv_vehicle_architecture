@@ -1,5 +1,5 @@
 name: vehicle_ui_kit
-description: "Design system compartilhado das HMIs do veículo."
+description: "Shared design system for the vehicle HMIs."
 version: 0.0.1
 publish_to: none
 resolution: workspace

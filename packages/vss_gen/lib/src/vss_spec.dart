@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-/// Modelo em memória de um spec VSS no formato JSON exportado pelo vss-tools
+/// In-memory model of a VSS spec in the vss-tools JSON export shape
 /// (`type`, `children`, `datatype`, `min`, `max`, `unit`, `allowed`, `default`).
 ///
-/// Toda inconsistência vira [FormatException], o que faz o build falhar em vez
-/// de gerar uma API parcialmente errada.
+/// Any inconsistency throws a [FormatException], failing the build instead of
+/// generating a partially wrong API.
 sealed class VssNode {
   VssNode(this.name, this.path, this.description);
 
@@ -34,13 +34,13 @@ final class VssLeaf extends VssNode {
     this.defaultValue,
   });
 
-  /// `sensor`, `actuator` ou `attribute`.
+  /// `sensor`, `actuator` or `attribute`.
   final String type;
 
-  /// Datatype VSS original (ex: `float`, `uint8`, `string[]`).
+  /// Original VSS datatype (e.g. `float`, `uint8`, `string[]`).
   final String datatype;
 
-  /// Tipo Dart correspondente (ex: `double`, `int`, `List<String>`).
+  /// Matching Dart type (e.g. `double`, `int`, `List<String>`).
   final String dartType;
   final String? unit;
   final num? min;
@@ -56,7 +56,7 @@ final class VssSpec {
 
   final List<VssBranch> roots;
 
-  /// Todas as folhas indexadas pelo caminho completo.
+  /// Every leaf, keyed by its full path.
   final Map<String, VssLeaf> leaves;
 
   static const leafTypes = {'sensor', 'actuator', 'attribute'};
@@ -79,28 +79,28 @@ final class VssSpec {
   static VssSpec parse(String source) {
     final decoded = jsonDecode(source);
     if (decoded is! Map<String, Object?> || decoded.isEmpty) {
-      throw const FormatException('VSS spec inválido: a raiz deve ser um objeto com ao menos um branch.');
+      throw const FormatException('Invalid VSS spec: the root must be an object with at least one branch.');
     }
     final leaves = <String, VssLeaf>{};
     final roots = [
       for (final MapEntry(:key, :value) in decoded.entries)
         switch (_parseNode(key, key, value, leaves)) {
           final VssBranch branch => branch,
-          VssLeaf() => throw FormatException('VSS spec inválido em "$key": a raiz deve ser um branch.'),
+          VssLeaf() => throw FormatException('Invalid VSS spec at "$key": the root must be a branch.'),
         },
     ];
     return VssSpec._(roots, leaves);
   }
 
   static VssNode _parseNode(String name, String path, Object? raw, Map<String, VssLeaf> leaves) {
-    if (raw is! Map<String, Object?>) _fail(path, 'o nó deve ser um objeto.');
+    if (raw is! Map<String, Object?>) _fail(path, 'the node must be an object.');
     final type = raw['type'];
     final description = raw['description'] as String?;
 
     if (type == 'branch') {
       final children = raw['children'];
       if (children is! Map<String, Object?> || children.isEmpty) {
-        _fail(path, 'branch sem "children".');
+        _fail(path, 'branch without "children".');
       }
       return VssBranch(name, path, description, [
         for (final MapEntry(:key, :value) in children.entries) _parseNode(key, '$path.$key', value, leaves),
@@ -108,7 +108,7 @@ final class VssSpec {
     }
 
     if (!leafTypes.contains(type)) {
-      _fail(path, '"type" deve ser branch, ${leafTypes.join(', ')} (recebido: $type).');
+      _fail(path, '"type" must be branch, ${leafTypes.join(', ')} (got: $type).');
     }
     final leaf = _parseLeaf(name, path, description, type as String, raw);
     leaves[path] = leaf;
@@ -117,11 +117,11 @@ final class VssSpec {
 
   static VssLeaf _parseLeaf(String name, String path, String? description, String type, Map<String, Object?> raw) {
     final datatype = raw['datatype'];
-    if (datatype is! String) _fail(path, 'folha sem "datatype".');
+    if (datatype is! String) _fail(path, 'leaf without "datatype".');
 
     final isArray = datatype.endsWith('[]');
     final scalar = _scalarTypes[isArray ? datatype.substring(0, datatype.length - 2) : datatype];
-    if (scalar == null) _fail(path, 'datatype desconhecido "$datatype".');
+    if (scalar == null) _fail(path, 'unknown datatype "$datatype".');
     final dartType = isArray ? 'List<$scalar>' : scalar;
 
     final min = raw['min'];
@@ -130,15 +130,15 @@ final class VssSpec {
     final defaultValue = raw['default'];
     final isNumeric = !isArray && (scalar == 'int' || scalar == 'double');
 
-    if ((min != null || max != null) && !isNumeric) _fail(path, '"min"/"max" só valem para datatypes numéricos.');
-    if (min != null && min is! num) _fail(path, '"min" deve ser numérico.');
-    if (max != null && max is! num) _fail(path, '"max" deve ser numérico.');
-    if (min is num && max is num && min > max) _fail(path, '"min" maior que "max".');
+    if ((min != null || max != null) && !isNumeric) _fail(path, '"min"/"max" only apply to numeric datatypes.');
+    if (min != null && min is! num) _fail(path, '"min" must be numeric.');
+    if (max != null && max is! num) _fail(path, '"max" must be numeric.');
+    if (min is num && max is num && min > max) _fail(path, '"min" is greater than "max".');
     if (allowed != null && (allowed is! List || allowed.isEmpty)) {
-      _fail(path, '"allowed" deve ser uma lista não vazia.');
+      _fail(path, '"allowed" must be a non-empty list.');
     }
     if (defaultValue != null && !_matchesType(defaultValue, scalar, isArray)) {
-      _fail(path, '"default" ($defaultValue) não é compatível com $datatype.');
+      _fail(path, '"default" ($defaultValue) does not match $datatype.');
     }
 
     return VssLeaf(
@@ -166,10 +166,10 @@ final class VssSpec {
     };
   }
 
-  static Never _fail(String path, String message) => throw FormatException('VSS spec inválido em "$path": $message');
+  static Never _fail(String path, String message) => throw FormatException('Invalid VSS spec at "$path": $message');
 }
 
-/// Converte um valor JSON em um literal Dart válido em contexto `const`.
+/// Converts a JSON value into a Dart literal that is valid in a `const` context.
 String dartLiteral(Object? value, {String? dartType}) => switch (value) {
   null => 'null',
   final String s => "'${s.replaceAll(r'\', r'\\').replaceAll("'", r"\'").replaceAll(r'$', r'\$')}'",
@@ -177,5 +177,5 @@ String dartLiteral(Object? value, {String? dartType}) => switch (value) {
   final num n => n.toString(),
   final bool b => b.toString(),
   final List<Object?> list => '[${list.map(dartLiteral).join(', ')}]',
-  _ => throw ArgumentError('Valor sem literal Dart: $value'),
+  _ => throw ArgumentError('No Dart literal for value: $value'),
 };

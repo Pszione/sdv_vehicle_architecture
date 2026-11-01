@@ -1,6 +1,6 @@
 {
   "id": "entry",
-  "trimName": "Versão Básica (Comfort)",
+  "trimName": "Entry (Comfort)",
   "driverSide": "left",
   "signals": [
     "Vehicle.Speed",

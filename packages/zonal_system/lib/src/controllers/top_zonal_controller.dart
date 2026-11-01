@@ -12,7 +12,7 @@ import '../domain/zonal_command.dart';
 
 part 'top_zonal_controller.g.dart';
 
-/// ECU da zona superior: teto solar.
+/// Top zone ECU: sunroof.
 @Riverpod(keepAlive: true)
 class TopZoneController extends _$TopZoneController {
   final _sunroof = DumbSunroofActuator('SUNROOF_ACTUATOR');
@@ -27,14 +27,14 @@ class TopZoneController extends _$TopZoneController {
     });
   }
 
-  /// Injeção de falha via painel de testes/simulador.
+  /// Fault injection from the test panel/simulator.
   void injectSunroofFault(ActuatorFaultType fault) => _sunroof.injectFault(fault);
 
   void _process(ZonalCommand command) {
     final position = Vss.Vehicle.Cabin.Sunroof.Position;
     if (command.deviceId != _sunroof.id || command.signal != position) return;
 
-    // Um novo comando substitui o movimento em andamento.
+    // A new command replaces the movement in progress.
     _movement?.cancel();
     _movement = _sunroof.moveTo(command.command.value as double).listen((progress) {
       final broker = ref.read(vssBrokerProvider.notifier);
@@ -42,9 +42,9 @@ class TopZoneController extends _$TopZoneController {
 
       final isFaulted = progress.state == ActuatorState.stuck || progress.state == ActuatorState.fault;
       if (isFaulted) {
-        developer.log('Falha no atuador: ${progress.fault} em ${progress.position}', name: 'TopZoneController');
+        developer.log('Actuator fault: ${progress.fault} at ${progress.position}', name: 'TopZoneController');
       }
-      // O broker ignora valores repetidos, então publicar a cada passo não gera rebuilds.
+      // The broker ignores repeated values, so publishing every step causes no rebuilds.
       broker.publish(Vss.Vehicle.Cabin.Sunroof.IsFaulted, isFaulted);
     });
   }

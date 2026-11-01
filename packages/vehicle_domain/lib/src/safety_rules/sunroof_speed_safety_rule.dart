@@ -4,7 +4,7 @@ import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import 'domain/safety_rule.dart';
 
-/// Bloqueia a abertura do teto solar acima de 120 km/h. Fechar é sempre permitido.
+/// Blocks opening the sunroof above 120 km/h. Closing is always allowed.
 final class SunroofSpeedSafetyRule implements SafetyRule {
   static const maxSpeedKmh = 120.0;
 
@@ -20,7 +20,9 @@ final class SunroofSpeedSafetyRule implements SafetyRule {
 
     final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
     if (speed > maxSpeedKmh) {
-      return CommandResult.rejected('Velocidade acima de ${maxSpeedKmh.toInt()} km/h. Teto solar bloqueado.');
+      return CommandResult.rejected(
+        'Sunroof cannot open above ${maxSpeedKmh.toInt()} km/h (current: ${speed.toInt()} km/h).',
+      );
     }
     return null;
   }

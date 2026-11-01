@@ -2,7 +2,7 @@ import 'package:vehicle_domain/vehicle_domain.dart';
 
 import 'vehicle_zone.dart';
 
-/// Comando já aprovado pelo dispatcher e endereçado a um dispositivo de uma zona.
+/// Command already approved by the dispatcher, addressed to a device in a zone.
 final class ZonalCommand {
   ZonalCommand({required this.targetZone, required this.deviceId, required this.command})
     : commandId = DateTime.now().microsecondsSinceEpoch.toString(),
@@ -10,7 +10,7 @@ final class ZonalCommand {
 
   final VehicleZone targetZone;
 
-  /// Ex: "DOOR_FRONT_LEFT", "SUNROOF_ACTUATOR".
+  /// E.g. "DOOR_FRONT_LEFT", "SUNROOF_ACTUATOR".
   final String deviceId;
   final VehicleCommand<Object> command;
   final String commandId;

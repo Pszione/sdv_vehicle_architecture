@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// Fonte: premium.profile.json
+// Source: premium.profile.json
 // ignore_for_file: type=lint
 
 part of 'factory_profiles.dart';
 
-/// Versão Premium (Highline)
+/// Premium (Highline)
 const premiumProfile = VehicleProfile(
   id: 'premium',
-  trimName: 'Versão Premium (Highline)',
+  trimName: 'Premium (Highline)',
   driverSide: DriverSide.left,
   supportedPaths: {
     'Vehicle.Speed',

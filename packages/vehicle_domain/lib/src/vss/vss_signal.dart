@@ -1,12 +1,11 @@
 import 'package:meta/meta.dart';
 
-/// Classificação COVESA VSS de uma folha.
+/// COVESA VSS classification of a leaf.
 enum VssNodeType { sensor, actuator, attribute }
 
-/// Referência tipada e `const` a um sinal VSS.
+/// Typed, `const` reference to a VSS signal.
 ///
-/// A igualdade é pelo caminho, então pode ser usada com segurança como chave
-/// de mapas e como parâmetro de providers family.
+/// Equality is by path, so it is safe as a map key and as a family provider parameter.
 @immutable
 final class VssSignal<T extends Object> {
   const VssSignal(this.path);
@@ -23,7 +22,7 @@ final class VssSignal<T extends Object> {
   String toString() => path;
 }
 
-/// Metadados de um sinal, vindos do spec VSS (e opcionalmente ajustados pelo perfil).
+/// Signal metadata from the VSS spec (optionally adjusted by a vehicle profile).
 @immutable
 final class VssSignalMeta {
   const VssSignalMeta({
@@ -46,7 +45,7 @@ final class VssSignalMeta {
 
   bool get isActuator => type == VssNodeType.actuator;
 
-  /// `true` se [value] respeita `min`, `max` e `allowed`.
+  /// Whether [value] respects `min`, `max` and `allowed`.
   bool accepts(Object? value) {
     if (value == null) return false;
     if (value is num) {
@@ -67,7 +66,7 @@ final class VssSignalMeta {
   );
 }
 
-/// Ajuste de metadados por modelo (equivalente a um overlay do vss-tools).
+/// Per-model metadata adjustment (the equivalent of a vss-tools overlay).
 @immutable
 final class VssMetaOverride {
   const VssMetaOverride({this.min, this.max, this.allowed});

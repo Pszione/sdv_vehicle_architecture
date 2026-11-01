@@ -1,5 +1,5 @@
 name: vehicle_profiles
-description: "Perfis de fábrica (trims) gerados e validados contra o spec VSS mestre."
+description: "Factory profiles (trims) generated and validated against the master VSS spec."
 version: 0.0.1
 publish_to: none
 resolution: workspace

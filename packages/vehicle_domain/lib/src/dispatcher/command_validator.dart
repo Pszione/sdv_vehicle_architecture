@@ -3,9 +3,9 @@ import '../profile/vehicle_profile.dart';
 import '../safety_rules/domain/safety_rule.dart';
 import 'domain/vehicle_commands.dart';
 
-/// Pipeline de validação puro (sem Riverpod), executado na ordem:
-/// capacidade do perfil -> sinal comandável -> payload no spec -> safety rules.
-/// A primeira falha encerra a validação.
+/// Pure validation pipeline (no Riverpod), run in this order:
+/// profile capability -> commandable signal -> payload within spec -> safety rules.
+/// The first failure ends the validation.
 final class CommandValidator {
   const CommandValidator({required this.profile, required this.signals, required this.rules});
 

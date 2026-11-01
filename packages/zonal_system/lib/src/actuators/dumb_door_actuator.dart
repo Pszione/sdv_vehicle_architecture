@@ -1,4 +1,4 @@
-/// Atuador "burro" de trava de porta: aplica o sinal elétrico e reporta o estado físico.
+/// "Dumb" door lock actuator: applies the electrical signal and reports the physical state.
 class DumbDoorActuator {
   DumbDoorActuator(this.id);
 

@@ -1,7 +1,7 @@
 {
   "Vehicle": {
     "type": "branch",
-    "description": "Veículo de alto nível.",
+    "description": "High-level vehicle.",
     "children": {
       "Speed": {
         "type": "sensor",
@@ -24,7 +24,7 @@
               "Position": {
                 "type": "actuator",
                 "datatype": "float",
-                "description": "0.0 = fechado, 1.0 = totalmente aberto.",
+                "description": "0.0 = closed, 1.0 = fully open.",
                 "min": 0,
                 "max": 1,
                 "default": 0.0
@@ -336,7 +336,7 @@
               "Position": {
                 "type": "actuator",
                 "datatype": "float",
-                "description": "0.0 = fechada, 1.0 = totalmente aberta.",
+                "description": "0.0 = closed, 1.0 = fully open.",
                 "min": 0,
                 "max": 1
               }
@@ -518,7 +518,8 @@
                 "datatype": "float",
                 "unit": "degrees",
                 "min": -540,
-                "max": 540
+                "max": 540,
+                "default": 0.0
               },
               "Heated": {
                 "type": "actuator",
@@ -540,7 +541,14 @@
             "children": {
               "Height": {
                 "type": "actuator",
-                "datatype": "string"
+                "datatype": "string",
+                "allowed": [
+                  "LOW",
+                  "NORMAL",
+                  "HIGH",
+                  "OFFROAD_MAX"
+                ],
+                "default": "NORMAL"
               },
               "DampingMode": {
                 "type": "actuator",
@@ -577,7 +585,8 @@
                     "children": {
                       "IsLocked": {
                         "type": "actuator",
-                        "datatype": "boolean"
+                        "datatype": "boolean",
+                        "default": false
                       }
                     }
                   }
@@ -607,7 +616,8 @@
                 "datatype": "float",
                 "unit": "percent",
                 "min": 0,
-                "max": 100
+                "max": 100,
+                "default": 80.0
               },
               "Power": {
                 "type": "sensor",
@@ -626,7 +636,8 @@
                   },
                   "IsEnabled": {
                     "type": "actuator",
-                    "datatype": "boolean"
+                    "datatype": "boolean",
+                    "default": false
                   }
                 }
               },
@@ -635,7 +646,8 @@
                 "children": {
                   "IsConnected": {
                     "type": "sensor",
-                    "datatype": "boolean"
+                    "datatype": "boolean",
+                    "default": false
                   },
                   "IsCharging": {
                     "type": "sensor",
@@ -700,7 +712,8 @@
             "children": {
               "IsAjar": {
                 "type": "sensor",
-                "datatype": "boolean"
+                "datatype": "boolean",
+                "default": false
               },
               "PowerOpeningAngle": {
                 "type": "actuator",
@@ -783,7 +796,7 @@
               "LeadVehicle": {
                 "type": "sensor",
                 "datatype": "string",
-                "description": "Objeto do veículo à frente serializado em JSON."
+                "description": "Lead vehicle object serialized as JSON."
               }
             }
           },
@@ -828,7 +841,8 @@
             "datatype": "float",
             "unit": "celsius",
             "min": -40,
-            "max": 60
+            "max": 60,
+            "default": 20.0
           }
         }
       }

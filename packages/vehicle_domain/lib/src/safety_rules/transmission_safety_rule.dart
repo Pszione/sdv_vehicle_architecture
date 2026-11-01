@@ -4,7 +4,7 @@ import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import 'domain/safety_rule.dart';
 
-/// Impede engatar PARK ou REVERSE com o veículo em movimento.
+/// Prevents engaging PARK or REVERSE while the vehicle is moving.
 final class TransmissionSafetyRule implements SafetyRule {
   static const maxSpeedKmh = 5.0;
   static const _lowSpeedOnlyGears = {'PARK', 'REVERSE'};
@@ -22,7 +22,7 @@ final class TransmissionSafetyRule implements SafetyRule {
     final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
     if (speed > maxSpeedKmh) {
       return CommandResult.rejected(
-        'Reduza abaixo de ${maxSpeedKmh.toInt()} km/h para engatar ${command.value} (Atual: ${speed.toInt()} km/h).',
+        'Slow down below ${maxSpeedKmh.toInt()} km/h to engage ${command.value} (current: ${speed.toInt()} km/h).',
       );
     }
     return null;

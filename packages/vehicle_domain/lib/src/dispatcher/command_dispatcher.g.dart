@@ -8,17 +8,17 @@ part of 'command_dispatcher.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Para onde vão os comandos aprovados. O app liga ao barramento zonal.
+/// Where approved commands go. The app wires it to the zonal bus.
 
 @ProviderFor(commandSink)
 final commandSinkProvider = CommandSinkProvider._();
 
-/// Para onde vão os comandos aprovados. O app liga ao barramento zonal.
+/// Where approved commands go. The app wires it to the zonal bus.
 
 final class CommandSinkProvider
     extends $FunctionalProvider<CommandSink, CommandSink, CommandSink>
     with $Provider<CommandSink> {
-  /// Para onde vão os comandos aprovados. O app liga ao barramento zonal.
+  /// Where approved commands go. The app wires it to the zonal bus.
   CommandSinkProvider._()
     : super(
         from: null,
@@ -52,17 +52,17 @@ final class CommandSinkProvider
   }
 }
 
-String _$commandSinkHash() => r'ae3f2a43cc6febfd3f1f63eb9d556b79e66dabda';
+String _$commandSinkHash() => r'127397e785831d3abe31b62ca178fea14913cc37';
 
-/// Ponto de entrada único para comandos ao veículo.
+/// Single entry point for vehicle commands.
 
 @ProviderFor(CommandDispatcher)
 final commandDispatcherProvider = CommandDispatcherProvider._();
 
-/// Ponto de entrada único para comandos ao veículo.
+/// Single entry point for vehicle commands.
 final class CommandDispatcherProvider
     extends $NotifierProvider<CommandDispatcher, void> {
-  /// Ponto de entrada único para comandos ao veículo.
+  /// Single entry point for vehicle commands.
   CommandDispatcherProvider._()
     : super(
         from: null,
@@ -92,7 +92,7 @@ final class CommandDispatcherProvider
 
 String _$commandDispatcherHash() => r'212b0bc83e6a6c330748ae8c8c03d124a0162b01';
 
-/// Ponto de entrada único para comandos ao veículo.
+/// Single entry point for vehicle commands.
 
 abstract class _$CommandDispatcher extends $Notifier<void> {
   void build();

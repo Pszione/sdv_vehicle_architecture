@@ -8,30 +8,30 @@ part of 'vss_broker.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Estado confirmado do veículo: último valor de cada sinal do perfil ativo,
-/// indexado pelo caminho VSS.
+/// Confirmed vehicle state: the latest value of every signal in the active
+/// profile, keyed by VSS path.
 ///
-/// Só as ECUs zonais e os simuladores publicam aqui. A UI nunca escreve:
-/// ela envia um `VehicleCommand` ao `CommandDispatcher`.
-/// Para ler um sinal na UI, use `vssValueProvider`, que é granular.
+/// Only zonal ECUs and simulators publish here. The UI never writes: it sends a
+/// `VehicleCommand` to the `CommandDispatcher`.
+/// To read a signal in the UI use `vssValueProvider`, which is granular.
 
 @ProviderFor(VssBroker)
 final vssBrokerProvider = VssBrokerProvider._();
 
-/// Estado confirmado do veículo: último valor de cada sinal do perfil ativo,
-/// indexado pelo caminho VSS.
+/// Confirmed vehicle state: the latest value of every signal in the active
+/// profile, keyed by VSS path.
 ///
-/// Só as ECUs zonais e os simuladores publicam aqui. A UI nunca escreve:
-/// ela envia um `VehicleCommand` ao `CommandDispatcher`.
-/// Para ler um sinal na UI, use `vssValueProvider`, que é granular.
+/// Only zonal ECUs and simulators publish here. The UI never writes: it sends a
+/// `VehicleCommand` to the `CommandDispatcher`.
+/// To read a signal in the UI use `vssValueProvider`, which is granular.
 final class VssBrokerProvider
     extends $NotifierProvider<VssBroker, Map<String, Object?>> {
-  /// Estado confirmado do veículo: último valor de cada sinal do perfil ativo,
-  /// indexado pelo caminho VSS.
+  /// Confirmed vehicle state: the latest value of every signal in the active
+  /// profile, keyed by VSS path.
   ///
-  /// Só as ECUs zonais e os simuladores publicam aqui. A UI nunca escreve:
-  /// ela envia um `VehicleCommand` ao `CommandDispatcher`.
-  /// Para ler um sinal na UI, use `vssValueProvider`, que é granular.
+  /// Only zonal ECUs and simulators publish here. The UI never writes: it sends a
+  /// `VehicleCommand` to the `CommandDispatcher`.
+  /// To read a signal in the UI use `vssValueProvider`, which is granular.
   VssBrokerProvider._()
     : super(
         from: null,
@@ -59,14 +59,14 @@ final class VssBrokerProvider
   }
 }
 
-String _$vssBrokerHash() => r'3c4b92f593631ee703c0b00dc3f7ecdb84ac00e3';
+String _$vssBrokerHash() => r'd5bcf3f613ad7fd3fd742ff515d1871a9ad95c6d';
 
-/// Estado confirmado do veículo: último valor de cada sinal do perfil ativo,
-/// indexado pelo caminho VSS.
+/// Confirmed vehicle state: the latest value of every signal in the active
+/// profile, keyed by VSS path.
 ///
-/// Só as ECUs zonais e os simuladores publicam aqui. A UI nunca escreve:
-/// ela envia um `VehicleCommand` ao `CommandDispatcher`.
-/// Para ler um sinal na UI, use `vssValueProvider`, que é granular.
+/// Only zonal ECUs and simulators publish here. The UI never writes: it sends a
+/// `VehicleCommand` to the `CommandDispatcher`.
+/// To read a signal in the UI use `vssValueProvider`, which is granular.
 
 abstract class _$VssBroker extends $Notifier<Map<String, Object?>> {
   Map<String, Object?> build();

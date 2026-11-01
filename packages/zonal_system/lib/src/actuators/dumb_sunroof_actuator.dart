@@ -12,7 +12,7 @@ class ActuatorPositionProgress {
 
 class DumbSunroofActuator {
   final String id;
-  double _currentPosition = 0.0; // 0.0 (fechado) a 1.0 (totalmente aberto)
+  double _currentPosition = 0.0; // 0.0 (closed) to 1.0 (fully open)
   ActuatorState _state = ActuatorState.idle;
   ActuatorFaultType _injectedFault = ActuatorFaultType.none;
 
@@ -22,12 +22,12 @@ class DumbSunroofActuator {
 
   ActuatorState get state => _state;
 
-  /// Permite injetar uma falha deliberadamente para testes (Fault Injection)
+  /// Deliberately injects a fault for testing (fault injection).
   void injectFault(ActuatorFaultType fault) {
     _injectedFault = fault;
   }
 
-  /// Executa a movimentação física com latência calculada
+  /// Runs the physical movement with simulated latency.
   Stream<ActuatorPositionProgress> moveTo(double targetPosition, {double speedPerSecond = 0.25}) async* {
     targetPosition = targetPosition.clamp(0.0, 1.0);
 
@@ -39,13 +39,13 @@ class DumbSunroofActuator {
     _state = ActuatorState.moving;
     yield ActuatorPositionProgress(position: _currentPosition, state: _state);
 
-    const stepIntervalMs = 100; // Atualizações a cada 100ms (10Hz)
+    const stepIntervalMs = 100; // Updates every 100 ms (10 Hz)
     final stepDelta = speedPerSecond * (stepIntervalMs / 1000.0);
 
     while (_state == ActuatorState.moving) {
       await Future.delayed(const Duration(milliseconds: stepIntervalMs));
 
-      // 1. Simulação de Falha Mecânica (Jamming/Obstáculo) no meio do percurso
+      // 1. Mechanical fault (jam/obstacle) halfway through the travel
       if (_injectedFault == ActuatorFaultType.mechanicalJam &&
           _currentPosition >= 0.5 &&
           targetPosition > _currentPosition) {
@@ -58,7 +58,7 @@ class DumbSunroofActuator {
         return;
       }
 
-      // 2. Simulação de Timeout Elétrico
+      // 2. Electrical timeout
       if (_injectedFault == ActuatorFaultType.hardwareTimeout) {
         _state = ActuatorState.fault;
         yield ActuatorPositionProgress(
@@ -69,14 +69,14 @@ class DumbSunroofActuator {
         return;
       }
 
-      // 3. Incremento/Decremento da posição física
+      // 3. Move the physical position
       if (_currentPosition < targetPosition) {
         _currentPosition = (_currentPosition + stepDelta).clamp(0.0, targetPosition);
       } else {
         _currentPosition = (_currentPosition - stepDelta).clamp(targetPosition, 1.0);
       }
 
-      // Chegou ao destino?
+      // Target reached?
       if ((_currentPosition - targetPosition).abs() < 0.001) {
         _currentPosition = targetPosition;
         _state = ActuatorState.idle;

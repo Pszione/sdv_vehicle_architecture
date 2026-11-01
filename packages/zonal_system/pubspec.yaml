@@ -1,5 +1,5 @@
 name: zonal_system
-description: "Simulação da arquitetura zonal: barramento, controladores de zona e atuadores."
+description: "Zonal architecture simulation: bus, zone controllers and actuators."
 version: 0.0.1
 publish_to: none
 resolution: workspace

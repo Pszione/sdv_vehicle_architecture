@@ -8,27 +8,24 @@ part of 'vehicle_logger.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Audit log em memória (ring buffer) de comandos, rejeições e mudanças
-/// confirmadas de atuadores.
+/// In-memory audit log (ring buffer) of commands, rejections and confirmed
+/// actuator changes.
 ///
-/// Telemetria de sensores (velocidade, ADAS a 30 Hz...) não é registrada,
-/// porque inundaria o buffer.
+/// Sensor telemetry (speed, 30 Hz ADAS...) is not recorded, as it would flood the buffer.
 
 @ProviderFor(VehicleLogger)
 final vehicleLoggerProvider = VehicleLoggerProvider._();
 
-/// Audit log em memória (ring buffer) de comandos, rejeições e mudanças
-/// confirmadas de atuadores.
+/// In-memory audit log (ring buffer) of commands, rejections and confirmed
+/// actuator changes.
 ///
-/// Telemetria de sensores (velocidade, ADAS a 30 Hz...) não é registrada,
-/// porque inundaria o buffer.
+/// Sensor telemetry (speed, 30 Hz ADAS...) is not recorded, as it would flood the buffer.
 final class VehicleLoggerProvider
     extends $NotifierProvider<VehicleLogger, LoggerState> {
-  /// Audit log em memória (ring buffer) de comandos, rejeições e mudanças
-  /// confirmadas de atuadores.
+  /// In-memory audit log (ring buffer) of commands, rejections and confirmed
+  /// actuator changes.
   ///
-  /// Telemetria de sensores (velocidade, ADAS a 30 Hz...) não é registrada,
-  /// porque inundaria o buffer.
+  /// Sensor telemetry (speed, 30 Hz ADAS...) is not recorded, as it would flood the buffer.
   VehicleLoggerProvider._()
     : super(
         from: null,
@@ -58,11 +55,10 @@ final class VehicleLoggerProvider
 
 String _$vehicleLoggerHash() => r'c429640899d6b839876a0c0a6e91a9f1f8386419';
 
-/// Audit log em memória (ring buffer) de comandos, rejeições e mudanças
-/// confirmadas de atuadores.
+/// In-memory audit log (ring buffer) of commands, rejections and confirmed
+/// actuator changes.
 ///
-/// Telemetria de sensores (velocidade, ADAS a 30 Hz...) não é registrada,
-/// porque inundaria o buffer.
+/// Sensor telemetry (speed, 30 Hz ADAS...) is not recorded, as it would flood the buffer.
 
 abstract class _$VehicleLogger extends $Notifier<LoggerState> {
   LoggerState build();

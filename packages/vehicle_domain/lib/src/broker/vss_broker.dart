@@ -10,12 +10,12 @@ part 'vss_broker.g.dart';
 
 enum SignalWriteResult { accepted, unchanged, notSupported, outOfRange }
 
-/// Estado confirmado do veículo: último valor de cada sinal do perfil ativo,
-/// indexado pelo caminho VSS.
+/// Confirmed vehicle state: the latest value of every signal in the active
+/// profile, keyed by VSS path.
 ///
-/// Só as ECUs zonais e os simuladores publicam aqui. A UI nunca escreve:
-/// ela envia um `VehicleCommand` ao `CommandDispatcher`.
-/// Para ler um sinal na UI, use `vssValueProvider`, que é granular.
+/// Only zonal ECUs and simulators publish here. The UI never writes: it sends a
+/// `VehicleCommand` to the `CommandDispatcher`.
+/// To read a signal in the UI use `vssValueProvider`, which is granular.
 @Riverpod(keepAlive: true)
 class VssBroker extends _$VssBroker {
   @override
@@ -24,13 +24,13 @@ class VssBroker extends _$VssBroker {
     return {for (final path in profile.supportedPaths) path: vssCatalog[path]!.defaultValue};
   }
 
-  /// Publica telemetria confirmada. Valores fora do spec são descartados e
-  /// reportados, e valores repetidos não notificam ninguém.
+  /// Publishes confirmed telemetry. Values outside the spec are dropped and
+  /// reported; repeated values notify nobody.
   SignalWriteResult publish<T extends Object>(VssSignal<T> signal, T value) {
     final meta = ref.read(activeVehicleProfileProvider).metaOf(signal);
     if (meta == null) return SignalWriteResult.notSupported;
     if (!meta.accepts(value)) {
-      developer.log('Telemetria fora do spec descartada: $signal = $value', name: 'VssBroker');
+      developer.log('Dropped out-of-spec telemetry: $signal = $value', name: 'VssBroker');
       return SignalWriteResult.outOfRange;
     }
     if (state[signal.path] == value) return SignalWriteResult.unchanged;

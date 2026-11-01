@@ -89,7 +89,8 @@
     "Vehicle.ADAS.LaneKeepingAssist.LeftLaneOffsetMeters",
     "Vehicle.ADAS.LaneKeepingAssist.RightLaneOffsetMeters",
     "Vehicle.ADAS.ObstacleDetection.LeadVehicle",
-    "Vehicle.Powertrain.Transmission.SelectedGear"
+    "Vehicle.Powertrain.Transmission.SelectedGear",
+    "Vehicle.Exterior.AirTemperature"
   ],
   "overrides": {}
 }

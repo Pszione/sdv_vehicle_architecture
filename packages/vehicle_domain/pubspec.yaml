@@ -1,5 +1,5 @@
 name: vehicle_domain
-description: "Regras de negócio do veículo: sinais VSS, VssBroker, CommandDispatcher, SafetyRules e audit log."
+description: "Vehicle business rules: VSS signals, VssBroker, CommandDispatcher, SafetyRules and audit log."
 version: 0.0.1
 publish_to: none
 resolution: workspace

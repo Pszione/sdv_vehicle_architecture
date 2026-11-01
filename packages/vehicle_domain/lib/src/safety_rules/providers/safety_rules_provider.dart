@@ -12,11 +12,11 @@ import '../transmission_safety_rule.dart';
 
 part 'safety_rules_provider.g.dart';
 
-/// Todas as regras do veículo.
+/// Every rule of the vehicle.
 ///
-/// Uma regra só roda se o seu `target` existe no perfil ativo, então a lista
-/// pode ser universal: um carro sem diferencial bloqueável nunca chega à
-/// [DiffLockSafetyRule]. Sobrescreva no app só para mudar limiares por modelo.
+/// A rule only runs if its `target` exists in the active profile, so the list
+/// can be universal: a car without a lockable differential never reaches
+/// [DiffLockSafetyRule]. Override it in the app only to change thresholds per model.
 @Riverpod(keepAlive: true)
 List<SafetyRule> activeSafetyRules(Ref ref) => [
   ...DoorSafetyRule.allDoors(),

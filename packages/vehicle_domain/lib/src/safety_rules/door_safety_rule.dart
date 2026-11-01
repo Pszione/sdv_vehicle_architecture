@@ -4,20 +4,20 @@ import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import 'domain/safety_rule.dart';
 
-/// Bloqueia o travamento de uma porta que está aberta. Destravar é sempre permitido.
+/// Blocks locking a door that is open. Unlocking is always allowed.
 ///
-/// Usa o lado físico (Left/Right), por isso vale igual para LHD e RHD.
+/// Uses the physical side (Left/Right), so it behaves the same on LHD and RHD.
 final class DoorSafetyRule implements SafetyRule {
   DoorSafetyRule({required VssSignal<bool> lock, required this.ajar, required this.label}) : target = lock;
 
-  /// Uma regra por porta do spec.
+  /// One rule per door in the spec.
   static List<DoorSafetyRule> allDoors() {
     final door = Vss.Vehicle.Cabin.Door;
     return [
-      DoorSafetyRule(lock: door.Row1.Left.IsLocked, ajar: door.Row1.Left.IsAjar, label: 'dianteira esquerda'),
-      DoorSafetyRule(lock: door.Row1.Right.IsLocked, ajar: door.Row1.Right.IsAjar, label: 'dianteira direita'),
-      DoorSafetyRule(lock: door.Row2.Left.IsLocked, ajar: door.Row2.Left.IsAjar, label: 'traseira esquerda'),
-      DoorSafetyRule(lock: door.Row2.Right.IsLocked, ajar: door.Row2.Right.IsAjar, label: 'traseira direita'),
+      DoorSafetyRule(lock: door.Row1.Left.IsLocked, ajar: door.Row1.Left.IsAjar, label: 'Front left'),
+      DoorSafetyRule(lock: door.Row1.Right.IsLocked, ajar: door.Row1.Right.IsAjar, label: 'Front right'),
+      DoorSafetyRule(lock: door.Row2.Left.IsLocked, ajar: door.Row2.Left.IsAjar, label: 'Rear left'),
+      DoorSafetyRule(lock: door.Row2.Right.IsLocked, ajar: door.Row2.Right.IsAjar, label: 'Rear right'),
     ];
   }
 
@@ -33,7 +33,7 @@ final class DoorSafetyRule implements SafetyRule {
   CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
     if (command.value != true) return null;
     if (signals.read(ajar) ?? false) {
-      return CommandResult.rejected('Porta $label está aberta. Trava bloqueada.');
+      return CommandResult.rejected('$label door is open. Close it before locking.');
     }
     return null;
   }

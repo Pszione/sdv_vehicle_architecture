@@ -7,8 +7,8 @@ import 'domain/vehicle_zone.dart';
 
 part 'zonal_system_bootstrap.g.dart';
 
-/// Liga uma ECU para cada zona. O app lê este provider no boot, antes do
-/// primeiro comando: sem isso, os controladores não existiriam para escutar o barramento.
+/// Starts one ECU per zone. The app reads this provider at boot, before the
+/// first command: otherwise no controller would exist to listen to the bus.
 @Riverpod(keepAlive: true)
 void zonalSystem(Ref ref) {
   ref

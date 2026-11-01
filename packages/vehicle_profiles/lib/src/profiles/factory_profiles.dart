@@ -1,7 +1,7 @@
-/// Perfis de fábrica gerados a partir de `*.profile.json`.
+/// Factory profiles generated from `*.profile.json`.
 ///
-/// Para criar um modelo, adicione um `<id>.profile.json` nesta pasta, declare o
-/// `part` abaixo e rode o build_runner. Sinais inexistentes no spec quebram o build.
+/// To add a model, create `<id>.profile.json` in this folder, declare its
+/// `part` below and run build_runner. Signals missing from the spec fail the build.
 library;
 
 import 'package:vehicle_domain/vehicle_domain.dart';
@@ -11,5 +11,5 @@ part 'flagship.profile.g.dart';
 part 'luxury_ev_suv.profile.g.dart';
 part 'premium.profile.g.dart';
 
-/// Perfis disponíveis para seleção na HMI, do mais simples ao mais completo.
+/// Profiles available for selection in the HMI, from the simplest to the most complete.
 const factoryProfiles = [entryProfile, premiumProfile, luxuryEvSuvProfile, flagshipProfile];

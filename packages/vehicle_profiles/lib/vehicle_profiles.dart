@@ -1,4 +1,4 @@
-/// Perfis de fábrica (trims) validados contra o spec VSS mestre.
+/// Factory profiles (trims) validated against the master VSS spec.
 library;
 
 export 'src/profiles/factory_profiles.dart';

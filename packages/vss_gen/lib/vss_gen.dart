@@ -1,8 +1,8 @@
-/// Builders do build_runner que transformam o spec COVESA VSS (formato JSON do
-/// vss-tools) em código Dart tipado.
+/// build_runner builders that turn a COVESA VSS spec (vss-tools JSON export shape)
+/// into typed Dart code.
 ///
-/// - `vss_tree`: `*.vss.json` -> árvore `Vss.Vehicle...` + `vssCatalog`.
-/// - `vss_profile`: `*.profile.json` -> `const VehicleProfile`, validado contra o spec.
+/// - `vss_tree`: `*.vss.json` -> `Vss.Vehicle...` tree + `vssCatalog`.
+/// - `vss_profile`: `*.profile.json` -> `const VehicleProfile`, validated against the spec.
 library;
 
 import 'package:build/build.dart';

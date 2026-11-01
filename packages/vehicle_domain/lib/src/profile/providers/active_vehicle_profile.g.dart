@@ -8,17 +8,17 @@ part of 'active_vehicle_profile.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Perfil com que o veículo inicia. Cada app sobrescreve no `ProviderScope`.
+/// Profile the vehicle boots with. Every app overrides it in its `ProviderScope`.
 
 @ProviderFor(initialVehicleProfile)
 final initialVehicleProfileProvider = InitialVehicleProfileProvider._();
 
-/// Perfil com que o veículo inicia. Cada app sobrescreve no `ProviderScope`.
+/// Profile the vehicle boots with. Every app overrides it in its `ProviderScope`.
 
 final class InitialVehicleProfileProvider
     extends $FunctionalProvider<VehicleProfile, VehicleProfile, VehicleProfile>
     with $Provider<VehicleProfile> {
-  /// Perfil com que o veículo inicia. Cada app sobrescreve no `ProviderScope`.
+  /// Profile the vehicle boots with. Every app overrides it in its `ProviderScope`.
   InitialVehicleProfileProvider._()
     : super(
         from: null,
@@ -53,17 +53,17 @@ final class InitialVehicleProfileProvider
 }
 
 String _$initialVehicleProfileHash() =>
-    r'6029767b35c765244472fb7fde05cde38027caa8';
+    r'88ab32d68a21a7f16fc7a279f73a7d2003db2224';
 
-/// Perfil ativo. Trocar o perfil reinicia o [VssBroker] com os sinais do novo modelo.
+/// Active profile. Switching it resets the [VssBroker] to the new model's signals.
 
 @ProviderFor(ActiveVehicleProfile)
 final activeVehicleProfileProvider = ActiveVehicleProfileProvider._();
 
-/// Perfil ativo. Trocar o perfil reinicia o [VssBroker] com os sinais do novo modelo.
+/// Active profile. Switching it resets the [VssBroker] to the new model's signals.
 final class ActiveVehicleProfileProvider
     extends $NotifierProvider<ActiveVehicleProfile, VehicleProfile> {
-  /// Perfil ativo. Trocar o perfil reinicia o [VssBroker] com os sinais do novo modelo.
+  /// Active profile. Switching it resets the [VssBroker] to the new model's signals.
   ActiveVehicleProfileProvider._()
     : super(
         from: null,
@@ -94,7 +94,7 @@ final class ActiveVehicleProfileProvider
 String _$activeVehicleProfileHash() =>
     r'6fb1a199fda4ba116987f95a98a00d7813095812';
 
-/// Perfil ativo. Trocar o perfil reinicia o [VssBroker] com os sinais do novo modelo.
+/// Active profile. Switching it resets the [VssBroker] to the new model's signals.
 
 abstract class _$ActiveVehicleProfile extends $Notifier<VehicleProfile> {
   VehicleProfile build();
@@ -114,17 +114,17 @@ abstract class _$ActiveVehicleProfile extends $Notifier<VehicleProfile> {
   }
 }
 
-/// Se o sinal existe no perfil ativo. Só notifica quando a resposta muda.
+/// Whether the signal exists in the active profile. Only notifies when the answer changes.
 
 @ProviderFor(isSignalSupported)
 final isSignalSupportedProvider = IsSignalSupportedFamily._();
 
-/// Se o sinal existe no perfil ativo. Só notifica quando a resposta muda.
+/// Whether the signal exists in the active profile. Only notifies when the answer changes.
 
 final class IsSignalSupportedProvider
     extends $FunctionalProvider<bool, bool, bool>
     with $Provider<bool> {
-  /// Se o sinal existe no perfil ativo. Só notifica quando a resposta muda.
+  /// Whether the signal exists in the active profile. Only notifies when the answer changes.
   IsSignalSupportedProvider._({
     required IsSignalSupportedFamily super.from,
     required VssSignal<Object> super.argument,
@@ -178,7 +178,7 @@ final class IsSignalSupportedProvider
 
 String _$isSignalSupportedHash() => r'78c389d12b70909a74d7a420ae59b187dc759b9b';
 
-/// Se o sinal existe no perfil ativo. Só notifica quando a resposta muda.
+/// Whether the signal exists in the active profile. Only notifies when the answer changes.
 
 final class IsSignalSupportedFamily extends $Family
     with $FunctionalFamilyOverride<bool, VssSignal<Object>> {
@@ -191,7 +191,7 @@ final class IsSignalSupportedFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Se o sinal existe no perfil ativo. Só notifica quando a resposta muda.
+  /// Whether the signal exists in the active profile. Only notifies when the answer changes.
 
   IsSignalSupportedProvider call(VssSignal<Object> signal) =>
       IsSignalSupportedProvider._(argument: signal, from: this);

@@ -1,5 +1,5 @@
 name: sdv_vehicle_architecture
-description: Monorepo do Software-Defined Vehicle (apps de HMI + pacotes de domínio e simulação zonal).
+description: Software-Defined Vehicle monorepo (HMI apps + domain and zonal simulation packages).
 publish_to: none
 
 environment:
@@ -21,7 +21,7 @@ dev_dependencies:
 melos:
   scripts:
     generate:
-      description: Roda o build_runner (Riverpod + VSS) em ordem topológica.
+      description: Runs build_runner (Riverpod + VSS) in topological order.
       exec:
         command: dart run build_runner build
         concurrency: 1
@@ -29,12 +29,12 @@ melos:
       packageFilters:
         dependsOn: build_runner
     analyze:
-      description: Analisa todos os pacotes.
+      description: Analyzes every package.
       exec:
         command: dart analyze --fatal-infos .
         concurrency: 1
     test:dart:
-      description: Testes dos pacotes Dart puros.
+      description: Tests of the pure Dart packages.
       exec:
         command: dart test
         concurrency: 1
@@ -42,7 +42,7 @@ melos:
         flutter: false
         dirExists: test
     test:flutter:
-      description: Testes dos pacotes e apps Flutter.
+      description: Tests of the Flutter packages and apps.
       exec:
         command: flutter test
         concurrency: 1

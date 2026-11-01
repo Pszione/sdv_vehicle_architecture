@@ -8,10 +8,11 @@ import '../domain/vehicle_commands.dart';
 
 part 'can_dispatch_provider.g.dart';
 
-/// Reavalia se [command] seria aprovado agora, para habilitar ou desabilitar controles.
+/// Re-evaluates whether [command] would be approved right now, to warn the
+/// user before they tap a control.
 ///
-/// Só observa o perfil e os `inputs` das regras que se aplicam ao comando,
-/// então telemetria de outros sinais não dispara reavaliação.
+/// Only watches the profile and the `inputs` of the rules that apply to the
+/// command, so telemetry of unrelated signals does not trigger a re-evaluation.
 @riverpod
 CommandResult canDispatch(Ref ref, VehicleCommand<Object> command) {
   ref.watch(activeVehicleProfileProvider);

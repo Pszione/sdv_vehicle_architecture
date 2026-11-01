@@ -1,13 +1,13 @@
 import '../vss/vss_signal.dart';
 
-/// Leitura síncrona e tipada de sinais, sem depender do Riverpod.
-/// É o que as `SafetyRule` recebem, o que as mantém puras e testáveis.
+/// Synchronous, typed signal reads without Riverpod.
+/// This is what `SafetyRule`s receive, keeping them pure and easy to test.
 abstract interface class SignalReader {
-  /// Último valor do sinal, ou `null` se o sinal não existe no perfil ou ainda não foi reportado.
+  /// Latest value of the signal, or `null` if the profile lacks it or nothing was reported yet.
   T? read<T extends Object>(VssSignal<T> signal);
 }
 
-/// [SignalReader] sobre um snapshot do estado do broker.
+/// [SignalReader] over a snapshot of the broker state.
 final class SnapshotSignalReader implements SignalReader {
   const SnapshotSignalReader(this._values);
 

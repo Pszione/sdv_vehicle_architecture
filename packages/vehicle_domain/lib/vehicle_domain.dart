@@ -1,5 +1,5 @@
-/// Regras de negócio do veículo: API VSS tipada, perfis, VssBroker,
-/// CommandDispatcher, SafetyRules e audit log.
+/// Vehicle business rules: typed VSS API, profiles, VssBroker,
+/// CommandDispatcher, SafetyRules and the audit log.
 library;
 
 export 'src/broker/providers/vss_value_provider.dart';

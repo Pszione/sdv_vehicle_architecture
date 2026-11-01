@@ -4,7 +4,7 @@ import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import 'domain/safety_rule.dart';
 
-/// Bloqueia o pré-condicionamento da bateria com SoC baixo, para preservar autonomia.
+/// Blocks battery preconditioning on low SoC, to preserve range.
 final class EvPreconditioningSafetyRule implements SafetyRule {
   static const minStateOfCharge = 15.0;
 
@@ -18,11 +18,12 @@ final class EvPreconditioningSafetyRule implements SafetyRule {
   CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
     if (command.value != true) return null;
 
-    // Sem leitura do BMS, assume SoC baixo (fail-safe).
+    // Without a BMS reading, assume low SoC (fail-safe).
     final soc = signals.read(Vss.Vehicle.Powertrain.TractionBattery.StateOfCharge) ?? 0.0;
     if (soc < minStateOfCharge) {
       return CommandResult.rejected(
-        'Bateria abaixo de ${minStateOfCharge.toInt()}%. Pré-condicionamento bloqueado para preservar autonomia.',
+        'Battery below ${minStateOfCharge.toInt()}% (current: ${soc.toInt()}%). '
+        'Preconditioning blocked to preserve range.',
       );
     }
     return null;

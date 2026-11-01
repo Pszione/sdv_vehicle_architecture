@@ -7,11 +7,11 @@ import '../domain/zonal_command.dart';
 
 part 'generic_zone_controller.g.dart';
 
-/// ECU genérica para atuadores ainda sem simulação física (HVAC, bancos,
-/// suspensão...): confirma o valor comandado como telemetria, sem latência.
+/// Generic ECU for actuators without a physical model yet (HVAC, seats,
+/// suspension...): confirms the commanded value as telemetry, without latency.
 ///
-/// Quando um atuador ganhar um modelo próprio (como o teto solar), ele deve
-/// ir para um controlador dedicado e sair da rota desta zona.
+/// When an actuator gets its own model (like the sunroof), move it to a
+/// dedicated controller and out of this zone's routes.
 @Riverpod(keepAlive: true)
 class GenericZoneController extends _$GenericZoneController {
   @override

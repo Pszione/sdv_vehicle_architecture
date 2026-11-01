@@ -8,7 +8,7 @@ import '../domain/zonal_command.dart';
 
 part 'door_zone_controller.g.dart';
 
-/// ECU de uma zona lateral (west/east): travas das portas daquele lado.
+/// Side zone ECU (west/east): door locks on that side.
 @Riverpod(keepAlive: true)
 class DoorZoneController extends _$DoorZoneController {
   static const _doorIds = {
@@ -32,7 +32,7 @@ class DoorZoneController extends _$DoorZoneController {
 
     door.applyLockSignal(lock);
 
-    // Confirma o estado físico como telemetria.
+    // Confirms the physical state as telemetry.
     ref.read(vssBrokerProvider.notifier).publish(command.signal as VssSignal<bool>, door.isLocked);
   }
 }

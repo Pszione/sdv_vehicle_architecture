@@ -4,7 +4,7 @@ import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import 'domain/safety_rule.dart';
 
-/// Operação da capota: porta-malas fechado, até 50 km/h e acima de 0 °C.
+/// Convertible top operation: trunk closed, up to 50 km/h and above 0 °C.
 final class ConvertibleTopSafetyRule implements SafetyRule {
   static const maxSpeedKmh = 50.0;
   static const minTemperatureCelsius = 0.0;
@@ -22,18 +22,18 @@ final class ConvertibleTopSafetyRule implements SafetyRule {
   @override
   CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
     if (signals.read(Vss.Vehicle.Body.Trunk.IsAjar) ?? false) {
-      return const CommandResult.rejected('Não é possível operar a capota com o porta-malas aberto.');
+      return const CommandResult.rejected('Close the trunk before operating the convertible top.');
     }
 
     final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
     if (speed > maxSpeedKmh) {
-      return CommandResult.rejected('Operação da capota bloqueada acima de ${maxSpeedKmh.toInt()} km/h.');
+      return CommandResult.rejected('Convertible top is locked above ${maxSpeedKmh.toInt()} km/h.');
     }
 
-    // Sem sensor de temperatura no modelo, não bloqueia (mesmo comportamento anterior).
+    // Without a temperature sensor in the model, do not block (previous behavior).
     final temperature = signals.read(Vss.Vehicle.Exterior.AirTemperature);
     if (temperature != null && temperature <= minTemperatureCelsius) {
-      return const CommandResult.rejected('Temperatura externa muito baixa. Risco de dano ao mecanismo da capota.');
+      return const CommandResult.rejected('Outside temperature too low. Risk of damaging the top mechanism.');
     }
     return null;
   }

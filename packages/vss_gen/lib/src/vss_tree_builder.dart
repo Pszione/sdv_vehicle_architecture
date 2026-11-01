@@ -2,12 +2,12 @@ import 'package:build/build.dart';
 
 import 'vss_spec.dart';
 
-/// Gera, a partir de `*.vss.json`, um `part` com:
-/// - a árvore tipada `Vss.Vehicle...`, onde cada folha é um `const VssSignal<T>`;
-/// - o `vssCatalog`, com os metadados de cada sinal indexados pelo caminho.
+/// Generates, from `*.vss.json`, a `part` file containing:
+/// - the typed `Vss.Vehicle...` tree, where every leaf is a `const VssSignal<T>`;
+/// - `vssCatalog`, the metadata of every signal keyed by its path.
 ///
-/// O arquivo pai (configurado em `part_of`) precisa importar `VssSignal`,
-/// `VssSignalMeta` e `VssNodeType`.
+/// The parent library (configured by `part_of`) must import `VssSignal`,
+/// `VssSignalMeta` and `VssNodeType`.
 class VssTreeBuilder implements Builder {
   VssTreeBuilder({required this.partOf});
 
@@ -28,12 +28,12 @@ class VssTreeBuilder implements Builder {
   static String generate(VssSpec spec, {required String partOf, required String source}) {
     final buffer = StringBuffer()
       ..writeln('// GENERATED CODE - DO NOT MODIFY BY HAND')
-      ..writeln('// Fonte: $source (COVESA VSS)')
+      ..writeln('// Source: $source (COVESA VSS)')
       ..writeln('// ignore_for_file: type=lint')
       ..writeln()
       ..writeln("part of '$partOf';")
       ..writeln()
-      ..writeln('/// Raiz tipada da árvore VSS. Ex: `Vss.Vehicle.Cabin.Sunroof.Position`.')
+      ..writeln('/// Typed root of the VSS tree, e.g. `Vss.Vehicle.Cabin.Sunroof.Position`.')
       ..writeln('abstract final class Vss {');
     for (final root in spec.roots) {
       buffer.writeln('  static const ${root.name} = ${_className(root)}();');
@@ -47,7 +47,7 @@ class VssTreeBuilder implements Builder {
 
     buffer
       ..writeln()
-      ..writeln('/// Metadados de todos os sinais do spec, indexados pelo caminho VSS.')
+      ..writeln('/// Metadata of every signal in the spec, keyed by VSS path.')
       ..writeln('const Map<String, VssSignalMeta> vssCatalog = {');
     for (final leaf in spec.leaves.values) {
       buffer.writeln("  '${leaf.path}': ${_meta(leaf)},");
@@ -58,10 +58,10 @@ class VssTreeBuilder implements Builder {
 
   static void _writeBranch(StringBuffer buffer, VssBranch branch, Map<String, String> classNames) {
     final className = _className(branch);
-    // Caminhos distintos não podem gerar o mesmo nome (ex: "A.BC" e "AB.C").
+    // Distinct paths must not produce the same name (e.g. "A.BC" and "AB.C").
     final clash = classNames[className];
     if (clash != null) {
-      throw FormatException('VSS spec inválido: "${branch.path}" e "$clash" geram a mesma classe $className.');
+      throw FormatException('Invalid VSS spec: "${branch.path}" and "$clash" both generate class $className.');
     }
     classNames[className] = branch.path;
 

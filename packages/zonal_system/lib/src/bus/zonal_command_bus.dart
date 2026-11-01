@@ -7,10 +7,10 @@ import '../domain/zonal_command.dart';
 
 part 'zonal_command_bus.g.dart';
 
-/// Barramento de comandos entre o gateway central e as ECUs zonais.
+/// Command bus between the central gateway and the zonal ECUs.
 ///
-/// É um stream de eventos, e não estado do Riverpod: todo comando é entregue,
-/// inclusive dois comandos seguidos no mesmo frame.
+/// It is an event stream, not Riverpod state: every command is delivered,
+/// including two consecutive commands in the same frame.
 final class ZonalCommandBus {
   final _controller = StreamController<ZonalCommand>.broadcast(sync: true);
 

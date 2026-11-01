@@ -8,11 +8,10 @@ import 'domain/logger_state.dart';
 
 part 'vehicle_logger.g.dart';
 
-/// Audit log em memória (ring buffer) de comandos, rejeições e mudanças
-/// confirmadas de atuadores.
+/// In-memory audit log (ring buffer) of commands, rejections and confirmed
+/// actuator changes.
 ///
-/// Telemetria de sensores (velocidade, ADAS a 30 Hz...) não é registrada,
-/// porque inundaria o buffer.
+/// Sensor telemetry (speed, 30 Hz ADAS...) is not recorded, as it would flood the buffer.
 @Riverpod(keepAlive: true)
 class VehicleLogger extends _$VehicleLogger {
   @override
@@ -43,10 +42,10 @@ class VehicleLogger extends _$VehicleLogger {
 
   void clearLogs() => state = state.copyWith(entries: []);
 
-  /// Exporta os registros em JSON, para gravação local ou envio OTA.
+  /// Exports the entries as JSON, for local storage or OTA upload.
   List<Map<String, dynamic>> exportJson() => state.entries.map((e) => e.toJson()).toList();
 
-  /// Ring buffer: descarta o registro mais antigo ao atingir a capacidade.
+  /// Ring buffer: drops the oldest entry when the capacity is reached.
   void _addEntry(LogEntry entry) {
     final entries = [...state.entries, entry];
     if (entries.length > state.maxCapacity) entries.removeAt(0);

@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// Fonte: entry.profile.json
+// Source: entry.profile.json
 // ignore_for_file: type=lint
 
 part of 'factory_profiles.dart';
 
-/// Versão Básica (Comfort)
+/// Entry (Comfort)
 const entryProfile = VehicleProfile(
   id: 'entry',
-  trimName: 'Versão Básica (Comfort)',
+  trimName: 'Entry (Comfort)',
   driverSide: DriverSide.left,
   supportedPaths: {
     'Vehicle.Speed',
