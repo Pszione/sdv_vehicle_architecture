@@ -2,11 +2,12 @@ import '../broker/signal_reader.dart';
 import '../dispatcher/domain/vehicle_commands.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
+import '../vss/vss_values.dart';
 import 'domain/safety_rule.dart';
 
 /// Prevents leaving PARK/NEUTRAL while the charging cable is connected.
 final class EvChargingSafetyRule implements SafetyRule {
-  static const _stationaryGears = {'PARK', 'NEUTRAL'};
+  static const _stationaryGears = {Gear.park, Gear.neutral};
 
   @override
   VssSignal<String> get target => Vss.Vehicle.Powertrain.Transmission.SelectedGear;

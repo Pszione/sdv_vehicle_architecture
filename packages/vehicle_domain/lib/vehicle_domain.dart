@@ -1,7 +1,17 @@
-/// Vehicle business rules: typed VSS API, profiles, VssBroker,
-/// CommandDispatcher, SafetyRules and the audit log.
+/// Vehicle business rules: typed VSS API, profiles, VssBroker, CommandDispatcher,
+/// SafetyRules, automatic VehicleBehaviors, HMI lockouts and the audit log.
 library;
 
+export 'src/behaviors/auto_park_behavior.dart';
+export 'src/behaviors/crash_response_behavior.dart';
+export 'src/behaviors/diff_lock_auto_release_behavior.dart';
+export 'src/behaviors/diff_lock_esc_behavior.dart';
+export 'src/behaviors/domain/vehicle_behavior.dart';
+export 'src/behaviors/park_auto_unlock_behavior.dart';
+export 'src/behaviors/providers/vehicle_behavior_engine.dart';
+export 'src/behaviors/speed_auto_lock_behavior.dart';
+export 'src/behaviors/suspension_auto_level_behavior.dart';
+export 'src/behaviors/valet_speed_cap_behavior.dart';
 export 'src/broker/providers/vss_value_provider.dart';
 export 'src/broker/signal_reader.dart';
 export 'src/broker/vss_broker.dart';
@@ -9,20 +19,34 @@ export 'src/dispatcher/command_dispatcher.dart';
 export 'src/dispatcher/domain/command_sink.dart';
 export 'src/dispatcher/domain/vehicle_commands.dart';
 export 'src/dispatcher/providers/can_dispatch_provider.dart';
+export 'src/hmi/hmi_lockout_provider.dart';
 export 'src/logger/domain/log_entry.dart';
 export 'src/logger/domain/logger_state.dart';
 export 'src/logger/vehicle_logger.dart';
 export 'src/profile/providers/active_vehicle_profile.dart';
+export 'src/profile/vehicle_groups.dart';
 export 'src/profile/vehicle_profile.dart';
+export 'src/safety_rules/adaptive_cruise_safety_rule.dart';
+export 'src/safety_rules/brake_to_shift_safety_rule.dart';
+export 'src/safety_rules/charge_cable_lock_safety_rule.dart';
 export 'src/safety_rules/convertible_top_safety_rule.dart';
 export 'src/safety_rules/diff_lock_safety_rule.dart';
 export 'src/safety_rules/domain/safety_rule.dart';
 export 'src/safety_rules/door_safety_rule.dart';
+export 'src/safety_rules/driver_presence_safety_rule.dart';
+export 'src/safety_rules/esc_mode_safety_rule.dart';
 export 'src/safety_rules/ev_charging_safety_rule.dart';
 export 'src/safety_rules/ev_preconditioning_safety_rule.dart';
+export 'src/safety_rules/opening_while_moving_safety_rule.dart';
+export 'src/safety_rules/ota_install_safety_rule.dart';
+export 'src/safety_rules/parked_mode_safety_rule.dart';
 export 'src/safety_rules/providers/safety_rules_provider.dart';
+export 'src/safety_rules/speed_window_safety_rule.dart';
 export 'src/safety_rules/sunroof_speed_safety_rule.dart';
 export 'src/safety_rules/suv_air_suspension_safety_rule.dart';
+export 'src/safety_rules/towing_tailgate_safety_rule.dart';
 export 'src/safety_rules/transmission_safety_rule.dart';
+export 'src/safety_rules/valet_mode_safety_rule.dart';
 export 'src/vss/vss.dart';
 export 'src/vss/vss_signal.dart';
+export 'src/vss/vss_values.dart';

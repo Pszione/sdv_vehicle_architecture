@@ -1,6 +1,6 @@
 import '../broker/signal_reader.dart';
 import '../dispatcher/domain/vehicle_commands.dart';
-import '../vss/vss.dart';
+import '../profile/vehicle_groups.dart';
 import '../vss/vss_signal.dart';
 import 'domain/safety_rule.dart';
 
@@ -11,15 +11,9 @@ final class DoorSafetyRule implements SafetyRule {
   DoorSafetyRule({required VssSignal<bool> lock, required this.ajar, required this.label}) : target = lock;
 
   /// One rule per door in the spec.
-  static List<DoorSafetyRule> allDoors() {
-    final door = Vss.Vehicle.Cabin.Door;
-    return [
-      DoorSafetyRule(lock: door.Row1.Left.IsLocked, ajar: door.Row1.Left.IsAjar, label: 'Front left'),
-      DoorSafetyRule(lock: door.Row1.Right.IsLocked, ajar: door.Row1.Right.IsAjar, label: 'Front right'),
-      DoorSafetyRule(lock: door.Row2.Left.IsLocked, ajar: door.Row2.Left.IsAjar, label: 'Rear left'),
-      DoorSafetyRule(lock: door.Row2.Right.IsLocked, ajar: door.Row2.Right.IsAjar, label: 'Rear right'),
-    ];
-  }
+  static List<DoorSafetyRule> allDoors() => [
+    for (final door in VehicleGroups.doors) DoorSafetyRule(lock: door.lock, ajar: door.ajar, label: door.label),
+  ];
 
   @override
   final VssSignal<bool> target;

@@ -53,7 +53,7 @@ final class VehicleLoggerProvider
   }
 }
 
-String _$vehicleLoggerHash() => r'c429640899d6b839876a0c0a6e91a9f1f8386419';
+String _$vehicleLoggerHash() => r'bc9408e05dac21fda9b991e5facfb2894f697f29';
 
 /// In-memory audit log (ring buffer) of commands, rejections and confirmed
 /// actuator changes.

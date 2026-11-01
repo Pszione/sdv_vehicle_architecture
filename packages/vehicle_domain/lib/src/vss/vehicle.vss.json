@@ -169,7 +169,8 @@
                 "children": {
                   "IsEnabled": {
                     "type": "actuator",
-                    "datatype": "boolean"
+                    "datatype": "boolean",
+                    "default": false
                   },
                   "TargetTemperature": {
                     "type": "actuator",
@@ -262,6 +263,16 @@
                     }
                   }
                 }
+              },
+              "CampMode": {
+                "type": "branch",
+                "children": {
+                  "IsEnabled": {
+                    "type": "actuator",
+                    "datatype": "boolean",
+                    "default": false
+                  }
+                }
               }
             }
           },
@@ -304,7 +315,12 @@
             "children": {
               "Mode": {
                 "type": "actuator",
-                "datatype": "string"
+                "datatype": "string",
+                "allowed": [
+                  "OFF",
+                  "ARMED"
+                ],
+                "default": "OFF"
               },
               "ThreatLevel": {
                 "type": "sensor",
@@ -317,7 +333,8 @@
             "children": {
               "IsEnabled": {
                 "type": "actuator",
-                "datatype": "boolean"
+                "datatype": "boolean",
+                "default": false
               }
             }
           },
@@ -326,7 +343,8 @@
             "children": {
               "IsLocked": {
                 "type": "actuator",
-                "datatype": "boolean"
+                "datatype": "boolean",
+                "default": false
               }
             }
           },
@@ -388,6 +406,16 @@
                   "SideBolsterSupport": {
                     "type": "actuator",
                     "datatype": "float"
+                  },
+                  "IsOccupied": {
+                    "type": "sensor",
+                    "datatype": "boolean",
+                    "default": false
+                  },
+                  "IsBelted": {
+                    "type": "sensor",
+                    "datatype": "boolean",
+                    "default": false
                   }
                 }
               },
@@ -421,6 +449,16 @@
                         "datatype": "uint8"
                       }
                     }
+                  },
+                  "IsOccupied": {
+                    "type": "sensor",
+                    "datatype": "boolean",
+                    "default": false
+                  },
+                  "IsBelted": {
+                    "type": "sensor",
+                    "datatype": "boolean",
+                    "default": false
                   }
                 }
               }
@@ -463,6 +501,16 @@
                         "datatype": "uint8"
                       }
                     }
+                  },
+                  "IsOccupied": {
+                    "type": "sensor",
+                    "datatype": "boolean",
+                    "default": false
+                  },
+                  "IsBelted": {
+                    "type": "sensor",
+                    "datatype": "boolean",
+                    "default": false
                   }
                 }
               },
@@ -500,6 +548,16 @@
                         "datatype": "uint8"
                       }
                     }
+                  },
+                  "IsOccupied": {
+                    "type": "sensor",
+                    "datatype": "boolean",
+                    "default": false
+                  },
+                  "IsBelted": {
+                    "type": "sensor",
+                    "datatype": "boolean",
+                    "default": false
                   }
                 }
               }
@@ -571,6 +629,15 @@
               "RegenMode": {
                 "type": "actuator",
                 "datatype": "string"
+              },
+              "PedalPosition": {
+                "type": "sensor",
+                "datatype": "uint8",
+                "unit": "percent",
+                "min": 0,
+                "max": 100,
+                "default": 0,
+                "description": "Brake pedal travel. 0 = released, 100 = fully pressed."
               }
             }
           },
@@ -651,7 +718,8 @@
                   },
                   "IsCharging": {
                     "type": "sensor",
-                    "datatype": "boolean"
+                    "datatype": "boolean",
+                    "default": false
                   },
                   "ChargePower": {
                     "type": "sensor",
@@ -663,6 +731,20 @@
                     "unit": "percent",
                     "min": 0,
                     "max": 100
+                  },
+                  "ChargePortFlap": {
+                    "type": "actuator",
+                    "datatype": "string",
+                    "allowed": [
+                      "OPEN",
+                      "CLOSED"
+                    ],
+                    "default": "CLOSED"
+                  },
+                  "IsChargingCableLocked": {
+                    "type": "actuator",
+                    "datatype": "boolean",
+                    "default": false
                   }
                 }
               }
@@ -673,7 +755,8 @@
             "children": {
               "IsExportingPower": {
                 "type": "actuator",
-                "datatype": "boolean"
+                "datatype": "boolean",
+                "default": false
               }
             }
           },
@@ -717,7 +800,23 @@
               },
               "PowerOpeningAngle": {
                 "type": "actuator",
-                "datatype": "float"
+                "datatype": "float",
+                "unit": "degrees",
+                "min": 0,
+                "max": 90,
+                "default": 0.0,
+                "description": "Power tailgate angle. 0 = closed."
+              },
+              "Front": {
+                "type": "branch",
+                "children": {
+                  "IsOpen": {
+                    "type": "actuator",
+                    "datatype": "boolean",
+                    "default": false,
+                    "description": "Front trunk (frunk)."
+                  }
+                }
               }
             }
           },
@@ -726,7 +825,8 @@
             "children": {
               "IsConnected": {
                 "type": "sensor",
-                "datatype": "boolean"
+                "datatype": "boolean",
+                "default": false
               },
               "BrakeGain": {
                 "type": "actuator",
@@ -747,13 +847,19 @@
               },
               "IsHazardOn": {
                 "type": "actuator",
-                "datatype": "boolean"
+                "datatype": "boolean",
+                "default": false
               },
               "MatrixBeamMode": {
                 "type": "actuator",
                 "datatype": "string"
               }
             }
+          },
+          "IsCrashDetected": {
+            "type": "sensor",
+            "datatype": "boolean",
+            "default": false
           }
         }
       },
@@ -782,11 +888,16 @@
             "children": {
               "IsEngaged": {
                 "type": "actuator",
-                "datatype": "boolean"
+                "datatype": "boolean",
+                "default": false
               },
               "SetSpeed": {
                 "type": "actuator",
-                "datatype": "float"
+                "datatype": "float",
+                "unit": "km/h",
+                "min": 30,
+                "max": 180,
+                "default": 100.0
               }
             }
           },
@@ -814,6 +925,51 @@
               "RightLaneOffsetMeters": {
                 "type": "sensor",
                 "datatype": "float"
+              },
+              "IsEnabled": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": false
+              }
+            }
+          },
+          "HillDescentControl": {
+            "type": "branch",
+            "children": {
+              "IsEnabled": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": false
+              }
+            }
+          },
+          "ESC": {
+            "type": "branch",
+            "children": {
+              "Mode": {
+                "type": "actuator",
+                "datatype": "string",
+                "allowed": [
+                  "NORMAL",
+                  "WET",
+                  "SPORT_PLUS",
+                  "OFF"
+                ],
+                "default": "NORMAL",
+                "description": "Electronic stability control mode."
+              }
+            }
+          },
+          "SpeedLimiter": {
+            "type": "branch",
+            "children": {
+              "SetSpeed": {
+                "type": "actuator",
+                "datatype": "float",
+                "unit": "km/h",
+                "min": 30,
+                "max": 250,
+                "default": 250.0
               }
             }
           }
@@ -827,7 +983,19 @@
             "children": {
               "Status": {
                 "type": "sensor",
-                "datatype": "string"
+                "datatype": "string",
+                "allowed": [
+                  "IDLE",
+                  "UPDATE_AVAILABLE",
+                  "INSTALLING"
+                ],
+                "default": "UPDATE_AVAILABLE"
+              },
+              "IsInstalling": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": false,
+                "description": "Requests/reports an OTA installation."
               }
             }
           }

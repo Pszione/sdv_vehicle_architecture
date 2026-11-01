@@ -1,4 +1,4 @@
-enum LogType { command, signalChange, safetyRejection }
+enum LogType { command, signalChange, safetyRejection, forced }
 
 class LogEntry {
   final String id;

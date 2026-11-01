@@ -12,7 +12,8 @@ part of 'safety_rules_provider.dart';
 ///
 /// A rule only runs if its `target` exists in the active profile, so the list
 /// can be universal: a car without a lockable differential never reaches
-/// [DiffLockSafetyRule]. Override it in the app only to change thresholds per model.
+/// [DiffLockSafetyRule]. Driver-side rules are rebuilt when the profile's LHD/RHD layout changes.
+/// Override it in the app only to change thresholds per model.
 
 @ProviderFor(activeSafetyRules)
 final activeSafetyRulesProvider = ActiveSafetyRulesProvider._();
@@ -21,7 +22,8 @@ final activeSafetyRulesProvider = ActiveSafetyRulesProvider._();
 ///
 /// A rule only runs if its `target` exists in the active profile, so the list
 /// can be universal: a car without a lockable differential never reaches
-/// [DiffLockSafetyRule]. Override it in the app only to change thresholds per model.
+/// [DiffLockSafetyRule]. Driver-side rules are rebuilt when the profile's LHD/RHD layout changes.
+/// Override it in the app only to change thresholds per model.
 
 final class ActiveSafetyRulesProvider
     extends
@@ -35,7 +37,8 @@ final class ActiveSafetyRulesProvider
   ///
   /// A rule only runs if its `target` exists in the active profile, so the list
   /// can be universal: a car without a lockable differential never reaches
-  /// [DiffLockSafetyRule]. Override it in the app only to change thresholds per model.
+  /// [DiffLockSafetyRule]. Driver-side rules are rebuilt when the profile's LHD/RHD layout changes.
+  /// Override it in the app only to change thresholds per model.
   ActiveSafetyRulesProvider._()
     : super(
         from: null,
@@ -69,4 +72,4 @@ final class ActiveSafetyRulesProvider
   }
 }
 
-String _$activeSafetyRulesHash() => r'6d97b0c4b3771a2b5b39fd2e145b529812b6fe8b';
+String _$activeSafetyRulesHash() => r'8dffafc959c771872b66ce7863068e75a8d1dd65';
