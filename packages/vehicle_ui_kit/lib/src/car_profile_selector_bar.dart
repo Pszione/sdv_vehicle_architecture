@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vehicle_domain/vehicle_domain.dart';
 
+/// Troca o perfil do veículo ao vivo (ferramenta de simulação/demonstração).
 class CarProfileSelectorBar extends ConsumerWidget {
-  const CarProfileSelectorBar({super.key});
+  const CarProfileSelectorBar({super.key, required this.profiles});
+
+  final List<VehicleProfile> profiles;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeProfile = ref.watch(activeVehicleProfileProvider);
+    final activeId = ref.watch(activeVehicleProfileProvider.select((profile) => profile.id));
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -20,34 +24,19 @@ class CarProfileSelectorBar extends ConsumerWidget {
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 16),
-          
-          // Seletor em SegmentedButton para troca instantânea
-          SegmentedButton<String>(
-            segments: const [
-              ButtonSegment(
-                value: 'entry_level',
-                label: Text('Versão Básica'),
-                icon: Icon(Icons.car_repair),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SegmentedButton<String>(
+                segments: [
+                  for (final profile in profiles) ButtonSegment(value: profile.id, label: Text(profile.trimName)),
+                ],
+                selected: {activeId},
+                onSelectionChanged: (selection) => ref
+                    .read(activeVehicleProfileProvider.notifier)
+                    .setProfile(profiles.firstWhere((profile) => profile.id == selection.first)),
               ),
-              ButtonSegment(
-                value: 'top_level',
-                label: Text('Versão Premium'),
-                icon: Icon(Icons.star),
-              ),
-            ],
-            selected: {activeProfile.id},
-            onSelectionChanged: (newSelection) {
-              final selectedId = newSelection.first;
-              if (selectedId == 'entry_level') {
-                ref.read(activeVehicleProfileProvider.notifier).setProfile(
-                      ActiveVehicleProfile.basicProfile,
-                    );
-              } else {
-                ref.read(activeVehicleProfileProvider.notifier).setProfile(
-                      ActiveVehicleProfile.premiumProfile,
-                    );
-              }
-            },
+            ),
           ),
         ],
       ),
