@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Dart / Flutter (each package also has its own .gitignore)
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies

@@ -1,0 +1,181 @@
+{
+  "Vehicle": {
+    "Speed": { "datatype": "double" },
+    "DriveMode": { "datatype": "string" },
+    
+    "Cabin": {
+      "Sunroof": {
+        "Position": { "datatype": "double" },
+        "IsFaulted": { "datatype": "boolean" },
+        "ElectrochromicOpacity": { "datatype": "double" }
+      },
+      "Door": {
+        "Row1": {
+          "Left": {
+            "IsLocked": { "datatype": "boolean" },
+            "IsAjar": { "datatype": "boolean" },
+            "SoftCloseState": { "datatype": "string" }
+          },
+          "Right": {
+            "IsLocked": { "datatype": "boolean" },
+            "IsAjar": { "datatype": "boolean" },
+            "SoftCloseState": { "datatype": "string" }
+          }
+        },
+        "Row2": {
+          "Left": {
+            "IsLocked": { "datatype": "boolean" },
+            "IsAjar": { "datatype": "boolean" },
+            "SunshadePosition": { "datatype": "double" }
+          },
+          "Right": {
+            "IsLocked": { "datatype": "boolean" },
+            "IsAjar": { "datatype": "boolean" },
+            "SunshadePosition": { "datatype": "double" }
+          }
+        }
+      },
+      "HVAC": {
+        "AirConditioning": {
+          "StationaryPreconditioning": { "datatype": "boolean" }
+        },
+        "AirQuality": { "datatype": "int" },
+        "IonizerIsEnabled": { "datatype": "boolean" },
+        "Fragrance": {
+          "ActiveCartridge": { "datatype": "int" },
+          "Intensity": { "datatype": "int" }
+        },
+        "Row1": {
+          "Left": { "Temperature": { "datatype": "double" }, "FanSpeed": { "datatype": "int" } },
+          "Right": { "Temperature": { "datatype": "double" }, "FanSpeed": { "datatype": "int" } }
+        },
+        "Row2": {
+          "Left": { "Temperature": { "datatype": "double" }, "FanSpeed": { "datatype": "int" } },
+          "Right": { "Temperature": { "datatype": "double" }, "FanSpeed": { "datatype": "int" } }
+        }
+      },
+      "AmbientLighting": {
+        "ColorHex": { "datatype": "string" },
+        "Brightness": { "datatype": "double" },
+        "AnimationMode": { "datatype": "string" }
+      },
+      "HeadUpDisplay": {
+        "IsEnabled": { "datatype": "boolean" },
+        "Height": { "datatype": "int" },
+        "Mode": { "datatype": "string" }
+      }
+    },
+
+    "Seat": {
+      "Row1": {
+        "Left": {
+          "HeatingLevel": { "datatype": "int" },
+          "VentilationLevel": { "datatype": "int" },
+          "Massage": {
+            "Mode": { "datatype": "string" },
+            "Intensity": { "datatype": "int" }
+          },
+          "MemoryProfile": { "datatype": "int" },
+          "SideBolsterSupport": { "datatype": "double" }
+        },
+        "Right": {
+          "HeatingLevel": { "datatype": "int" },
+          "VentilationLevel": { "datatype": "int" },
+          "Massage": {
+            "Mode": { "datatype": "string" },
+            "Intensity": { "datatype": "int" }
+          }
+        }
+      },
+      "Row2": {
+        "Left": {
+          "ReclineAngle": { "datatype": "double" },
+          "HeatingLevel": { "datatype": "int" },
+          "VentilationLevel": { "datatype": "int" },
+          "Massage": { "Mode": { "datatype": "string" }, "Intensity": { "datatype": "int" } }
+        },
+        "Right": {
+          "ReclineAngle": { "datatype": "double" },
+          "HeatingLevel": { "datatype": "int" },
+          "VentilationLevel": { "datatype": "int" },
+          "Massage": { "Mode": { "datatype": "string" }, "Intensity": { "datatype": "int" } }
+        }
+      }
+    },
+
+    "Chassis": {
+      "SteeringWheel": {
+        "Angle": { "datatype": "double" },
+        "Heated": { "datatype": "boolean" }
+      },
+      "RearAxleSteering": {
+        "Angle": { "datatype": "double" }
+      },
+      "Suspension": {
+        "Height": { "datatype": "string" },
+        "DampingMode": { "datatype": "string" }
+      },
+      "Axle": {
+        "Row2": {
+          "Differential": {
+            "IsLocked": { "datatype": "boolean" }
+          }
+        }
+      }
+    },
+
+    "Powertrain": {
+      "CombustionEngine": {
+        "Speed": { "datatype": "double" }
+      },
+      "TractionBattery": {
+        "StateOfCharge": { "datatype": "double" },
+        "Power": { "datatype": "double" },
+        "Temperature": { "datatype": "double" },
+        "Preconditioning": {
+          "IsEnabled": { "datatype": "boolean" }
+        },
+        "Charging": {
+          "IsConnected": { "datatype": "boolean" },
+          "IsCharging": { "datatype": "boolean" },
+          "ChargePower": { "datatype": "double" },
+          "TargetSoC": { "datatype": "double" }
+        }
+      }
+    },
+
+    "Body": {
+      "Trunk": {
+        "IsAjar": { "datatype": "boolean" },
+        "PowerOpeningAngle": { "datatype": "double" }
+      },
+      "Lights": {
+        "IsLeftIndicatorOn": { "datatype": "boolean" },
+        "IsRightIndicatorOn": { "datatype": "boolean" },
+        "IsHazardOn": { "datatype": "boolean" },
+        "MatrixBeamMode": { "datatype": "string" }
+      }
+    },
+
+    "Media": {
+      "ActiveSoundDesign": { "datatype": "string" },
+      "ActiveNoiseCancellation": { "datatype": "boolean" },
+      "SoundZoneBalance": { "datatype": "string" }
+    },
+
+    "ADAS": {
+      "ACC": {
+        "IsEngaged": { "datatype": "boolean" },
+        "SetSpeed": { "datatype": "double" }
+      },
+      "LaneKeepingAssist": {
+        "Status": { "datatype": "string" },
+        "LeftLaneOffsetMeters": { "datatype": "double" },
+        "RightLaneOffsetMeters": { "datatype": "double" }
+      },
+      "ObstacleDetection": {
+        "LeadVehicle": { "datatype": "json" }
+      }
+    }
+  }
+}
