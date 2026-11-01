@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      vss_gen:vss_profile:
+        enabled: true
+        options:
+          spec: package:vehicle_domain/src/vss/vehicle.vss.json

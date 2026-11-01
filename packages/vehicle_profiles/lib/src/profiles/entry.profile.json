@@ -1,0 +1,11 @@
+{
+  "id": "entry",
+  "trimName": "Versão Básica (Comfort)",
+  "driverSide": "left",
+  "signals": [
+    "Vehicle.Speed",
+    "Vehicle.Cabin.Door.Row1.Left.IsLocked",
+    "Vehicle.Cabin.Door.Row1.Left.IsAjar"
+  ],
+  "overrides": {}
+}

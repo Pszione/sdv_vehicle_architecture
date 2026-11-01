@@ -1,0 +1,13 @@
+{
+  "id": "premium",
+  "trimName": "Versão Premium (Highline)",
+  "driverSide": "left",
+  "signals": [
+    "Vehicle.Speed",
+    "Vehicle.Cabin.Door.Row1.Left.IsLocked",
+    "Vehicle.Cabin.Door.Row1.Left.IsAjar",
+    "Vehicle.Cabin.Sunroof.Position",
+    "Vehicle.Cabin.Sunroof.IsFaulted"
+  ],
+  "overrides": {}
+}
