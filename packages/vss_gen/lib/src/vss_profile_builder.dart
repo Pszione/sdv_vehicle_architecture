@@ -54,8 +54,9 @@ class VssProfileBuilder implements Builder {
 
     final paths = <String>{};
     for (final path in signals) {
-      if (path is! String || !spec.leaves.containsKey(path))
+      if (path is! String || !spec.leaves.containsKey(path)) {
         _fail(source, 'signal "$path" does not exist in the VSS spec.');
+      }
       if (!paths.add(path)) _fail(source, 'duplicated signal "$path".');
     }
 
