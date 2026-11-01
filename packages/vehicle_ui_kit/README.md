@@ -1,39 +1,34 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# vehicle_ui_kit
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+**Design system compartilhado** pelas HMIs (infotainment e cluster). Depende só do `vehicle_domain`.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+## Componentes
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+| Componente | Papel |
+|---|---|
+| `ref.watchSignal(Vss...)` | Observa **um** sinal tipado; o widget só reconstrói quando ele muda |
+| `ref.dispatchCommand(context, command)` | Envia pelo `CommandDispatcher` e mostra o motivo se for recusado |
+| `VehicleFeatureGuard` | Mostra o widget só se o sinal existe no perfil ativo (ou um `fallback`) |
+| `CarProfileSelectorBar` | Troca o perfil ao vivo (ferramenta de simulação) |
 
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+## Exemplo
 
 ```dart
-const like = 'sample';
+class SunroofStatus extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final position = ref.watchSignal(Vss.Vehicle.Cabin.Sunroof.Position) ?? 0.0;
+    return Text('${(position * 100).round()}% aberto');
+  }
+}
+
+VehicleFeatureGuard(
+  signal: Vss.Vehicle.Cabin.Sunroof.Position,
+  child: const SunroofControlCard(),
+);
 ```
 
-## Additional information
+## Regras para widgets
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+- Nunca observe o mapa inteiro do `VssBroker`: use `watchSignal`, ou `.select` para campos do perfil.
+- A UI nunca escreve no broker; ela só envia `VehicleCommand`s e exibe a telemetria confirmada.

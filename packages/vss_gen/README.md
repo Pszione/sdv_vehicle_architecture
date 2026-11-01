@@ -1,39 +1,63 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# vss_gen
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+**Camada 1: Sinais VSS.** Builders do `build_runner` que transformam o spec
+[COVESA VSS](https://covesa.github.io/vehicle_signal_specification/) (formato JSON do
+vss-tools) em código Dart tipado. É uma `dev_dependency`: nada deste pacote vai para o app.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+## Builders
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+| Builder | Entrada | Saída |
+|---|---|---|
+| `vss_gen:vss_tree` | `*.vss.json` | `*.vss.g.dart`: árvore `Vss.Vehicle...` + `vssCatalog` |
+| `vss_gen:vss_profile` | `*.profile.json` | `*.profile.g.dart`: `const VehicleProfile` |
 
-## Features
+- Cada folha vira um `const VssSignal<T>` com o tipo Dart do `datatype` VSS
+  (`boolean`→`bool`, `uint8`/`int16`…→`int`, `float`/`double`→`double`, `string`→`String`, `T[]`→`List<T>`).
+- Os nomes de classe usam o caminho completo (`_VssVehicleCabinDoorRow1`), então ramos
+  com o mesmo nome em pais diferentes não colidem.
+- `vssCatalog` guarda `type` (sensor/actuator/attribute), `unit`, `min`, `max`, `allowed` e `default`.
+- Perfis são validados contra o spec mestre: um caminho inexistente, um override inválido
+  ou um campo faltando **quebram o build**.
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+## Uso
 
-## Getting started
+Os builders são opt-in (`auto_apply: none`). Habilite no `build.yaml` do pacote consumidor:
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+```yaml
+# vehicle_domain/build.yaml
+targets:
+  $default:
+    builders:
+      vss_gen:vss_tree:
+        enabled: true          # part_of padrão: vss.dart
 
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+# vehicle_profiles/build.yaml
+targets:
+  $default:
+    builders:
+      vss_gen:vss_profile:
+        enabled: true
+        options:
+          spec: package:vehicle_domain/src/vss/vehicle.vss.json
 ```
 
-## Additional information
+O arquivo indicado em `part_of` precisa importar `VssSignal`, `VssSignalMeta`,
+`VssNodeType` (para a árvore) ou `VehicleProfile`, `DriverSide`, `VssMetaOverride` (para perfis).
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+## Estrutura
+
+```
+lib/
+├── vss_gen.dart                   # Factories dos builders (lidas pelo build.yaml)
+└── src/
+    ├── vss_spec.dart              # Parser + validação do spec VSS
+    ├── vss_tree_builder.dart      # *.vss.json -> árvore tipada + catálogo
+    └── vss_profile_builder.dart   # *.profile.json -> const VehicleProfile
+build.yaml                         # Declaração dos builders
+```
+
+## Testes
+
+```
+dart test
+```

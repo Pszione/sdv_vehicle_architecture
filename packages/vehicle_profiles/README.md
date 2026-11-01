@@ -1,39 +1,41 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# vehicle_profiles
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+**Camada 4: Matriz de capacidades dos modelos.** Dart puro. Cada trim do veículo é um
+`*.profile.json` que lista os sinais que o modelo tem, gerado como `const VehicleProfile`
+e **validado contra o spec mestre durante o build**.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+Assim, todo o código compila para qualquer modelo: o que muda entre modelos é dado, não código.
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+## Perfis de fábrica
 
-## Features
+| Perfil | Const | Sinais |
+|---|---|---|
+| `entry.profile.json` | `entryProfile` | Básico: velocidade e porta do motorista |
+| `premium.profile.json` | `premiumProfile` | Básico + teto solar |
+| `luxury_ev_suv.profile.json` | `luxuryEvSuvProfile` | EV SUV completo (ADAS, 4x4, HVAC quadrizona…) |
+| `flagship.profile.json` | `flagshipProfile` | Spec completo (Sentry, Dog/Valet Mode, V2L, OTA…) |
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+`factoryProfiles` expõe todos, em ordem, para seletores de HMI.
 
-## Getting started
+## Formato
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```json
+{
+  "id": "luxury_ev_suv",
+  "trimName": "EV SUV Luxury",
+  "driverSide": "left",
+  "signals": ["Vehicle.Speed", "Vehicle.Cabin.Sunroof.Position"],
+  "overrides": {
+    "Vehicle.Chassis.Suspension.Height": { "allowed": ["LOW", "NORMAL", "HIGH"] }
+  }
+}
 ```
 
-## Additional information
+`overrides` aceita `min`, `max` e `allowed`, como um overlay do vss-tools.
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+## Criar um modelo
+
+1. Crie `lib/src/profiles/<id>.profile.json`.
+2. Declare `part '<id>.profile.g.dart';` em `factory_profiles.dart` e adicione o perfil em `factoryProfiles`.
+3. Rode `dart run build_runner build`.
+4. No app do modelo, use `initialVehicleProfileProvider.overrideWithValue(<id>Profile)`.

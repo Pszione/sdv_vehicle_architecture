@@ -1,16 +1,19 @@
 # digital_cluster
 
-A new Flutter project.
+App Flutter do **painel de instrumentos** (velocímetro, ADAS, alertas), com meta de 60 FPS.
 
-## Getting Started
+> **Status:** ainda é o template do Flutter. Não está ligado ao `VssBroker`.
 
-This project is a starting point for a Flutter application.
+## Direção planejada
 
-A few resources to get you started if this is your first Flutter project:
+- Depender de `vehicle_domain` + `vehicle_ui_kit`.
+- Cada gauge observa um único sinal com `ref.watchSignal` e desenha com `CustomPainter`
+  dentro de um `RepaintBoundary`.
+- Interpolar com `Ticker` entre as amostras de telemetria (ADAS a 30 Hz) para animar a 60 FPS.
+- Compartilhar estado com o infotainment exige um core comum (ver *Roadmap* no README da raiz).
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Rodar
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+flutter run
+```

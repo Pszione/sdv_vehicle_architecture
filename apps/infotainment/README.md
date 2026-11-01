@@ -1,16 +1,42 @@
 # infotainment
 
-A new Flutter project.
+App Flutter da **central multimídia do EV SUV**: configurações do veículo
+(travas, teto solar, massagem dos bancos) controladas pelo `CommandDispatcher`.
 
-## Getting Started
+## Composition root
 
-This project is a starting point for a Flutter application.
+`lib/main.dart` é o único lugar que conhece todas as camadas:
 
-A few resources to get you started if this is your first Flutter project:
+```dart
+final container = ProviderContainer(overrides: [
+  initialVehicleProfileProvider.overrideWithValue(luxuryEvSuvProfile), // modelo do carro
+  commandSinkProvider.overrideWith((ref) => ZonalCommandSink(ref.watch(zonalCommandBusProvider))),
+]);
+container
+  ..read(zonalSystemProvider)   // boot das ECUs zonais
+  ..read(vehicleLoggerProvider); // audit log
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Para outro modelo (ex: um sedan), basta outro app ou flavor com outro perfil no override.
+Nenhum pacote muda.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Estrutura
+
+```
+lib/
+├── main.dart                         # Composition root
+├── app/ev_suv_app.dart               # MaterialApp + seletor de perfil
+├── core/command_source.dart          # Origem "INFOTAINMENT_UI" no audit log
+└── features/settings/view/
+    ├── vehicle_settings_screen.dart  # Lista de cards protegidos por VehicleFeatureGuard
+    └── widgets/                      # DoorLock, Sunroof, SeatMassage cards
+```
+
+## Rodar
+
+```
+flutter run              # escolha o dispositivo
+flutter test
+```
+
+iOS: deployment target 15.0 e ciclo de vida UIScene (`FlutterSceneDelegate`).
