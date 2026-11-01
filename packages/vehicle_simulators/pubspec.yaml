@@ -1,0 +1,15 @@
+name: vehicle_simulators
+description: "Simulated ECUs and sensors that publish telemetry to the VssBroker (dev and test tooling)."
+version: 0.0.1
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.10.7
+dependencies:
+  vehicle_domain:
+    path: ../vehicle_domain
+  riverpod_annotation: ^4.0.0
+dev_dependencies:
+  riverpod_generator: ^4.0.0+1
+  build_runner: ^2.15.1

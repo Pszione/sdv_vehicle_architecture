@@ -10,6 +10,7 @@ workspace:
   - packages/vehicle_domain
   - packages/vehicle_profiles
   - packages/zonal_system
+  - packages/vehicle_simulators
   - packages/vehicle_ui_kit
   - apps/infotainment
   - apps/digital_cluster

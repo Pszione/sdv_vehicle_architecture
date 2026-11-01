@@ -35,6 +35,8 @@ dependencies:
     path: ../../packages/zonal_system
   vehicle_ui_kit:
     path: ../../packages/vehicle_ui_kit
+  vehicle_simulators:
+    path: ../../packages/vehicle_simulators
 
 dev_dependencies:
   flutter_test:
