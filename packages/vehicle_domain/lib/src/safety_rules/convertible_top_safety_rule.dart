@@ -1,27 +1,40 @@
-class ConvertibleTopSafetyRule implements SafetyRule {
+import '../broker/signal_reader.dart';
+import '../dispatcher/domain/vehicle_commands.dart';
+import '../vss/vss.dart';
+import '../vss/vss_signal.dart';
+import 'domain/safety_rule.dart';
+
+/// Operação da capota: porta-malas fechado, até 50 km/h e acima de 0 °C.
+final class ConvertibleTopSafetyRule implements SafetyRule {
+  static const maxSpeedKmh = 50.0;
+  static const minTemperatureCelsius = 0.0;
+
   @override
-  CommandResult? validate(VehicleCommand command, Ref ref) {
-    final topPath = Vss.Vehicle.Cabin.ConvertibleTop.Position;
-    if (command.targetVssPath != topPath) return null;
+  VssSignal<double> get target => Vss.Vehicle.Cabin.ConvertibleTop.Position;
 
-    if (!ref.read(isSignalSupportedProvider(topPath))) return null;
+  @override
+  Set<VssSignal<Object>> get inputs => {
+    Vss.Vehicle.Body.Trunk.IsAjar,
+    Vss.Vehicle.Speed,
+    Vss.Vehicle.Exterior.AirTemperature,
+  };
 
-    final isTrunkAjar = ref.read(vssSignalProvider(Vss.Vehicle.Body.Trunk.IsAjar)) as bool? ?? false;
-    final speed = (ref.read(vssSignalProvider(Vss.Vehicle.Speed)) as num?)?.toDouble() ?? 0.0;
-    final temp = (ref.read(vssSignalProvider(Vss.Vehicle.Exterior.AirTemperature)) as num?)?.toDouble() ?? 20.0;
-
-    if (isTrunkAjar) {
-      return CommandResult.rejected('Não é possível operar a capota com o porta-malas aberto.');
+  @override
+  CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
+    if (signals.read(Vss.Vehicle.Body.Trunk.IsAjar) ?? false) {
+      return const CommandResult.rejected('Não é possível operar a capota com o porta-malas aberto.');
     }
 
-    if (speed > 50.0) {
-      return CommandResult.rejected('Operação da capota bloqueada acima de 50 km/h.');
+    final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
+    if (speed > maxSpeedKmh) {
+      return CommandResult.rejected('Operação da capota bloqueada acima de ${maxSpeedKmh.toInt()} km/h.');
     }
 
-    if (temp <= 0.0) {
-      return CommandResult.rejected('Temperatura externa muito baixa. Risco de dano ao mecanismo da capota.');
+    // Sem sensor de temperatura no modelo, não bloqueia (mesmo comportamento anterior).
+    final temperature = signals.read(Vss.Vehicle.Exterior.AirTemperature);
+    if (temperature != null && temperature <= minTemperatureCelsius) {
+      return const CommandResult.rejected('Temperatura externa muito baixa. Risco de dano ao mecanismo da capota.');
     }
-
     return null;
   }
 }

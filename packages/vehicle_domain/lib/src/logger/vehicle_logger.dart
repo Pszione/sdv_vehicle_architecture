@@ -1,89 +1,60 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../broker/vss_broker.dart';
+import '../dispatcher/domain/vehicle_commands.dart';
+import '../vss/vss.dart';
 import 'domain/log_entry.dart';
 import 'domain/logger_state.dart';
 
-part 'vehicle_logger_provider.g.dart';
+part 'vehicle_logger.g.dart';
 
-
-@riverpod
+/// Audit log em memória (ring buffer) de comandos, rejeições e mudanças
+/// confirmadas de atuadores.
+///
+/// Telemetria de sensores (velocidade, ADAS a 30 Hz...) não é registrada,
+/// porque inundaria o buffer.
+@Riverpod(keepAlive: true)
 class VehicleLogger extends _$VehicleLogger {
   @override
   LoggerState build() {
-    // 1. Escuta comandos trafegados no Barramento Zonal
-    ref.listen<AsyncValue<ZonalCommand>>(zonalCommandBusProvider, (previous, next) {
-      next.whenData((command) {
-        _addEntry(
-          LogEntry(
-            type: LogType.command,
-            vssPath: command.vssPath,
-            payload: command.actionPayload,
-            source: 'COMMAND_DISPATCHER',
-            targetZone: command.targetZone,
-            detailMessage: 'DeviceId: ${command.deviceId}',
-          ),
-        );
-      });
-    });
-
-    // 2. Escuta mudanças confirmadas nos sinais VSS
-    ref.listen<Map<String, dynamic>>(vssBrokerProvider, (previous, next) {
+    ref.listen<Map<String, Object?>>(vssBrokerProvider, (previous, next) {
       if (previous == null) return;
-
-      // Identifica qual sinal mudou comparando o estado anterior com o novo
       next.forEach((path, value) {
-        if (previous[path] != value) {
-          _addEntry(
-            LogEntry(
-              type: LogType.signalChange,
-              vssPath: path,
-              payload: value,
-              source: 'ZONAL_TELEMETRY',
-            ),
-          );
-        }
+        if (previous[path] == value || !(vssCatalog[path]?.isActuator ?? false)) return;
+        _addEntry(LogEntry(type: LogType.signalChange, vssPath: path, payload: value, source: 'ZONAL_TELEMETRY'));
       });
     });
-
     return LoggerState();
   }
 
-  /// Adiciona uma nova entrada aplicando a política de Ring Buffer
+  void logCommand(VehicleCommand<Object> command) => _addEntry(
+    LogEntry(
+      type: LogType.command,
+      vssPath: command.signal.path,
+      payload: command.value,
+      source: command.source,
+    ),
+  );
+
+  void logSafetyRejection(VehicleCommand<Object> command, CommandResult result) => _addEntry(
+    LogEntry(
+      type: LogType.safetyRejection,
+      vssPath: command.signal.path,
+      payload: command.value,
+      source: command.source,
+      detailMessage: result.message,
+    ),
+  );
+
+  void clearLogs() => state = state.copyWith(entries: []);
+
+  /// Exporta os registros em JSON, para gravação local ou envio OTA.
+  List<Map<String, dynamic>> exportJson() => state.entries.map((e) => e.toJson()).toList();
+
+  /// Ring buffer: descarta o registro mais antigo ao atingir a capacidade.
   void _addEntry(LogEntry entry) {
-    final updatedList = List<LogEntry>.from(state.entries)..add(entry);
-
-    if (updatedList.length > state.maxCapacity) {
-      updatedList.removeAt(0); // Descarta o registro mais antigo
-    }
-
-    state = state.copyWith(entries: updatedList);
-  }
-
-  /// Permite que o CommandDispatcher registre rejeições de segurança
-  void logSafetyRejection({
-    required String vssPath,
-    required dynamic attemptedPayload,
-    required String reason,
-    required String source,
-  }) {
-    _addEntry(
-      LogEntry(
-        type: LogType.safetyRejection,
-        vssPath: vssPath,
-        payload: attemptedPayload,
-        source: source,
-        detailMessage: reason,
-      ),
-    );
-  }
-
-  /// Limpa o histórico em memória
-  void clearLogs() {
-    state = state.copyWith(entries: []);
-  }
-
-  /// Exporta todos os registros no formato JSON formatado para gravação local ou envio OTA
-  List<Map<String, dynamic>> exportJson() {
-    return state.entries.map((e) => e.toJson()).toList();
+    final entries = [...state.entries, entry];
+    if (entries.length > state.maxCapacity) entries.removeAt(0);
+    state = state.copyWith(entries: entries);
   }
 }

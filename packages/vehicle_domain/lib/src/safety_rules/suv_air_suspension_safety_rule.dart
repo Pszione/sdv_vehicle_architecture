@@ -1,14 +1,27 @@
-/// Regra exclusiva para o SUV com Suspensão Pneumática
-class SuvAirSuspensionSafetyRule implements SafetyRule {
+import '../broker/signal_reader.dart';
+import '../dispatcher/domain/vehicle_commands.dart';
+import '../vss/vss.dart';
+import '../vss/vss_signal.dart';
+import 'domain/safety_rule.dart';
+
+/// Altura máxima da suspensão pneumática (OFFROAD_MAX) só abaixo de 50 km/h.
+final class SuvAirSuspensionSafetyRule implements SafetyRule {
+  static const maxSpeedKmh = 50.0;
+  static const offroadMax = 'OFFROAD_MAX';
+
   @override
-  CommandResult? validate(VehicleCommand command, Ref ref) {
-    if (command.targetVssPath != Vss.Vehicle.Chassis.Suspension.Height) return null;
+  VssSignal<String> get target => Vss.Vehicle.Chassis.Suspension.Height;
 
-    final targetHeight = command.payload as String; // Ex: "OFFROAD_MAX"
-    final speed = (ref.read(vssSignalProvider(Vss.Vehicle.Speed)) as num?)?.toDouble() ?? 0.0;
+  @override
+  Set<VssSignal<Object>> get inputs => {Vss.Vehicle.Speed};
 
-    if (targetHeight == 'OFFROAD_MAX' && speed > 50.0) {
-      return CommandResult.rejected('Altura máxima de suspensão indisponível acima de 50 km/h.');
+  @override
+  CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
+    if (command.value != offroadMax) return null;
+
+    final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
+    if (speed > maxSpeedKmh) {
+      return CommandResult.rejected('Altura máxima de suspensão indisponível acima de ${maxSpeedKmh.toInt()} km/h.');
     }
     return null;
   }

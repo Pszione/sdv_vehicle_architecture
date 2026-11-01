@@ -1,0 +1,5 @@
+targets:
+  $default:
+    builders:
+      vss_gen:vss_tree:
+        enabled: true

@@ -5,9 +5,8 @@ class LogEntry {
   final DateTime timestamp;
   final LogType type;
   final String vssPath;
-  final dynamic payload;
+  final Object? payload;
   final String source;
-  final String? targetZone;
   final String? detailMessage;
 
   LogEntry({
@@ -15,7 +14,6 @@ class LogEntry {
     required this.vssPath,
     required this.payload,
     required this.source,
-    this.targetZone,
     this.detailMessage,
   })  : id = DateTime.now().microsecondsSinceEpoch.toString(),
         timestamp = DateTime.now();
@@ -27,7 +25,6 @@ class LogEntry {
     'vss_path': vssPath,
     'payload': payload,
     'source': source,
-    if (targetZone != null) 'target_zone': targetZone,
     if (detailMessage != null) 'detail_message': detailMessage,
   };
 

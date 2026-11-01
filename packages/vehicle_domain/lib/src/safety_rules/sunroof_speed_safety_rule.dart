@@ -1,23 +1,27 @@
-class SunroofSpeedSafetyRule implements SafetyRule {
+import '../broker/signal_reader.dart';
+import '../dispatcher/domain/vehicle_commands.dart';
+import '../vss/vss.dart';
+import '../vss/vss_signal.dart';
+import 'domain/safety_rule.dart';
+
+/// Bloqueia a abertura do teto solar acima de 120 km/h. Fechar é sempre permitido.
+final class SunroofSpeedSafetyRule implements SafetyRule {
+  static const maxSpeedKmh = 120.0;
+
   @override
-  CommandResult? validate(VehicleCommand command, Ref ref) {
-    // 1. Checa se o comando é para o teto solar
-    final sunroofPath = Vss.Vehicle.Cabin.Sunroof.Position;
-    if (command.targetVssPath != sunroofPath) return null;
+  VssSignal<double> get target => Vss.Vehicle.Cabin.Sunroof.Position;
 
-    // 2. GUARDA DE CAPACIDADE: Se o carro atual não tem teto solar, ignora a regra
-    final isSupported = ref.read(isSignalSupportedProvider(sunroofPath));
-    if (!isSupported) return null;
+  @override
+  Set<VssSignal<Object>> get inputs => {Vss.Vehicle.Speed};
 
-    // 3. Aplica a validação de segurança
-    final double targetPos = (command.payload as num).toDouble();
-    if (targetPos <= 0.0) return null; // Fechar sempre é permitido
+  @override
+  CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
+    if ((command.value as double) <= 0.0) return null;
 
-    final speed = (ref.read(vssSignalProvider(Vss.Vehicle.Speed)) as num?)?.toDouble() ?? 0.0;
-    if (speed > 120.0) {
-      return CommandResult.rejected('Velocidade acima de 120 km/h. Teto solar bloqueado.');
+    final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
+    if (speed > maxSpeedKmh) {
+      return CommandResult.rejected('Velocidade acima de ${maxSpeedKmh.toInt()} km/h. Teto solar bloqueado.');
     }
-
     return null;
   }
 }

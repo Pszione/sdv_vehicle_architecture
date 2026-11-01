@@ -1,23 +1,36 @@
-class DiffLockSafetyRule implements SafetyRule {
+import '../broker/signal_reader.dart';
+import '../dispatcher/domain/vehicle_commands.dart';
+import '../vss/vss.dart';
+import '../vss/vss_signal.dart';
+import 'domain/safety_rule.dart';
+
+/// Só permite engatar o bloqueio do diferencial traseiro em baixa velocidade
+/// e com a direção alinhada. Desbloquear é sempre permitido.
+final class DiffLockSafetyRule implements SafetyRule {
+  static const maxSpeedKmh = 30.0;
+  static const maxSteeringAngleDeg = 15.0;
+
   @override
-  CommandResult? validate(VehicleCommand command, Ref ref) {
-    final diffLockPath = Vss.Vehicle.Chassis.Axle.Row2.Differential.IsLocked;
-    if (command.targetVssPath != diffLockPath) return null;
-    if (command.payload != true) return null; // Desbloquear sempre é permitido
+  VssSignal<bool> get target => Vss.Vehicle.Chassis.Axle.Row2.Differential.IsLocked;
 
-    final speed = (ref.read(vssSignalProvider(Vss.Vehicle.Speed)) as num?)?.toDouble() ?? 0.0;
-    final steeringAngle = (ref.read(vssSignalProvider(Vss.Vehicle.Chassis.SteeringWheel.Angle)) as num?)?.abs().toDouble() ?? 0.0;
+  @override
+  Set<VssSignal<Object>> get inputs => {Vss.Vehicle.Speed, Vss.Vehicle.Chassis.SteeringWheel.Angle};
 
-    // Regra 1: Velocidade
-    if (speed > 30.0) {
-      return CommandResult.rejected('Reduza a velocidade abaixo de 30 km/h para engatar (Atual: ${speed.toInt()} km/h).');
+  @override
+  CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
+    if (command.value != true) return null;
+
+    final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
+    if (speed > maxSpeedKmh) {
+      return CommandResult.rejected(
+        'Reduza a velocidade abaixo de ${maxSpeedKmh.toInt()} km/h para engatar (Atual: ${speed.toInt()} km/h).',
+      );
     }
 
-    // Regra 2: Ângulo do Volante
-    if (steeringAngle > 15.0) {
+    final steeringAngle = (signals.read(Vss.Vehicle.Chassis.SteeringWheel.Angle) ?? 0.0).abs();
+    if (steeringAngle > maxSteeringAngleDeg) {
       return CommandResult.rejected('Alinhe a direção para engatar (Volante esterçado em ${steeringAngle.toInt()}°).');
     }
-
     return null;
   }
 }

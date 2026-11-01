@@ -1,0 +1,837 @@
+{
+  "Vehicle": {
+    "type": "branch",
+    "description": "Veículo de alto nível.",
+    "children": {
+      "Speed": {
+        "type": "sensor",
+        "datatype": "float",
+        "unit": "km/h",
+        "min": 0,
+        "max": 300,
+        "default": 0.0
+      },
+      "DriveMode": {
+        "type": "actuator",
+        "datatype": "string"
+      },
+      "Cabin": {
+        "type": "branch",
+        "children": {
+          "Sunroof": {
+            "type": "branch",
+            "children": {
+              "Position": {
+                "type": "actuator",
+                "datatype": "float",
+                "description": "0.0 = fechado, 1.0 = totalmente aberto.",
+                "min": 0,
+                "max": 1,
+                "default": 0.0
+              },
+              "IsFaulted": {
+                "type": "sensor",
+                "datatype": "boolean",
+                "default": false
+              },
+              "ElectrochromicOpacity": {
+                "type": "actuator",
+                "datatype": "float"
+              }
+            }
+          },
+          "Door": {
+            "type": "branch",
+            "children": {
+              "Row1": {
+                "type": "branch",
+                "children": {
+                  "Left": {
+                    "type": "branch",
+                    "children": {
+                      "IsLocked": {
+                        "type": "actuator",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "IsAjar": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "SoftCloseState": {
+                        "type": "sensor",
+                        "datatype": "string"
+                      }
+                    }
+                  },
+                  "Right": {
+                    "type": "branch",
+                    "children": {
+                      "IsLocked": {
+                        "type": "actuator",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "IsAjar": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "SoftCloseState": {
+                        "type": "sensor",
+                        "datatype": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "Row2": {
+                "type": "branch",
+                "children": {
+                  "Left": {
+                    "type": "branch",
+                    "children": {
+                      "IsLocked": {
+                        "type": "actuator",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "IsAjar": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "SunshadePosition": {
+                        "type": "actuator",
+                        "datatype": "float"
+                      }
+                    }
+                  },
+                  "Right": {
+                    "type": "branch",
+                    "children": {
+                      "IsLocked": {
+                        "type": "actuator",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "IsAjar": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "SunshadePosition": {
+                        "type": "actuator",
+                        "datatype": "float"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "HVAC": {
+            "type": "branch",
+            "children": {
+              "AirConditioning": {
+                "type": "branch",
+                "children": {
+                  "StationaryPreconditioning": {
+                    "type": "actuator",
+                    "datatype": "boolean"
+                  }
+                }
+              },
+              "AirQuality": {
+                "type": "sensor",
+                "datatype": "uint8"
+              },
+              "IonizerIsEnabled": {
+                "type": "actuator",
+                "datatype": "boolean"
+              },
+              "Fragrance": {
+                "type": "branch",
+                "children": {
+                  "ActiveCartridge": {
+                    "type": "actuator",
+                    "datatype": "uint8"
+                  },
+                  "Intensity": {
+                    "type": "actuator",
+                    "datatype": "uint8"
+                  }
+                }
+              },
+              "DogMode": {
+                "type": "branch",
+                "children": {
+                  "IsEnabled": {
+                    "type": "actuator",
+                    "datatype": "boolean"
+                  },
+                  "TargetTemperature": {
+                    "type": "actuator",
+                    "datatype": "float"
+                  }
+                }
+              },
+              "Row1": {
+                "type": "branch",
+                "children": {
+                  "Left": {
+                    "type": "branch",
+                    "children": {
+                      "Temperature": {
+                        "type": "actuator",
+                        "datatype": "float",
+                        "unit": "celsius",
+                        "min": 16,
+                        "max": 30
+                      },
+                      "FanSpeed": {
+                        "type": "actuator",
+                        "datatype": "uint8",
+                        "unit": "percent",
+                        "min": 0,
+                        "max": 100
+                      }
+                    }
+                  },
+                  "Right": {
+                    "type": "branch",
+                    "children": {
+                      "Temperature": {
+                        "type": "actuator",
+                        "datatype": "float",
+                        "unit": "celsius",
+                        "min": 16,
+                        "max": 30
+                      },
+                      "FanSpeed": {
+                        "type": "actuator",
+                        "datatype": "uint8",
+                        "unit": "percent",
+                        "min": 0,
+                        "max": 100
+                      }
+                    }
+                  }
+                }
+              },
+              "Row2": {
+                "type": "branch",
+                "children": {
+                  "Left": {
+                    "type": "branch",
+                    "children": {
+                      "Temperature": {
+                        "type": "actuator",
+                        "datatype": "float",
+                        "unit": "celsius",
+                        "min": 16,
+                        "max": 30
+                      },
+                      "FanSpeed": {
+                        "type": "actuator",
+                        "datatype": "uint8",
+                        "unit": "percent",
+                        "min": 0,
+                        "max": 100
+                      }
+                    }
+                  },
+                  "Right": {
+                    "type": "branch",
+                    "children": {
+                      "Temperature": {
+                        "type": "actuator",
+                        "datatype": "float",
+                        "unit": "celsius",
+                        "min": 16,
+                        "max": 30
+                      },
+                      "FanSpeed": {
+                        "type": "actuator",
+                        "datatype": "uint8",
+                        "unit": "percent",
+                        "min": 0,
+                        "max": 100
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "AmbientLighting": {
+            "type": "branch",
+            "children": {
+              "ColorHex": {
+                "type": "actuator",
+                "datatype": "string"
+              },
+              "Brightness": {
+                "type": "actuator",
+                "datatype": "float"
+              },
+              "AnimationMode": {
+                "type": "actuator",
+                "datatype": "string"
+              }
+            }
+          },
+          "HeadUpDisplay": {
+            "type": "branch",
+            "children": {
+              "IsEnabled": {
+                "type": "actuator",
+                "datatype": "boolean"
+              },
+              "Height": {
+                "type": "actuator",
+                "datatype": "uint8"
+              },
+              "Mode": {
+                "type": "actuator",
+                "datatype": "string"
+              }
+            }
+          },
+          "Sentry": {
+            "type": "branch",
+            "children": {
+              "Mode": {
+                "type": "actuator",
+                "datatype": "string"
+              },
+              "ThreatLevel": {
+                "type": "sensor",
+                "datatype": "uint8"
+              }
+            }
+          },
+          "ValetMode": {
+            "type": "branch",
+            "children": {
+              "IsEnabled": {
+                "type": "actuator",
+                "datatype": "boolean"
+              }
+            }
+          },
+          "Glovebox": {
+            "type": "branch",
+            "children": {
+              "IsLocked": {
+                "type": "actuator",
+                "datatype": "boolean"
+              }
+            }
+          },
+          "ConvertibleTop": {
+            "type": "branch",
+            "children": {
+              "Position": {
+                "type": "actuator",
+                "datatype": "float",
+                "description": "0.0 = fechada, 1.0 = totalmente aberta.",
+                "min": 0,
+                "max": 1
+              }
+            }
+          }
+        }
+      },
+      "Seat": {
+        "type": "branch",
+        "children": {
+          "Row1": {
+            "type": "branch",
+            "children": {
+              "Left": {
+                "type": "branch",
+                "children": {
+                  "HeatingLevel": {
+                    "type": "actuator",
+                    "datatype": "uint8"
+                  },
+                  "VentilationLevel": {
+                    "type": "actuator",
+                    "datatype": "uint8"
+                  },
+                  "Massage": {
+                    "type": "branch",
+                    "children": {
+                      "Mode": {
+                        "type": "actuator",
+                        "datatype": "string",
+                        "allowed": [
+                          "OFF",
+                          "WAVE",
+                          "PULSE",
+                          "STRETCH"
+                        ],
+                        "default": "OFF"
+                      },
+                      "Intensity": {
+                        "type": "actuator",
+                        "datatype": "uint8"
+                      }
+                    }
+                  },
+                  "MemoryProfile": {
+                    "type": "actuator",
+                    "datatype": "uint8"
+                  },
+                  "SideBolsterSupport": {
+                    "type": "actuator",
+                    "datatype": "float"
+                  }
+                }
+              },
+              "Right": {
+                "type": "branch",
+                "children": {
+                  "HeatingLevel": {
+                    "type": "actuator",
+                    "datatype": "uint8"
+                  },
+                  "VentilationLevel": {
+                    "type": "actuator",
+                    "datatype": "uint8"
+                  },
+                  "Massage": {
+                    "type": "branch",
+                    "children": {
+                      "Mode": {
+                        "type": "actuator",
+                        "datatype": "string",
+                        "allowed": [
+                          "OFF",
+                          "WAVE",
+                          "PULSE",
+                          "STRETCH"
+                        ],
+                        "default": "OFF"
+                      },
+                      "Intensity": {
+                        "type": "actuator",
+                        "datatype": "uint8"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "Row2": {
+            "type": "branch",
+            "children": {
+              "Left": {
+                "type": "branch",
+                "children": {
+                  "ReclineAngle": {
+                    "type": "actuator",
+                    "datatype": "float"
+                  },
+                  "HeatingLevel": {
+                    "type": "actuator",
+                    "datatype": "uint8"
+                  },
+                  "VentilationLevel": {
+                    "type": "actuator",
+                    "datatype": "uint8"
+                  },
+                  "Massage": {
+                    "type": "branch",
+                    "children": {
+                      "Mode": {
+                        "type": "actuator",
+                        "datatype": "string",
+                        "allowed": [
+                          "OFF",
+                          "WAVE",
+                          "PULSE",
+                          "STRETCH"
+                        ],
+                        "default": "OFF"
+                      },
+                      "Intensity": {
+                        "type": "actuator",
+                        "datatype": "uint8"
+                      }
+                    }
+                  }
+                }
+              },
+              "Right": {
+                "type": "branch",
+                "children": {
+                  "ReclineAngle": {
+                    "type": "actuator",
+                    "datatype": "float"
+                  },
+                  "HeatingLevel": {
+                    "type": "actuator",
+                    "datatype": "uint8"
+                  },
+                  "VentilationLevel": {
+                    "type": "actuator",
+                    "datatype": "uint8"
+                  },
+                  "Massage": {
+                    "type": "branch",
+                    "children": {
+                      "Mode": {
+                        "type": "actuator",
+                        "datatype": "string",
+                        "allowed": [
+                          "OFF",
+                          "WAVE",
+                          "PULSE",
+                          "STRETCH"
+                        ],
+                        "default": "OFF"
+                      },
+                      "Intensity": {
+                        "type": "actuator",
+                        "datatype": "uint8"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Chassis": {
+        "type": "branch",
+        "children": {
+          "SteeringWheel": {
+            "type": "branch",
+            "children": {
+              "Angle": {
+                "type": "sensor",
+                "datatype": "float",
+                "unit": "degrees",
+                "min": -540,
+                "max": 540
+              },
+              "Heated": {
+                "type": "actuator",
+                "datatype": "boolean"
+              }
+            }
+          },
+          "RearAxleSteering": {
+            "type": "branch",
+            "children": {
+              "Angle": {
+                "type": "sensor",
+                "datatype": "float"
+              }
+            }
+          },
+          "Suspension": {
+            "type": "branch",
+            "children": {
+              "Height": {
+                "type": "actuator",
+                "datatype": "string"
+              },
+              "DampingMode": {
+                "type": "actuator",
+                "datatype": "string"
+              },
+              "AutoLeveling": {
+                "type": "branch",
+                "children": {
+                  "Status": {
+                    "type": "sensor",
+                    "datatype": "string"
+                  }
+                }
+              }
+            }
+          },
+          "Brake": {
+            "type": "branch",
+            "children": {
+              "RegenMode": {
+                "type": "actuator",
+                "datatype": "string"
+              }
+            }
+          },
+          "Axle": {
+            "type": "branch",
+            "children": {
+              "Row2": {
+                "type": "branch",
+                "children": {
+                  "Differential": {
+                    "type": "branch",
+                    "children": {
+                      "IsLocked": {
+                        "type": "actuator",
+                        "datatype": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Powertrain": {
+        "type": "branch",
+        "children": {
+          "TorqueSplit": {
+            "type": "branch",
+            "children": {
+              "RearPercent": {
+                "type": "sensor",
+                "datatype": "float"
+              }
+            }
+          },
+          "TractionBattery": {
+            "type": "branch",
+            "children": {
+              "StateOfCharge": {
+                "type": "sensor",
+                "datatype": "float",
+                "unit": "percent",
+                "min": 0,
+                "max": 100
+              },
+              "Power": {
+                "type": "sensor",
+                "datatype": "float"
+              },
+              "Temperature": {
+                "type": "sensor",
+                "datatype": "float"
+              },
+              "Preconditioning": {
+                "type": "branch",
+                "children": {
+                  "Status": {
+                    "type": "sensor",
+                    "datatype": "string"
+                  },
+                  "IsEnabled": {
+                    "type": "actuator",
+                    "datatype": "boolean"
+                  }
+                }
+              },
+              "Charging": {
+                "type": "branch",
+                "children": {
+                  "IsConnected": {
+                    "type": "sensor",
+                    "datatype": "boolean"
+                  },
+                  "IsCharging": {
+                    "type": "sensor",
+                    "datatype": "boolean"
+                  },
+                  "ChargePower": {
+                    "type": "sensor",
+                    "datatype": "float"
+                  },
+                  "TargetSoC": {
+                    "type": "actuator",
+                    "datatype": "float",
+                    "unit": "percent",
+                    "min": 0,
+                    "max": 100
+                  }
+                }
+              }
+            }
+          },
+          "V2L": {
+            "type": "branch",
+            "children": {
+              "IsExportingPower": {
+                "type": "actuator",
+                "datatype": "boolean"
+              }
+            }
+          },
+          "CombustionEngine": {
+            "type": "branch",
+            "children": {
+              "Speed": {
+                "type": "sensor",
+                "datatype": "float"
+              }
+            }
+          },
+          "Transmission": {
+            "type": "branch",
+            "children": {
+              "SelectedGear": {
+                "type": "actuator",
+                "datatype": "string",
+                "allowed": [
+                  "PARK",
+                  "REVERSE",
+                  "NEUTRAL",
+                  "DRIVE"
+                ],
+                "default": "PARK"
+              }
+            }
+          }
+        }
+      },
+      "Body": {
+        "type": "branch",
+        "children": {
+          "Trunk": {
+            "type": "branch",
+            "children": {
+              "IsAjar": {
+                "type": "sensor",
+                "datatype": "boolean"
+              },
+              "PowerOpeningAngle": {
+                "type": "actuator",
+                "datatype": "float"
+              }
+            }
+          },
+          "Trailer": {
+            "type": "branch",
+            "children": {
+              "IsConnected": {
+                "type": "sensor",
+                "datatype": "boolean"
+              },
+              "BrakeGain": {
+                "type": "actuator",
+                "datatype": "float"
+              }
+            }
+          },
+          "Lights": {
+            "type": "branch",
+            "children": {
+              "IsLeftIndicatorOn": {
+                "type": "actuator",
+                "datatype": "boolean"
+              },
+              "IsRightIndicatorOn": {
+                "type": "actuator",
+                "datatype": "boolean"
+              },
+              "IsHazardOn": {
+                "type": "actuator",
+                "datatype": "boolean"
+              },
+              "MatrixBeamMode": {
+                "type": "actuator",
+                "datatype": "string"
+              }
+            }
+          }
+        }
+      },
+      "Media": {
+        "type": "branch",
+        "children": {
+          "ActiveSoundDesign": {
+            "type": "actuator",
+            "datatype": "string"
+          },
+          "ActiveNoiseCancellation": {
+            "type": "actuator",
+            "datatype": "boolean"
+          },
+          "SoundZoneBalance": {
+            "type": "actuator",
+            "datatype": "string"
+          }
+        }
+      },
+      "ADAS": {
+        "type": "branch",
+        "children": {
+          "ACC": {
+            "type": "branch",
+            "children": {
+              "IsEngaged": {
+                "type": "actuator",
+                "datatype": "boolean"
+              },
+              "SetSpeed": {
+                "type": "actuator",
+                "datatype": "float"
+              }
+            }
+          },
+          "ObstacleDetection": {
+            "type": "branch",
+            "children": {
+              "LeadVehicle": {
+                "type": "sensor",
+                "datatype": "string",
+                "description": "Objeto do veículo à frente serializado em JSON."
+              }
+            }
+          },
+          "LaneKeepingAssist": {
+            "type": "branch",
+            "children": {
+              "Status": {
+                "type": "sensor",
+                "datatype": "string"
+              },
+              "LeftLaneOffsetMeters": {
+                "type": "sensor",
+                "datatype": "float"
+              },
+              "RightLaneOffsetMeters": {
+                "type": "sensor",
+                "datatype": "float"
+              }
+            }
+          }
+        }
+      },
+      "Software": {
+        "type": "branch",
+        "children": {
+          "OTA": {
+            "type": "branch",
+            "children": {
+              "Status": {
+                "type": "sensor",
+                "datatype": "string"
+              }
+            }
+          }
+        }
+      },
+      "Exterior": {
+        "type": "branch",
+        "children": {
+          "AirTemperature": {
+            "type": "sensor",
+            "datatype": "float",
+            "unit": "celsius",
+            "min": -40,
+            "max": 60
+          }
+        }
+      }
+    }
+  }
+}

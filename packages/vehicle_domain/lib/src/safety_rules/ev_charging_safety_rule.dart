@@ -1,18 +1,26 @@
-class EvChargingSafetyRule implements SafetyRule {
+import '../broker/signal_reader.dart';
+import '../dispatcher/domain/vehicle_commands.dart';
+import '../vss/vss.dart';
+import '../vss/vss_signal.dart';
+import 'domain/safety_rule.dart';
+
+/// Impede tirar o carro de PARK/NEUTRAL com o cabo de recarga conectado.
+final class EvChargingSafetyRule implements SafetyRule {
+  static const _stationaryGears = {'PARK', 'NEUTRAL'};
+
   @override
-  CommandResult? validate(VehicleCommand command, Ref ref) {
-    final gearPath = Vss.Vehicle.Powertrain.Transmission.SelectedGear;
-    if (command.targetVssPath != gearPath) return null;
+  VssSignal<String> get target => Vss.Vehicle.Powertrain.Transmission.SelectedGear;
 
-    final targetGear = command.payload.toString();
-    if (targetGear == 'PARK' || targetGear == 'NEUTRAL') return null;
+  @override
+  Set<VssSignal<Object>> get inputs => {Vss.Vehicle.Powertrain.TractionBattery.Charging.IsConnected};
 
-    final isPlugConnected = ref.read(vssSignalProvider(Vss.Vehicle.Powertrain.TractionBattery.Charging.IsConnected)) as bool? ?? false;
+  @override
+  CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
+    if (_stationaryGears.contains(command.value)) return null;
 
-    if (isPlugConnected) {
-      return CommandResult.rejected('Impossível engatar marcha: Cabo de carregamento ainda está conectado à tomada.');
+    if (signals.read(Vss.Vehicle.Powertrain.TractionBattery.Charging.IsConnected) ?? false) {
+      return const CommandResult.rejected('Impossível engatar marcha: cabo de recarga ainda conectado.');
     }
-
     return null;
   }
 }

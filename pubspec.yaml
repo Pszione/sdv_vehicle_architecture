@@ -18,7 +18,7 @@ melos:
   scripts:
     generate:
       description: Roda o build_runner (Riverpod + VSS) em ordem topológica.
-      run: dart run build_runner build --delete-conflicting-outputs
+      run: dart run build_runner build
       exec:
         concurrency: 1
         orderDependents: true

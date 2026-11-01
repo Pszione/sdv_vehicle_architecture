@@ -1,18 +1,30 @@
-class EvPreconditioningSafetyRule implements SafetyRule {
+import '../broker/signal_reader.dart';
+import '../dispatcher/domain/vehicle_commands.dart';
+import '../vss/vss.dart';
+import '../vss/vss_signal.dart';
+import 'domain/safety_rule.dart';
+
+/// Bloqueia o pré-condicionamento da bateria com SoC baixo, para preservar autonomia.
+final class EvPreconditioningSafetyRule implements SafetyRule {
+  static const minStateOfCharge = 15.0;
+
   @override
-  CommandResult? validate(VehicleCommand command, Ref ref) {
-    final precondPath = Vss.Vehicle.Powertrain.TractionBattery.Preconditioning.IsEnabled;
-    if (command.targetVssPath != precondPath) return null;
-    if (command.payload != true) return null;
+  VssSignal<bool> get target => Vss.Vehicle.Powertrain.TractionBattery.Preconditioning.IsEnabled;
 
-    if (!ref.read(isSignalSupportedProvider(precondPath))) return null;
+  @override
+  Set<VssSignal<Object>> get inputs => {Vss.Vehicle.Powertrain.TractionBattery.StateOfCharge};
 
-    final batteryLevel = (ref.read(vssSignalProvider(Vss.Vehicle.Powertrain.TractionBattery.StateOfCharge)) as num?)?.toDouble() ?? 0.0;
+  @override
+  CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
+    if (command.value != true) return null;
 
-    if (batteryLevel < 15.0) {
-      return CommandResult.rejected('Bateria abaixo de 15%. Pré-condicionamento bloqueado para preservar autonomia.');
+    // Sem leitura do BMS, assume SoC baixo (fail-safe).
+    final soc = signals.read(Vss.Vehicle.Powertrain.TractionBattery.StateOfCharge) ?? 0.0;
+    if (soc < minStateOfCharge) {
+      return CommandResult.rejected(
+        'Bateria abaixo de ${minStateOfCharge.toInt()}%. Pré-condicionamento bloqueado para preservar autonomia.',
+      );
     }
-
     return null;
   }
 }
