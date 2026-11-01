@@ -4,7 +4,7 @@ import 'package:vehicle_domain/vehicle_domain.dart';
 import 'package:vehicle_simulators/vehicle_simulators.dart';
 import 'package:vehicle_ui_kit/vehicle_ui_kit.dart';
 
-/// Slider that drives a simulated numeric sensor. Hidden when the active profile lacks it.
+/// Slider that drives a simulated numeric sensor (double or int). Hidden when the active profile lacks it.
 class SimulatedSensorSlider extends ConsumerWidget {
   const SimulatedSensorSlider({
     super.key,
@@ -16,7 +16,7 @@ class SimulatedSensorSlider extends ConsumerWidget {
     this.warnAbove,
   });
 
-  final VssSignal<double> signal;
+  final VssSignal<num> signal;
   final String label;
   final double min;
   final double max;
@@ -27,7 +27,7 @@ class SimulatedSensorSlider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final value = ref.watchSignal(signal) ?? min;
+    final value = ref.watchSignal(signal)?.toDouble() ?? min;
     final isWarning = warnAbove != null && value.abs() > warnAbove!;
     final color = isWarning ? Colors.orangeAccent : Colors.cyanAccent;
 
@@ -59,7 +59,10 @@ class SimulatedSensorSlider extends ConsumerWidget {
             divisions: (max - min).round(),
             activeColor: color,
             inactiveColor: Colors.white10,
-            onChanged: (newValue) => ref.read(telemetrySimulatorProvider.notifier).report(signal, newValue),
+            // Integer sensors (e.g. uint8 brake pedal) must receive an int.
+            onChanged: (newValue) => ref
+                .read(telemetrySimulatorProvider.notifier)
+                .report(signal, signal is VssSignal<int> ? newValue.round() : newValue),
           ),
         ],
       ),

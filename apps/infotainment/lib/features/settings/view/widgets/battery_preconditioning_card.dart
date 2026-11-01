@@ -12,37 +12,16 @@ class BatteryPreconditioningCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final battery = Vss.Vehicle.Powertrain.TractionBattery;
-    final isEnabled = ref.watchSignal(battery.Preconditioning.IsEnabled) ?? false;
     final soc = ref.watchSignal(battery.StateOfCharge);
 
     return VehicleControlCard(
       icon: Icons.battery_charging_full,
       title: 'Battery preconditioning',
       status: soc == null ? null : 'SoC ${soc.round()}%',
-      child: Column(
-        children: [
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: const Text('Precondition for fast charging'),
-            value: isEnabled,
-            onChanged: (value) => ref.dispatchCommand(
-              context,
-              VehicleCommand(
-                signal: battery.Preconditioning.IsEnabled,
-                value: value,
-                source: infotainmentCommandSource,
-              ),
-            ),
-          ),
-          if (!isEnabled)
-            SafetyPrecheckBanner(
-              command: VehicleCommand(
-                signal: battery.Preconditioning.IsEnabled,
-                value: true,
-                source: infotainmentCommandSource,
-              ),
-            ),
-        ],
+      child: VehicleCommandSwitch(
+        signal: battery.Preconditioning.IsEnabled,
+        title: 'Precondition for fast charging',
+        source: infotainmentCommandSource,
       ),
     );
   }

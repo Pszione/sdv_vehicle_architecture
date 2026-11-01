@@ -31,6 +31,13 @@ class VehicleDynamicsControlCard extends ConsumerWidget {
             unit: '°',
             warnAbove: DiffLockSafetyRule.maxSteeringAngleDeg,
           ),
+          SimulatedSensorSlider(
+            signal: Vss.Vehicle.Chassis.Brake.PedalPosition,
+            label: 'Brake pedal',
+            min: 0,
+            max: 100,
+            unit: '%',
+          ),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,

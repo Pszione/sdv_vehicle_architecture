@@ -4,6 +4,8 @@ import '../../settings/view/vehicle_controls_panel.dart';
 import 'widgets/audit_log_panel.dart';
 import 'widgets/body_and_energy_control_card.dart';
 import 'widgets/fault_injection_card.dart';
+import 'widgets/force_actuator_card.dart';
+import 'widgets/occupants_control_card.dart';
 import 'widgets/scenario_presets_card.dart';
 import 'widgets/vehicle_dynamics_control_card.dart';
 
@@ -20,8 +22,10 @@ class SimulatorScreen extends StatelessWidget {
       _SectionTitle('Simulated world (sensors)'),
       ScenarioPresetsCard(),
       VehicleDynamicsControlCard(),
+      OccupantsControlCard(),
       BodyAndEnergyControlCard(),
       FaultInjectionCard(),
+      ForceActuatorCard(),
     ];
     const reactiveControls = [_SectionTitle('Infotainment controls (reactive)'), VehicleControlsPanel()];
 

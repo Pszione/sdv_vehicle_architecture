@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vehicle_domain/vehicle_domain.dart';
 
-/// Live view of the `VehicleLogger`: commands, safety rejections and confirmed
-/// actuator changes, newest first.
+/// Live view of the `VehicleLogger`: commands, safety rejections, confirmed
+/// actuator changes and forced states, newest first.
 class AuditLogPanel extends ConsumerWidget {
   const AuditLogPanel({super.key});
 
@@ -50,8 +50,9 @@ class _LogEntryTile extends StatelessWidget {
 
   static const _styles = {
     LogType.command: ('COMMAND', Colors.lightBlueAccent),
-    LogType.safetyRejection: ('REJECTED', Colors.redAccent),
+    LogType.safetyRejection: ('REJECTED', Colors.deepOrangeAccent),
     LogType.signalChange: ('CONFIRMED', Colors.greenAccent),
+    LogType.forced: ('FORCED', Colors.redAccent),
   };
 
   @override

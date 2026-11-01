@@ -15,10 +15,11 @@ void main() {
     ],
   );
 
-  // Boot: zonal ECUs and the audit log must be alive before the first command.
+  // Boot: zonal ECUs, the audit log and the vehicle behaviors must be alive before the first command.
   container
     ..read(zonalSystemProvider)
-    ..read(vehicleLoggerProvider);
+    ..read(vehicleLoggerProvider)
+    ..read(vehicleBehaviorEngineProvider);
 
   runApp(UncontrolledProviderScope(container: container, child: const EvSuvApp()));
 }

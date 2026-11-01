@@ -25,7 +25,9 @@ class BodyAndEnergyControlCard extends StatelessWidget {
           SimulatedSensorSwitch(signal: door.Row2.Left.IsAjar, label: 'Rear left door open'),
           SimulatedSensorSwitch(signal: door.Row2.Right.IsAjar, label: 'Rear right door open'),
           SimulatedSensorSwitch(signal: Vss.Vehicle.Body.Trunk.IsAjar, label: 'Trunk open'),
+          SimulatedSensorSwitch(signal: Vss.Vehicle.Body.Trailer.IsConnected, label: 'Trailer connected'),
           SimulatedSensorSwitch(signal: battery.Charging.IsConnected, label: 'Charging cable connected'),
+          SimulatedSensorSwitch(signal: battery.Charging.IsCharging, label: 'Charging in progress'),
           const SizedBox(height: 8),
           SimulatedSensorSlider(signal: battery.StateOfCharge, label: 'State of charge', min: 0, max: 100, unit: '%'),
           SimulatedSensorSlider(
