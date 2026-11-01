@@ -5,6 +5,7 @@ import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import '../vss/vss_values.dart';
 import 'domain/vehicle_behavior.dart';
+
 /// Unlocks every door when the driver shifts into PARK.
 final class ParkAutoUnlockBehavior implements VehicleBehavior {
   static const source = 'AUTO_UNLOCK';

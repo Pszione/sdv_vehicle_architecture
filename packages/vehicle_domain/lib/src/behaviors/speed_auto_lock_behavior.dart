@@ -4,6 +4,7 @@ import '../profile/vehicle_groups.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import 'domain/vehicle_behavior.dart';
+
 /// Speed-sensing auto-lock: locks every unlocked door when the car goes above 15 km/h.
 /// A door that is open is rejected by `DoorSafetyRule` and shows up in the audit log.
 final class SpeedAutoLockBehavior implements VehicleBehavior {

@@ -6,6 +6,7 @@ import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import '../vss/vss_values.dart';
 import 'domain/vehicle_behavior.dart';
+
 /// Auto-park: in DRIVE, almost stopped, the driver opens the door with the
 /// seatbelt unfastened -> engage PARK so the car cannot roll away.
 final class AutoParkBehavior implements VehicleBehavior {

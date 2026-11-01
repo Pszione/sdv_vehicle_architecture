@@ -4,6 +4,7 @@ import '../profile/vehicle_groups.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import 'domain/vehicle_behavior.dart';
+
 /// Post-crash response: unlocks every door for rescuers and turns on the hazard lights.
 final class CrashResponseBehavior implements VehicleBehavior {
   static const source = 'CRASH_RESPONSE';
