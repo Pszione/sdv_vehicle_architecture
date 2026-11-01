@@ -1,23 +1,23 @@
 # vehicle_profiles
 
-**Camada 4: Matriz de capacidades dos modelos.** Dart puro. Cada trim do veículo é um
-`*.profile.json` que lista os sinais que o modelo tem, gerado como `const VehicleProfile`
-e **validado contra o spec mestre durante o build**.
+**Layer 4: Model capability matrix.** Pure Dart. Every vehicle trim is a `*.profile.json`
+listing the signals that model has, generated as a `const VehicleProfile` and
+**validated against the master spec at build time**.
 
-Assim, todo o código compila para qualquer modelo: o que muda entre modelos é dado, não código.
+All code compiles for every model: what changes between models is data, not code.
 
-## Perfis de fábrica
+## Factory profiles
 
-| Perfil | Const | Sinais |
+| Profile | Const | Signals |
 |---|---|---|
-| `entry.profile.json` | `entryProfile` | Básico: velocidade e porta do motorista |
-| `premium.profile.json` | `premiumProfile` | Básico + teto solar |
-| `luxury_ev_suv.profile.json` | `luxuryEvSuvProfile` | EV SUV completo (ADAS, 4x4, HVAC quadrizona…) |
-| `flagship.profile.json` | `flagshipProfile` | Spec completo (Sentry, Dog/Valet Mode, V2L, OTA…) |
+| `entry.profile.json` | `entryProfile` | Basic: speed and driver door |
+| `premium.profile.json` | `premiumProfile` | Basic + sunroof |
+| `luxury_ev_suv.profile.json` | `luxuryEvSuvProfile` | Full EV SUV (ADAS, 4x4, quad-zone HVAC, outside temperature…) |
+| `flagship.profile.json` | `flagshipProfile` | Full spec (Sentry, Dog/Valet Mode, V2L, OTA…) |
 
-`factoryProfiles` expõe todos, em ordem, para seletores de HMI.
+`factoryProfiles` exposes all of them, in order, for HMI selectors.
 
-## Formato
+## Format
 
 ```json
 {
@@ -31,11 +31,11 @@ Assim, todo o código compila para qualquer modelo: o que muda entre modelos é 
 }
 ```
 
-`overrides` aceita `min`, `max` e `allowed`, como um overlay do vss-tools.
+`overrides` accepts `min`, `max` and `allowed`, like a vss-tools overlay.
 
-## Criar um modelo
+## Adding a model
 
-1. Crie `lib/src/profiles/<id>.profile.json`.
-2. Declare `part '<id>.profile.g.dart';` em `factory_profiles.dart` e adicione o perfil em `factoryProfiles`.
-3. Rode `dart run build_runner build`.
-4. No app do modelo, use `initialVehicleProfileProvider.overrideWithValue(<id>Profile)`.
+1. Create `lib/src/profiles/<id>.profile.json`.
+2. Declare `part '<id>.profile.g.dart';` in `factory_profiles.dart` and add the profile to `factoryProfiles`.
+3. Run `dart run build_runner build`.
+4. In the model's app, use `initialVehicleProfileProvider.overrideWithValue(<id>Profile)`.

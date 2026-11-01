@@ -1,18 +1,18 @@
 # digital_cluster
 
-App Flutter do **painel de instrumentos** (velocímetro, ADAS, alertas), com meta de 60 FPS.
+Flutter app for the **instrument cluster** (speedometer, ADAS, alerts), targeting 60 FPS.
 
-> **Status:** ainda é o template do Flutter. Não está ligado ao `VssBroker`.
+> **Status:** still the Flutter template. Not connected to the `VssBroker` yet.
 
-## Direção planejada
+## Planned direction
 
-- Depender de `vehicle_domain` + `vehicle_ui_kit`.
-- Cada gauge observa um único sinal com `ref.watchSignal` e desenha com `CustomPainter`
-  dentro de um `RepaintBoundary`.
-- Interpolar com `Ticker` entre as amostras de telemetria (ADAS a 30 Hz) para animar a 60 FPS.
-- Compartilhar estado com o infotainment exige um core comum (ver *Roadmap* no README da raiz).
+- Depend on `vehicle_domain` + `vehicle_ui_kit`.
+- Each gauge watches a single signal with `ref.watchSignal` and paints with a `CustomPainter`
+  inside a `RepaintBoundary`.
+- Interpolate with a `Ticker` between telemetry samples (ADAS at 30 Hz) to animate at 60 FPS.
+- Sharing state with the infotainment requires a common core (see *Roadmap* in the root README).
 
-## Rodar
+## Run
 
 ```
 flutter run

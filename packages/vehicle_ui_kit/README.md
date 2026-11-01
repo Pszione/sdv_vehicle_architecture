@@ -1,34 +1,42 @@
 # vehicle_ui_kit
 
-**Design system compartilhado** pelas HMIs (infotainment e cluster). Depende só do `vehicle_domain`.
+**Shared design system** for the HMIs (infotainment and cluster). Depends only on `vehicle_domain`.
 
-## Componentes
+## Components
 
-| Componente | Papel |
+| Component | Role |
 |---|---|
-| `ref.watchSignal(Vss...)` | Observa **um** sinal tipado; o widget só reconstrói quando ele muda |
-| `ref.dispatchCommand(context, command)` | Envia pelo `CommandDispatcher` e mostra o motivo se for recusado |
-| `VehicleFeatureGuard` | Mostra o widget só se o sinal existe no perfil ativo (ou um `fallback`) |
-| `CarProfileSelectorBar` | Troca o perfil ao vivo (ferramenta de simulação) |
+| `ref.watchSignal(Vss...)` | Watches **one** typed signal; the widget only rebuilds when it changes |
+| `ref.dispatchCommand(context, command)` | Sends through the `CommandDispatcher` and shows the reason (SnackBar) when rejected |
+| `SafetyPrecheckBanner(command)` | Warns ahead, with the blocking rule's message, that a command would be rejected |
+| `VehicleControlCard` | Common card shell: icon, title, status and content |
+| `VehicleFeatureGuard` | Shows a widget only if the signal exists in the active profile (or a `fallback`) |
+| `CarProfileSelectorBar` | Switches the profile live (simulation tool) |
 
-## Exemplo
+## Example
 
 ```dart
-class SunroofStatus extends ConsumerWidget {
+class DiffLockButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final position = ref.watchSignal(Vss.Vehicle.Cabin.Sunroof.Position) ?? 0.0;
-    return Text('${(position * 100).round()}% aberto');
+    final diffLock = Vss.Vehicle.Chassis.Axle.Row2.Differential.IsLocked;
+    final isLocked = ref.watchSignal(diffLock) ?? false;
+
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () => ref.dispatchCommand(context, VehicleCommand(signal: diffLock, value: !isLocked)),
+          child: Text(isLocked ? 'RELEASE' : 'ENGAGE LOCK'),
+        ),
+        if (!isLocked) SafetyPrecheckBanner(command: VehicleCommand(signal: diffLock, value: true)),
+      ],
+    );
   }
 }
-
-VehicleFeatureGuard(
-  signal: Vss.Vehicle.Cabin.Sunroof.Position,
-  child: const SunroofControlCard(),
-);
 ```
 
-## Regras para widgets
+## Widget rules
 
-- Nunca observe o mapa inteiro do `VssBroker`: use `watchSignal`, ou `.select` para campos do perfil.
-- A UI nunca escreve no broker; ela só envia `VehicleCommand`s e exibe a telemetria confirmada.
+- Never watch the whole `VssBroker` map: use `watchSignal`, or `.select` for profile fields.
+- The UI never writes to the broker; it only sends `VehicleCommand`s and shows confirmed telemetry.
+- Controls stay enabled; the dispatcher has the final word and the banner is only a heads-up.

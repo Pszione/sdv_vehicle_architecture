@@ -1,36 +1,36 @@
 # zonal_system
 
-**Camada 3: Hardware e arquitetura zonal.** Dart puro. Simula o gateway central,
-o barramento entre zonas, as ECUs zonais e os atuadores "burros" com latência e falhas.
-Implementa o `CommandSink` do `vehicle_domain`.
+**Layer 3: Hardware & zonal architecture.** Pure Dart. Simulates the central gateway,
+the bus between zones, the zonal ECUs and "dumb" actuators with latency and faults.
+Implements the `CommandSink` from `vehicle_domain`.
 
-## Componentes
+## Components
 
-| Componente | Papel |
+| Component | Role |
 |---|---|
-| `ZonalCommandSink` | Recebe comandos aprovados e resolve a rota (`ZonalRoute`) |
-| `ZonalRoute` | Tabela tipada sinal → (zona, dispositivo). Sem entrada → ECU central |
-| `ZonalCommandBus` | Stream de eventos broadcast (não é estado do Riverpod: nenhum comando é perdido) |
-| `TopZoneController` | Teto solar com movimento a 10 Hz e injeção de falha |
-| `DoorZoneController(zone)` | Travas das portas das zonas west/east |
-| `GenericZoneController(zone)` | South/central: confirma o valor comandado (HVAC, bancos, suspensão…) |
-| `DumbSunroofActuator`, `DumbDoorActuator` | Atuadores físicos simulados |
-| `zonalSystemProvider` | Liga uma ECU por zona. Leia no boot do app |
+| `ZonalCommandSink` | Receives approved commands and resolves their route (`ZonalRoute`) |
+| `ZonalRoute` | Typed table signal → (zone, device). No entry → central ECU |
+| `ZonalCommandBus` | Broadcast event stream (not Riverpod state, so no command is ever coalesced) |
+| `TopZoneController` | Sunroof, moving at 10 Hz with fault injection |
+| `DoorZoneController(zone)` | Door locks in the west/east zones |
+| `GenericZoneController(zone)` | South/central: confirms the commanded value (HVAC, seats, suspension…) |
+| `DumbSunroofActuator`, `DumbDoorActuator` | Simulated physical actuators |
+| `zonalSystemProvider` | Starts one ECU per zone. Read it when the app boots |
 
-## Fluxo
+## Flow
 
 ```
 CommandSink.send ─▶ ZonalRoute.of(signal) ─▶ ZonalCommandBus.emit
-   └─▶ ECU da zona ─▶ atuador ─▶ VssBroker.publish(valor confirmado)
+   └─▶ zone ECU ─▶ actuator ─▶ VssBroker.publish(confirmed value)
 ```
 
-## Uso no app
+## App wiring
 
 ```dart
 final container = ProviderContainer(overrides: [
   commandSinkProvider.overrideWith((ref) => ZonalCommandSink(ref.watch(zonalCommandBusProvider))),
 ]);
-container.read(zonalSystemProvider); // boot das ECUs antes do primeiro comando
+container.read(zonalSystemProvider); // boot the ECUs before the first command
 ```
 
 ## Fault injection
@@ -39,15 +39,15 @@ container.read(zonalSystemProvider); // boot das ECUs antes do primeiro comando
 container.read(topZoneControllerProvider.notifier).injectSunroofFault(ActuatorFaultType.mechanicalJam);
 ```
 
-O atuador trava em 50% do curso e a ECU publica `Vehicle.Cabin.Sunroof.IsFaulted = true`.
+The actuator stops at 50% travel and the ECU publishes `Vehicle.Cabin.Sunroof.IsFaulted = true`.
 
-## Adicionar um atuador com modelo físico
+## Adding an actuator with a physical model
 
-1. Crie o atuador em `src/actuators/`.
-2. Crie (ou estenda) a ECU da zona em `src/controllers/`, como `@Riverpod(keepAlive: true)`.
-3. Adicione a rota em `ZonalRoute` e registre a ECU em `zonalSystemProvider`.
+1. Create the actuator in `src/actuators/`.
+2. Create (or extend) the zone ECU in `src/controllers/` as `@Riverpod(keepAlive: true)`.
+3. Add the route to `ZonalRoute` and register the ECU in `zonalSystemProvider`.
 
-## Testes
+## Tests
 
 ```
 dart test

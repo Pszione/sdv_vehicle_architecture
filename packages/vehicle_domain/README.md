@@ -1,38 +1,38 @@
 # vehicle_domain
 
-**Camada 2: Inteligência e regras.** Dart puro. Contém o contrato de sinais (spec VSS mestre),
-o estado confirmado do carro, o pipeline de comandos e as regras de segurança.
-**Não conhece a topologia E/E**: comandos aprovados saem por uma interface (`CommandSink`).
+**Layer 2: Intelligence & rules.** Pure Dart. Owns the signal contract (master VSS spec),
+the confirmed vehicle state, the command pipeline and the safety rules.
+**It does not know the E/E topology**: approved commands leave through an interface (`CommandSink`).
 
-## Componentes
+## Components
 
-| Componente | Papel |
+| Component | Role |
 |---|---|
-| `Vss` / `vssCatalog` | API tipada gerada de `lib/src/vss/vehicle.vss.json` |
-| `VehicleProfile` + `activeVehicleProfileProvider` | Quais sinais existem no modelo ativo (LHD/RHD, overrides) |
-| `VssBroker` | Último valor confirmado de cada sinal. Só ECUs e simuladores publicam |
-| `vssValueProvider(signal)` | Leitura granular: só notifica quando aquele sinal muda |
-| `CommandDispatcher` | Entrada única de comandos: valida, loga e envia ao `CommandSink` |
-| `CommandValidator` | Pipeline puro: capacidade → atuador → faixa do spec → `SafetyRule`s |
-| `canDispatchProvider(command)` | Dry run reativo, para habilitar/desabilitar controles |
-| `SafetyRule`s | Porta, teto solar, câmbio, recarga EV, pré-condicionamento, diferencial, suspensão, capota |
-| `VehicleLogger` | Audit log em ring buffer: comandos, rejeições e mudanças de atuadores |
+| `Vss` / `vssCatalog` | Typed API generated from `lib/src/vss/vehicle.vss.json` |
+| `VehicleProfile` + `activeVehicleProfileProvider` | Which signals exist in the active model (LHD/RHD, overrides) |
+| `VssBroker` | Latest confirmed value of every signal. Only ECUs and simulators publish |
+| `vssValueProvider(signal)` | Granular read: only notifies when that signal changes |
+| `CommandDispatcher` | Single entry point for commands: validates, logs and sends to the `CommandSink` |
+| `CommandValidator` | Pure pipeline: capability → actuator → spec range → `SafetyRule`s |
+| `canDispatchProvider(command)` | Reactive dry run, used to warn before the user taps |
+| `SafetyRule`s | Doors, sunroof, transmission, EV charging, preconditioning, diff lock, suspension, convertible top |
+| `VehicleLogger` | Ring-buffer audit log: commands, rejections and actuator changes |
 
-## Fluxo de um comando
+## Command flow
 
 ```
 VehicleCommand(signal: Vss..., value: ...)
   └─▶ CommandDispatcher.dispatch
-        ├─ sinal existe no perfil?          não → notSupportedByVehicle
-        ├─ é atuador?                       não → readOnlySignal
-        ├─ valor dentro de min/max/allowed? não → invalidPayload
-        ├─ SafetyRules com target == sinal  falha → rejectedBySafetyRule (logado)
-        └─ CommandSink.send(command)        → approved
+        ├─ signal in the profile?           no  → notSupportedByVehicle
+        ├─ is it an actuator?               no  → readOnlySignal
+        ├─ value within min/max/allowed?    no  → invalidPayload
+        ├─ SafetyRules whose target matches fail → rejectedBySafetyRule (logged)
+        └─ CommandSink.send(command)             → approved
 ```
 
-A confirmação física chega depois, como telemetria publicada no `VssBroker`.
+The physical confirmation arrives later, as telemetry published to the `VssBroker`.
 
-## Providers que o app precisa sobrescrever
+## Providers the app must override
 
 ```dart
 ProviderContainer(overrides: [
@@ -41,31 +41,31 @@ ProviderContainer(overrides: [
 ]);
 ```
 
-## Adicionar uma SafetyRule
+## Adding a SafetyRule
 
-1. Implemente `SafetyRule`: declare `target` (atuador), `inputs` (sinais lidos) e `validate`.
-2. Retorne `null` se for seguro e `CommandResult.rejected('motivo')` se não for. Ações de liberação
-   (destravar, fechar, desengatar) são sempre permitidas. Documente o que acontece quando um input está ausente.
-3. Registre em `activeSafetyRulesProvider`. A regra só roda se o `target` existe no perfil ativo.
+1. Implement `SafetyRule`: declare `target` (actuator), `inputs` (signals read) and `validate`.
+2. Return `null` when safe and `CommandResult.rejected('reason')` otherwise. Releasing actions
+   (unlock, close, disengage) are always allowed. Document what happens when an input is missing.
+3. Register it in `activeSafetyRulesProvider`. The rule only runs if its `target` exists in the active profile.
 
-## Adicionar sinais
+## Adding signals
 
-Edite `lib/src/vss/vehicle.vss.json` seguindo a nomenclatura do COVESA VSS mais recente
-e rode `dart run build_runner build`. Nunca edite `*.g.dart`.
+Edit `lib/src/vss/vehicle.vss.json` following the latest COVESA VSS naming and run
+`dart run build_runner build`. Never edit `*.g.dart`.
 
-## Estrutura
+## Structure
 
 ```
 lib/src/
-├── vss/            # vehicle.vss.json (spec mestre), VssSignal, árvore gerada
-├── profile/        # VehicleProfile, perfil ativo, isSignalSupported
+├── vss/            # vehicle.vss.json (master spec), VssSignal, generated tree
+├── profile/        # VehicleProfile, active profile, isSignalSupported
 ├── broker/         # VssBroker, vssValueProvider, SignalReader
 ├── dispatcher/     # CommandDispatcher, CommandValidator, CommandSink, canDispatch
-├── safety_rules/   # SafetyRule + implementações + activeSafetyRulesProvider
+├── safety_rules/   # SafetyRule + implementations + activeSafetyRulesProvider
 └── logger/         # VehicleLogger (audit log)
 ```
 
-## Testes
+## Tests
 
 ```
 dart test

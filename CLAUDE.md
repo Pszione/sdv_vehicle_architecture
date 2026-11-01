@@ -22,9 +22,12 @@ packages/
   vehicle_profiles/ pure Dart -> domain. Factory trims as lib/src/profiles/*.profile.json.
   zonal_system/     pure Dart -> domain. ZonalCommandBus (plain stream), ZonalRoute table,
                     ZonalCommandSink, zone ECUs (Top, Door west/east, Generic south/central), actuators.
-  vehicle_ui_kit/   Flutter -> domain. VehicleFeatureGuard, WidgetRef.watchSignal/dispatchCommand.
+  vehicle_simulators/ pure Dart -> domain. TelemetrySimulator + SimulationScenario presets (fake sensors).
+  vehicle_ui_kit/   Flutter -> domain. VehicleFeatureGuard, SafetyPrecheckBanner, VehicleControlCard,
+                    WidgetRef.watchSignal/dispatchCommand.
 apps/
-  infotainment/     composition root in main.dart; settings cards.
+  infotainment/     composition root in main.dart; Vehicle tab (production cards) and
+                    Simulator tab (sensors | reactive cards | audit log). Targets iPad landscape.
   digital_cluster/  still the Flutter template.
 ```
 
@@ -34,7 +37,9 @@ UI -> `ref.dispatchCommand(context, VehicleCommand(signal: Vss..., value: ...))`
 -> every `SafetyRule` whose `target` is the signal (first rejection wins, logged)
 -> `CommandSink` (app wires `ZonalCommandSink`) -> `ZonalRoute` -> bus -> zone ECU -> actuator
 -> ECU publishes the *confirmed* value to `VssBroker`. UI reads only the broker, never the command.
+Only zonal ECUs and `TelemetrySimulator` publish telemetry; widgets never write to the broker.
 `canDispatchProvider(command)` is the dry run; it re-evaluates only when a rule's `inputs` change.
+Controls stay enabled: `SafetyPrecheckBanner` warns ahead, the dispatcher has the final word.
 
 ## Model variants (no compile errors per model)
 One master spec = union of all signals, so all code compiles for every model.
@@ -50,7 +55,8 @@ the UI (VehicleFeatureGuard), the dispatcher (notSupported) and the broker.
 - Widgets watch single signals (`ref.watchSignal`), never the whole broker map; use `.select` on profile fields.
 - Long-lived infrastructure (broker, bus, ECUs, logger, dispatcher) is `keepAlive` and booted in `main.dart`.
 - Per-model behaviour: profiles or `ProviderScope` overrides, never `if (model == ...)` in packages.
-- No `print` (use `dart:developer` `log`). Never edit `*.g.dart`. Comments/UI strings in pt-BR.
+- No `print` (use `dart:developer` `log`). Never edit `*.g.dart`.
+- **Everything in English**: docs (READMEs, CLAUDE.md), dartdoc/comments, UI text and rule messages.
 - Formatter page width 120.
 
 ## Commands
@@ -73,4 +79,4 @@ values a mock was told to return. Avoid editing existing tests unless broken.
 - Spec paths keep the original project naming; several differ from official VSS 5
   (e.g. `Vehicle.Cabin.Seat.Row1.DriverSide`, `Door...IsOpen`, `SelectedGear` int8).
 - Switching profile resets the broker but not the actuators' internal state.
-- digital_cluster and simulators (e.g. AdasSimulatorEngine) are not wired yet.
+- digital_cluster and the 30 Hz ADAS simulator are not wired yet.
