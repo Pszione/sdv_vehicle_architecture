@@ -9,14 +9,9 @@ class LogEntry {
   final String source;
   final String? detailMessage;
 
-  LogEntry({
-    required this.type,
-    required this.vssPath,
-    required this.payload,
-    required this.source,
-    this.detailMessage,
-  })  : id = DateTime.now().microsecondsSinceEpoch.toString(),
-        timestamp = DateTime.now();
+  LogEntry({required this.type, required this.vssPath, required this.payload, required this.source, this.detailMessage})
+    : id = DateTime.now().microsecondsSinceEpoch.toString(),
+      timestamp = DateTime.now();
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -30,7 +25,8 @@ class LogEntry {
 
   @override
   String toString() {
-    final timeStr = '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}:${timestamp.second.toString().padLeft(2, '0')}.${timestamp.millisecond.toString().padLeft(3, '0')}';
+    final timeStr =
+        '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}:${timestamp.second.toString().padLeft(2, '0')}.${timestamp.millisecond.toString().padLeft(3, '0')}';
     return '[$timeStr] [${type.name.toUpperCase()}] [$source] $vssPath = $payload ${detailMessage != null ? '($detailMessage)' : ''}';
   }
 }

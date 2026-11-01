@@ -134,7 +134,9 @@ final class VssSpec {
     if (min != null && min is! num) _fail(path, '"min" deve ser numérico.');
     if (max != null && max is! num) _fail(path, '"max" deve ser numérico.');
     if (min is num && max is num && min > max) _fail(path, '"min" maior que "max".');
-    if (allowed != null && (allowed is! List || allowed.isEmpty)) _fail(path, '"allowed" deve ser uma lista não vazia.');
+    if (allowed != null && (allowed is! List || allowed.isEmpty)) {
+      _fail(path, '"allowed" deve ser uma lista não vazia.');
+    }
     if (defaultValue != null && !_matchesType(defaultValue, scalar, isArray)) {
       _fail(path, '"default" ($defaultValue) não é compatível com $datatype.');
     }

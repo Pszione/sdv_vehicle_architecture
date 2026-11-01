@@ -2,13 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../../vss/vss_signal.dart';
 
-enum CommandStatus {
-  approved,
-  rejectedBySafetyRule,
-  notSupportedByVehicle,
-  readOnlySignal,
-  invalidPayload,
-}
+enum CommandStatus { approved, rejectedBySafetyRule, notSupportedByVehicle, readOnlySignal, invalidPayload }
 
 @immutable
 final class CommandResult {

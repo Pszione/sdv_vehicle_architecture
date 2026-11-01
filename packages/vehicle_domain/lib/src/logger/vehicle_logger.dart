@@ -28,12 +28,7 @@ class VehicleLogger extends _$VehicleLogger {
   }
 
   void logCommand(VehicleCommand<Object> command) => _addEntry(
-    LogEntry(
-      type: LogType.command,
-      vssPath: command.signal.path,
-      payload: command.value,
-      source: command.source,
-    ),
+    LogEntry(type: LogType.command, vssPath: command.signal.path, payload: command.value, source: command.source),
   );
 
   void logSafetyRejection(VehicleCommand<Object> command, CommandResult result) => _addEntry(

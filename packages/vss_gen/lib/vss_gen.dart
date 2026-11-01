@@ -10,9 +10,8 @@ import 'package:build/build.dart';
 import 'src/vss_profile_builder.dart';
 import 'src/vss_tree_builder.dart';
 
-Builder vssTreeBuilder(BuilderOptions options) => VssTreeBuilder(
-  partOf: options.config['part_of'] as String? ?? 'vss.dart',
-);
+Builder vssTreeBuilder(BuilderOptions options) =>
+    VssTreeBuilder(partOf: options.config['part_of'] as String? ?? 'vss.dart');
 
 Builder vssProfileBuilder(BuilderOptions options) => VssProfileBuilder(
   specUri: options.config['spec'] as String,

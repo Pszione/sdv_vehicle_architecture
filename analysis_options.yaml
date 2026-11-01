@@ -2,6 +2,9 @@
 # vehicle_profiles, zonal_system). Pacotes Flutter usam flutter_lints.
 include: package:lints/recommended.yaml
 
+formatter:
+  page_width: 120
+
 analyzer:
   exclude:
     - "**/*.g.dart"

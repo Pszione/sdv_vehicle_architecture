@@ -31,7 +31,10 @@ void main() {
 
     expect(code, contains('final class _VssVehicleCabinDoorRow1 {'));
     expect(code, contains('final class _VssVehicleCabinHVACRow1 {'));
-    expect(code, contains("VssSignal<bool> get IsLocked => const VssSignal<bool>('Vehicle.Cabin.Door.Row1.IsLocked');"));
+    expect(
+      code,
+      contains("VssSignal<bool> get IsLocked => const VssSignal<bool>('Vehicle.Cabin.Door.Row1.IsLocked');"),
+    );
     expect(code, contains("VssSignal<int> get FanSpeed => const VssSignal<int>('Vehicle.Cabin.HVAC.Row1.FanSpeed');"));
   });
 
