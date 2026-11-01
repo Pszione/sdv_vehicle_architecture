@@ -32,8 +32,9 @@ class CommandDispatcher extends _$CommandDispatcher {
       return result;
     }
 
-    ref.read(commandSinkProvider).send(command);
+    // Loga antes de enviar: o barramento pode confirmar a telemetria de forma síncrona.
     logger.logCommand(command);
+    ref.read(commandSinkProvider).send(command);
     return result;
   }
 

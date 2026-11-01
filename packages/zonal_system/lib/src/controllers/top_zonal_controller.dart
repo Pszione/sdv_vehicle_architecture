@@ -1,66 +1,51 @@
 import 'dart:async';
+import 'dart:developer' as developer;
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:vehicle_domain/vehicle_domain.dart';
 
 import '../actuators/dumb_sunroof_actuator.dart';
+import '../bus/zonal_command_bus.dart';
 import '../domain/actuator_state.dart';
+import '../domain/vehicle_zone.dart';
 import '../domain/zonal_command.dart';
 
-part 'top_zone_controller.g.dart';
+part 'top_zonal_controller.g.dart';
 
-@riverpod
+/// ECU da zona superior: teto solar.
+@Riverpod(keepAlive: true)
 class TopZoneController extends _$TopZoneController {
-  final DumbSunroofActuator _sunroof = DumbSunroofActuator('SUNROOF_ACTUATOR');
-  StreamSubscription<ActuatorPositionProgress>? _movementSubscription;
+  final _sunroof = DumbSunroofActuator('SUNROOF_ACTUATOR');
+  StreamSubscription<ActuatorPositionProgress>? _movement;
 
   @override
   void build() {
-    // Escuta comandos no Barramento Zonal
-    ref.listen<AsyncValue<ZonalCommand>>(zonalCommandBusProvider, (previous, next) {
-      next.whenData((command) {
-        if (command.targetZone == 'ZONE_TOP') {
-          _processCommand(command);
-        }
-      });
+    final commands = ref.watch(zonalCommandBusProvider).commandsFor(VehicleZone.top).listen(_process);
+    ref.onDispose(() {
+      commands.cancel();
+      _movement?.cancel();
     });
-
-    ref.onDispose(() => _movementSubscription?.cancel());
   }
 
-  /// Método utilitário para injeção de falha via painel de testes/simulador
-  void injectSunroofFault(ActuatorFaultType fault) {
-    _sunroof.injectFault(fault);
-  }
+  /// Injeção de falha via painel de testes/simulador.
+  void injectSunroofFault(ActuatorFaultType fault) => _sunroof.injectFault(fault);
 
-  void _processCommand(ZonalCommand command) {
-    if (command.deviceId == _sunroof.id && command.vssPath == 'Vehicle.Cabin.Sunroof.Position') {
-      final double targetPos = (command.actionPayload as num).toDouble();
+  void _process(ZonalCommand command) {
+    final position = Vss.Vehicle.Cabin.Sunroof.Position;
+    if (command.deviceId != _sunroof.id || command.signal != position) return;
 
-      // Cancela movimentação anterior se um novo comando chegar
-      _movementSubscription?.cancel();
+    // Um novo comando substitui o movimento em andamento.
+    _movement?.cancel();
+    _movement = _sunroof.moveTo(command.command.value as double).listen((progress) {
+      final broker = ref.read(vssBrokerProvider.notifier);
+      broker.publish(position, progress.position);
 
-      // Inicia a movimentação física assíncrona
-      _movementSubscription = _sunroof.moveTo(targetPos).listen((progress) {
-        // 1. Atualiza a posição em tempo real no VssBroker (0.0 -> 0.1 -> 0.2 ...)
-        ref.read(vssBrokerProvider.notifier).setSignal(
-          'Vehicle.Cabin.Sunroof.Position',
-          progress.position,
-        );
-
-        // 2. Se ocorreu uma falha, notifica o sinal VSS de Diagnóstico (DTC)
-        if (progress.state == ActuatorState.stuck || progress.state == ActuatorState.fault) {
-          print('[TopZoneController] FALHA NO ATUADOR: ${progress.fault} na posição ${progress.position}');
-
-          ref.read(vssBrokerProvider.notifier).setSignal(
-            'Vehicle.Cabin.Sunroof.IsFaulted',
-            true,
-          );
-        } else {
-          ref.read(vssBrokerProvider.notifier).setSignal(
-            'Vehicle.Cabin.Sunroof.IsFaulted',
-            false,
-          );
-        }
-      });
-    }
+      final isFaulted = progress.state == ActuatorState.stuck || progress.state == ActuatorState.fault;
+      if (isFaulted) {
+        developer.log('Falha no atuador: ${progress.fault} em ${progress.position}', name: 'TopZoneController');
+      }
+      // O broker ignora valores repetidos, então publicar a cada passo não gera rebuilds.
+      broker.publish(Vss.Vehicle.Cabin.Sunroof.IsFaulted, isFaulted);
+    });
   }
 }

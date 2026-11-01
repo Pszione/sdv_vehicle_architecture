@@ -20,8 +20,6 @@ class DumbSunroofActuator {
   ActuatorState _state = ActuatorState.idle;
   ActuatorFaultType _injectedFault = ActuatorFaultType.none;
 
-  Timer? _movementTimer;
-
   DumbSunroofActuator(this.id);
 
   double get position => _currentPosition;
@@ -35,7 +33,6 @@ class DumbSunroofActuator {
 
   /// Executa a movimentação física com latência calculada
   Stream<ActuatorPositionProgress> moveTo(double targetPosition, {double speedPerSecond = 0.25}) async* {
-    _movementTimer?.cancel();
     targetPosition = targetPosition.clamp(0.0, 1.0);
 
     if ((_currentPosition - targetPosition).abs() < 0.01) {
@@ -94,7 +91,6 @@ class DumbSunroofActuator {
   }
 
   void stop() {
-    _movementTimer?.cancel();
     _state = ActuatorState.idle;
   }
 }

@@ -1,16 +1,20 @@
-class ZonalCommand {
-  final String targetZone;  // Ex: "ZONE_WEST", "ZONE_EAST"
-  final String deviceId;    // Ex: "DOOR_FRONT_LEFT", "SUNROOF"
-  final String vssPath;     // Ex: "Vehicle.Cabin.Door.Row1.Left.IsLocked"
-  final dynamic actionPayload;
+import 'package:vehicle_domain/vehicle_domain.dart';
+
+import 'vehicle_zone.dart';
+
+/// Comando já aprovado pelo dispatcher e endereçado a um dispositivo de uma zona.
+final class ZonalCommand {
+  ZonalCommand({required this.targetZone, required this.deviceId, required this.command})
+    : commandId = DateTime.now().microsecondsSinceEpoch.toString(),
+      timestamp = DateTime.now().millisecondsSinceEpoch;
+
+  final VehicleZone targetZone;
+
+  /// Ex: "DOOR_FRONT_LEFT", "SUNROOF_ACTUATOR".
+  final String deviceId;
+  final VehicleCommand<Object> command;
   final String commandId;
   final int timestamp;
 
-  ZonalCommand({
-    required this.targetZone,
-    required this.deviceId,
-    required this.vssPath,
-    required this.actionPayload,
-  })  : commandId = DateTime.now().microsecondsSinceEpoch.toString(),
-        timestamp = DateTime.now().millisecondsSinceEpoch;
+  VssSignal<Object> get signal => command.signal;
 }
