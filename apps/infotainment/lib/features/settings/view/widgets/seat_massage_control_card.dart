@@ -5,8 +5,8 @@ import 'package:vehicle_ui_kit/vehicle_ui_kit.dart';
 
 import '../../../../core/command_source.dart';
 
-/// Massagem do banco do motorista. O lado do banco vem do perfil (LHD/RHD)
-/// e os modos vêm do `allowed` do spec VSS.
+/// Driver seat massage. The seat side comes from the profile (LHD/RHD) and the
+/// modes come from the VSS spec `allowed` list.
 class SeatMassageControlCard extends ConsumerWidget {
   const SeatMassageControlCard({super.key});
 
@@ -33,29 +33,24 @@ class _MassageModeSelector extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final allowed = ref.watch(activeVehicleProfileProvider.select((profile) => profile.metaOf(mode)?.allowed));
-    final current = ref.watchSignal(mode);
     final modes = allowed?.cast<String>() ?? const <String>[];
+    final current = ref.watchSignal(mode) ?? modes.firstOrNull;
     if (modes.isEmpty) return const SizedBox.shrink();
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: .start,
-          children: [
-            const ListTile(leading: Icon(Icons.airline_seat_recline_extra), title: Text('Massagem do motorista')),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SegmentedButton<String>(
-                segments: [for (final m in modes) ButtonSegment(value: m, label: Text(m))],
-                selected: {current ?? modes.first},
-                onSelectionChanged: (selection) => ref.dispatchCommand(
-                  context,
-                  VehicleCommand(signal: mode, value: selection.first, source: infotainmentCommandSource),
-                ),
-              ),
-            ),
-          ],
+    return VehicleControlCard(
+      icon: Icons.airline_seat_recline_extra,
+      title: 'Driver seat massage',
+      status: current,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SegmentedButton<String>(
+          segments: [for (final m in modes) ButtonSegment(value: m, label: Text(m))],
+          selected: {?current},
+          emptySelectionAllowed: true,
+          onSelectionChanged: (selection) => ref.dispatchCommand(
+            context,
+            VehicleCommand(signal: mode, value: selection.first, source: infotainmentCommandSource),
+          ),
         ),
       ),
     );

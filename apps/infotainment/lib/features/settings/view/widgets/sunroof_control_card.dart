@@ -5,8 +5,8 @@ import 'package:vehicle_ui_kit/vehicle_ui_kit.dart';
 
 import '../../../../core/command_source.dart';
 
-/// Teto solar: o comando sai ao soltar o slider. Depois disso, o slider segue
-/// a posição real reportada pelo atuador.
+/// Sunroof: the command is sent when the slider is released. After that, the
+/// slider follows the real position reported by the actuator.
 class SunroofControlCard extends ConsumerStatefulWidget {
   const SunroofControlCard({super.key});
 
@@ -15,7 +15,7 @@ class SunroofControlCard extends ConsumerStatefulWidget {
 }
 
 class _SunroofControlCardState extends ConsumerState<SunroofControlCard> {
-  /// Valor enquanto o usuário arrasta; `null` mostra a telemetria.
+  /// Value while the user drags; `null` shows the telemetry.
   double? _dragValue;
 
   @override
@@ -24,14 +24,13 @@ class _SunroofControlCardState extends ConsumerState<SunroofControlCard> {
     final position = ref.watchSignal(sunroof.Position) ?? 0.0;
     final isFaulted = ref.watchSignal(sunroof.IsFaulted) ?? false;
 
-    return Card(
+    return VehicleControlCard(
+      icon: isFaulted ? Icons.warning_amber : Icons.wb_sunny_outlined,
+      title: 'Sunroof',
+      status: isFaulted ? 'ACTUATOR FAULT' : '${(position * 100).round()}% OPEN',
+      statusColor: isFaulted ? Colors.redAccent : null,
       child: Column(
         children: [
-          ListTile(
-            leading: Icon(isFaulted ? Icons.warning_amber : Icons.wb_sunny_outlined),
-            title: const Text('Teto solar'),
-            subtitle: Text(isFaulted ? 'Falha no atuador' : '${(position * 100).round()}% aberto'),
-          ),
           Slider(
             value: _dragValue ?? position,
             onChanged: (value) => setState(() => _dragValue = value),
@@ -42,6 +41,9 @@ class _SunroofControlCardState extends ConsumerState<SunroofControlCard> {
                 VehicleCommand(signal: sunroof.Position, value: value, source: infotainmentCommandSource),
               );
             },
+          ),
+          SafetyPrecheckBanner(
+            command: VehicleCommand(signal: sunroof.Position, value: 1.0, source: infotainmentCommandSource),
           ),
         ],
       ),

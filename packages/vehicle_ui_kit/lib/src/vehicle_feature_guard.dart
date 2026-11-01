@@ -2,8 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vehicle_domain/vehicle_domain.dart';
 
-/// Mostra [child] só se o perfil ativo tem o [signal]. Caso contrário, mostra
-/// [fallback] (ex: uma versão desabilitada) ou nada.
+/// Shows [child] only if the active profile has [signal]. Otherwise shows
+/// [fallback] (e.g. a disabled version) or nothing.
 class VehicleFeatureGuard extends ConsumerWidget {
   const VehicleFeatureGuard({super.key, required this.signal, required this.child, this.fallback});
 

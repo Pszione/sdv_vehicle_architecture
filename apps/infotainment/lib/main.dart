@@ -6,7 +6,7 @@ import 'package:zonal_system/zonal_system.dart';
 
 import 'app/ev_suv_app.dart';
 
-/// Composition root: define o modelo do carro e liga o domínio ao barramento zonal.
+/// Composition root: picks the car model and wires the domain to the zonal bus.
 void main() {
   final container = ProviderContainer(
     overrides: [
@@ -15,7 +15,7 @@ void main() {
     ],
   );
 
-  // Boot: ECUs zonais e audit log precisam estar vivos antes do primeiro comando.
+  // Boot: zonal ECUs and the audit log must be alive before the first command.
   container
     ..read(zonalSystemProvider)
     ..read(vehicleLoggerProvider);

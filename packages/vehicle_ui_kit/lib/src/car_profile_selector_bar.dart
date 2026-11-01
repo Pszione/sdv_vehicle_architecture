@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vehicle_domain/vehicle_domain.dart';
 
-/// Troca o perfil do veículo ao vivo (ferramenta de simulação/demonstração).
+/// Switches the vehicle profile live (simulation/demo tool).
 class CarProfileSelectorBar extends ConsumerWidget {
   const CarProfileSelectorBar({super.key, required this.profiles});
 
@@ -20,7 +20,7 @@ class CarProfileSelectorBar extends ConsumerWidget {
           const Icon(Icons.time_to_leave, color: Colors.white70),
           const SizedBox(width: 12),
           const Text(
-            'Perfil do Veículo:',
+            'Vehicle profile:',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 16),

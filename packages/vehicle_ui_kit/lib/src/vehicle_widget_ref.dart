@@ -2,16 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vehicle_domain/vehicle_domain.dart';
 
-/// Acesso tipado aos sinais e ao dispatcher a partir de widgets.
+/// Typed access to signals and to the dispatcher from widgets.
 extension VehicleWidgetRef on WidgetRef {
-  /// Observa um único sinal. O widget só é reconstruído quando *este* valor muda.
+  /// Watches a single signal. The widget only rebuilds when *this* value changes.
   T? watchSignal<T extends Object>(VssSignal<T> signal) => watch(vssValueProvider(signal)) as T?;
 
-  /// Envia o comando pelo `CommandDispatcher` e mostra o motivo se ele for recusado.
+  /// Sends the command through the `CommandDispatcher` and shows the reason when it is rejected.
   CommandResult dispatchCommand(BuildContext context, VehicleCommand<Object> command) {
     final result = read(commandDispatcherProvider.notifier).dispatch(command);
     if (!result.isSuccess) {
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(content: Text(result.message ?? 'Comando recusado.')));
+      ScaffoldMessenger.maybeOf(context)
+        ?..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red.shade900,
+            content: Row(
+              children: [
+                const Icon(Icons.block, color: Colors.white),
+                const SizedBox(width: 12),
+                Expanded(child: Text(result.message ?? 'Command rejected.')),
+              ],
+            ),
+          ),
+        );
     }
     return result;
   }

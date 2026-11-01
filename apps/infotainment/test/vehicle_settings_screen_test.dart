@@ -17,11 +17,11 @@ void main() {
       ),
     );
 
-    expect(find.text('Teto solar'), findsNothing);
+    expect(find.text('Sunroof'), findsNothing);
 
     container.read(activeVehicleProfileProvider.notifier).setProfile(premiumProfile);
     await tester.pump();
 
-    expect(find.text('Teto solar'), findsOneWidget);
+    expect(find.text('Sunroof'), findsOneWidget);
   });
 }

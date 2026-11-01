@@ -81,10 +81,7 @@ final class SimulationScenario {
     SimulationScenario(
       name: 'Winter morning',
       description: 'Parked, -5 °C outside.',
-      readings: [
-        SimulatedReading(Vss.Vehicle.Speed, 0.0),
-        SimulatedReading(Vss.Vehicle.Exterior.AirTemperature, -5.0),
-      ],
+      readings: [SimulatedReading(Vss.Vehicle.Speed, 0.0), SimulatedReading(Vss.Vehicle.Exterior.AirTemperature, -5.0)],
     ),
   ];
 }
