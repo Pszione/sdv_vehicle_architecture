@@ -9,6 +9,4 @@ environment:
 dependencies:
   build: ^4.0.7
 dev_dependencies:
-  build_runner: ^2.15.1
-  build_test: ^3.5.16
   test: ^1.26.3

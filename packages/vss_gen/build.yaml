@@ -1,0 +1,20 @@
+builders:
+  vss_tree:
+    import: "package:vss_gen/vss_gen.dart"
+    builder_factories: ["vssTreeBuilder"]
+    build_extensions: { ".vss.json": [".vss.g.dart"] }
+    auto_apply: none
+    build_to: source
+    defaults:
+      options:
+        part_of: vss.dart
+
+  vss_profile:
+    import: "package:vss_gen/vss_gen.dart"
+    builder_factories: ["vssProfileBuilder"]
+    build_extensions: { ".profile.json": [".profile.g.dart"] }
+    auto_apply: none
+    build_to: source
+    defaults:
+      options:
+        part_of: factory_profiles.dart
