@@ -14,37 +14,38 @@ workspace:
   - apps/infotainment
   - apps/digital_cluster
 
+dev_dependencies:
+  melos: ^8.10.0
+  lints: ^6.1.0
+
 melos:
   scripts:
     generate:
       description: Roda o build_runner (Riverpod + VSS) em ordem topológica.
-      run: dart run build_runner build
       exec:
+        command: dart run build_runner build
         concurrency: 1
         orderDependents: true
       packageFilters:
         dependsOn: build_runner
     analyze:
       description: Analisa todos os pacotes.
-      run: dart analyze --fatal-infos .
       exec:
+        command: dart analyze --fatal-infos .
         concurrency: 1
     test:dart:
       description: Testes dos pacotes Dart puros.
-      run: dart test
       exec:
+        command: dart test
         concurrency: 1
       packageFilters:
         flutter: false
         dirExists: test
     test:flutter:
       description: Testes dos pacotes e apps Flutter.
-      run: flutter test
       exec:
+        command: flutter test
         concurrency: 1
       packageFilters:
         flutter: true
         dirExists: test
-dev_dependencies:
-  melos: ^8.10.0
-  lints: ^6.1.0

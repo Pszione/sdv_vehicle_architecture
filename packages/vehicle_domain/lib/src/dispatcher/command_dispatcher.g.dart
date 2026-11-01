@@ -90,7 +90,7 @@ final class CommandDispatcherProvider
   }
 }
 
-String _$commandDispatcherHash() => r'2c91847defd3ba3db96331fc692b4631edb879b7';
+String _$commandDispatcherHash() => r'212b0bc83e6a6c330748ae8c8c03d124a0162b01';
 
 /// Ponto de entrada único para comandos ao veículo.
 

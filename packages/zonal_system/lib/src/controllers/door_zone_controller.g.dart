@@ -62,7 +62,7 @@ final class DoorZoneControllerProvider
 }
 
 String _$doorZoneControllerHash() =>
-    r'6f80b09fc6413e013d53346c4ebb4dd630e6dedc';
+    r'e4ca7721221685e12ae402648fa4e52fe6a7a898';
 
 /// ECU de uma zona lateral (west/east): travas das portas daquele lado.
 

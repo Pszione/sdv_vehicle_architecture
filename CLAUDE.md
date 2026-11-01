@@ -1,68 +1,76 @@
 # CLAUDE.md
 
 Software-Defined Vehicle (SDV) simulation for a luxury EV, in Flutter/Dart.
-Pure-Dart "vehicle brain" (signal broker, safety rules, zonal controllers)
-driving two Flutter HMIs. Inspired by COVESA VSS / Eclipse SDV zonal architectures.
+Pure-Dart "vehicle brain" (VSS broker, dispatcher, safety rules, zonal ECUs)
+driving Flutter HMIs. Inspired by COVESA VSS / Eclipse SDV zonal architectures.
 
 ## Stack
-- Dart SDK ^3.10 (dot shorthands like `.center` are allowed), Flutter.
-- Riverpod 3 with codegen (`@riverpod`, `Notifier`, `AsyncNotifier`).
-  Use `.select()` for widgets bound to high-frequency signals (cluster runs at 60 FPS).
-- `build_runner` for Riverpod and VSS code generation.
-- Melos is the intended monorepo tool (no `melos.yaml` yet).
+- Dart SDK ^3.10 (dot shorthands like `.center` are fine), Flutter.
+- Riverpod 3 + riverpod_generator (`@riverpod`, `@Riverpod(keepAlive: true)`).
+  `select` needs `import 'package:riverpod/riverpod.dart'` (not re-exported by riverpod_annotation).
+- Pub workspace + Melos 8 (config lives in the root `pubspec.yaml`, no `melos.yaml`).
+- Versions are whatever pub resolves against the installed Flutter SDK; don't hand-pin.
 
-## Layout
+## Layout and dependency graph
 ```
-apps/
-  infotainment/      Center display: HVAC, media, vehicle settings. Composes the ProviderScope
-                     (active profile + safety-rule overrides per vehicle model).
-  digital_cluster/   Instrument cluster: speed, ADAS rendering. (Still the Flutter template.)
 packages/
-  vss_gen/           Builder: VSS JSON spec -> typed `Vss.Vehicle...` path getters.
-                     Spec: lib/src/vss_spec_luxury.json. Generator: lib/tools/vss_generator.dart.
-  vehicle_domain/    Business rules: VehicleCommand/CommandResult, SafetyRule implementations,
-                     CommandDispatcher (validate -> route -> emit), VehicleLogger (ring-buffer audit log).
-  vehicle_profiles/  Trims/capabilities (VehicleProfile, ActiveVehicleProfile). Drives feature gating.
-  zonal_system/      Simulation engine: ZonalCommandBus, zone controllers (Top, West, ...),
-                     "dumb" actuators with fault injection. VssBroker belongs here (not written yet).
-  vehicle_ui_kit/    Shared widgets (CarProfileSelectorBar; VehicleFeatureGuard should move here).
+  vss_gen/          builders only (dev_dependency). vss_tree: *.vss.json -> Vss tree + vssCatalog.
+                    vss_profile: *.profile.json -> const VehicleProfile, validated against the spec.
+  vehicle_domain/   pure Dart. Master spec lib/src/vss/vehicle.vss.json, VehicleProfile + active
+                    profile, VssBroker, CommandDispatcher/CommandValidator, SafetyRules, VehicleLogger.
+                    Knows nothing about zones: approved commands go to the CommandSink interface.
+  vehicle_profiles/ pure Dart -> domain. Factory trims as lib/src/profiles/*.profile.json.
+  zonal_system/     pure Dart -> domain. ZonalCommandBus (plain stream), ZonalRoute table,
+                    ZonalCommandSink, zone ECUs (Top, Door west/east, Generic south/central), actuators.
+  vehicle_ui_kit/   Flutter -> domain. VehicleFeatureGuard, WidgetRef.watchSignal/dispatchCommand.
+apps/
+  infotainment/     composition root in main.dart; settings cards.
+  digital_cluster/  still the Flutter template.
 ```
 
-## Command flow (the core invariant)
-UI -> `CommandDispatcher.dispatch(VehicleCommand)`
-  1. capability check (`isSignalSupportedProvider(path)` from the active profile)
-  2. every rule in `activeSafetyRulesProvider` (first rejection wins, logged)
-  3. resolve zone + deviceId -> `ZonalCommand` on `ZonalCommandBus`
-Zone controller -> actuator -> writes the *confirmed* value to the VssBroker.
-UI reads state only from the broker, never from the command it sent.
-`evaluate()` / `canDispatchProvider` is the dry run used to enable/disable controls.
+## Command flow (core invariant)
+UI -> `ref.dispatchCommand(context, VehicleCommand(signal: Vss..., value: ...))`
+-> `CommandValidator`: signal in profile -> is actuator -> value within spec min/max/allowed
+-> every `SafetyRule` whose `target` is the signal (first rejection wins, logged)
+-> `CommandSink` (app wires `ZonalCommandSink`) -> `ZonalRoute` -> bus -> zone ECU -> actuator
+-> ECU publishes the *confirmed* value to `VssBroker`. UI reads only the broker, never the command.
+`canDispatchProvider(command)` is the dry run; it re-evaluates only when a rule's `inputs` change.
+
+## Model variants (no compile errors per model)
+One master spec = union of all signals, so all code compiles for every model.
+A profile lists the signals a model has (+ min/max/allowed overrides, driverSide).
+Unknown paths in a profile fail the build. At runtime the active profile gates
+the UI (VehicleFeatureGuard), the dispatcher (notSupported) and the broker.
 
 ## Conventions
-- Never hardcode VSS strings: use generated `Vss.Vehicle...` getters.
-- A `SafetyRule` returns `null` for "not my concern / safe" and `CommandResult.rejected(msg)` otherwise.
-  Rules first check their target path and payload, then capability (skip if unsupported).
-  Releasing actions (unlock, close, disengage) are always allowed.
-- Per-model behaviour is added through `ProviderScope` overrides in the app, not `if (model == ...)` in packages.
-- Domain packages stay Flutter-free where possible; widgets only in apps and `vehicle_ui_kit`.
-- File = one class or provider; features under `lib/src/<feature>/{domain,providers}`; packages export via a barrel file.
-- Code comments and user-facing strings are in pt-BR.
-- Use a logger instead of `print`. Generated `*.g.dart` files are never edited by hand.
+- Never hardcode VSS strings: use `Vss.Vehicle...` (const `VssSignal<T>`). New signals: edit
+  `vehicle.vss.json` (official vss-tools JSON shape, follow the latest COVESA VSS naming), rebuild.
+- SafetyRule: declare `target` and `inputs`, read via `SignalReader`, return `null` when safe.
+  Releasing actions (unlock, close, disengage) are always allowed. State the fallback when an input is missing.
+- Widgets watch single signals (`ref.watchSignal`), never the whole broker map; use `.select` on profile fields.
+- Long-lived infrastructure (broker, bus, ECUs, logger, dispatcher) is `keepAlive` and booted in `main.dart`.
+- Per-model behaviour: profiles or `ProviderScope` overrides, never `if (model == ...)` in packages.
+- No `print` (use `dart:developer` `log`). Never edit `*.g.dart`. Comments/UI strings in pt-BR.
+- Formatter page width 120.
 
-## Commands (per package until Melos is set up)
+## Commands
 ```
-dart run build_runner build --delete-conflicting-outputs   # Riverpod + VSS codegen
-flutter analyze
-flutter test
+dart run melos run generate      # build_runner in every package, topological order
+dart run melos run analyze
+dart run melos run test:dart     # pure Dart packages
+dart run melos run test:flutter  # ui_kit + apps
 ```
+build_runner 2.15 ignores `--delete-conflicting-outputs`; plain `build` is enough.
+Commit generated files (`build_to: source`).
 
 ## Tests
-Few, focused on main logic (safety rules, dispatcher pipeline, actuator state machine, generator output).
-Name tests `should <result> when <condition>`. Use a real `ProviderContainer` with overrides;
-don't assert on values a mock was told to return ("mock echo"). Avoid editing existing tests unless broken.
+Few, focused on main logic. Name them `should <result> when <condition>`.
+Use `ProviderContainer.test` with overrides; Riverpod 3 flushes listeners async (`await container.pump()`).
+Capture outputs with a recording fake (e.g. a `CommandSink` that stores commands), don't assert on
+values a mock was told to return. Avoid editing existing tests unless broken.
 
-## Current state (early scaffold, does not compile yet)
-- Missing: VssBroker (`vssBrokerProvider`, `vssSignalProvider`, `isSignalSupportedProvider`),
-  `TransmissionSafetyRule`, `DumbDoorActuator`, `evSuvProfile`, `EvSuvApp`, the control cards,
-  Riverpod/build deps in package pubspecs, real barrel exports (still the `Calculator` template), imports.
-- Root `build.yaml` is a placeholder (`your_app_name`); the builder config belongs in `packages/vss_gen/build.yaml`.
-- The VSS generator names classes by leaf key (`_VssRow1`, `_VssLeft`...), which collides across branches.
+## Known gaps
+- Spec paths keep the original project naming; several differ from official VSS 5
+  (e.g. `Vehicle.Cabin.Seat.Row1.DriverSide`, `Door...IsOpen`, `SelectedGear` int8).
+- Switching profile resets the broker but not the actuators' internal state.
+- digital_cluster and simulators (e.g. AdasSimulatorEngine) are not wired yet.

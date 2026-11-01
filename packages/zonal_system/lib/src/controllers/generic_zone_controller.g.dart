@@ -74,7 +74,7 @@ final class GenericZoneControllerProvider
 }
 
 String _$genericZoneControllerHash() =>
-    r'5fe24fd0437f5ce47997d77c00338dc8dfc06fe0';
+    r'19df8c5fc40df3fb286ebce9608e0069814e5b31';
 
 /// ECU genérica para atuadores ainda sem simulação física (HVAC, bancos,
 /// suspensão...): confirma o valor comandado como telemetria, sem latência.
