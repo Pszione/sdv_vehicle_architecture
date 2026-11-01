@@ -8,27 +8,36 @@ part of 'telemetry_simulator.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Fake sensors: publishes readings to the [VssBroker] as if they came from ECUs.
+/// Simulated world around the car, with three clearly separated paths:
 ///
-/// This is the only place outside the zonal ECUs allowed to publish telemetry.
-/// The broker still validates every value against the spec and the active
-/// profile, so a reading the car does not have is ignored ([SignalWriteResult.notSupported]).
+/// - [report]: a **sensor** reading (speed, door open, SoC...) published to the [VssBroker],
+///   as an ECU would. Actuators are refused.
+/// - [command]: an **actuator** request that goes through the `CommandDispatcher`, so every
+///   safety rule applies (source `SIMULATOR`).
+/// - [forceActuatorState]: test-only override that writes an actuator state directly,
+///   **bypassing every rule**, and logs it as `FORCED` in the audit log.
 
 @ProviderFor(TelemetrySimulator)
 final telemetrySimulatorProvider = TelemetrySimulatorProvider._();
 
-/// Fake sensors: publishes readings to the [VssBroker] as if they came from ECUs.
+/// Simulated world around the car, with three clearly separated paths:
 ///
-/// This is the only place outside the zonal ECUs allowed to publish telemetry.
-/// The broker still validates every value against the spec and the active
-/// profile, so a reading the car does not have is ignored ([SignalWriteResult.notSupported]).
+/// - [report]: a **sensor** reading (speed, door open, SoC...) published to the [VssBroker],
+///   as an ECU would. Actuators are refused.
+/// - [command]: an **actuator** request that goes through the `CommandDispatcher`, so every
+///   safety rule applies (source `SIMULATOR`).
+/// - [forceActuatorState]: test-only override that writes an actuator state directly,
+///   **bypassing every rule**, and logs it as `FORCED` in the audit log.
 final class TelemetrySimulatorProvider
     extends $NotifierProvider<TelemetrySimulator, void> {
-  /// Fake sensors: publishes readings to the [VssBroker] as if they came from ECUs.
+  /// Simulated world around the car, with three clearly separated paths:
   ///
-  /// This is the only place outside the zonal ECUs allowed to publish telemetry.
-  /// The broker still validates every value against the spec and the active
-  /// profile, so a reading the car does not have is ignored ([SignalWriteResult.notSupported]).
+  /// - [report]: a **sensor** reading (speed, door open, SoC...) published to the [VssBroker],
+  ///   as an ECU would. Actuators are refused.
+  /// - [command]: an **actuator** request that goes through the `CommandDispatcher`, so every
+  ///   safety rule applies (source `SIMULATOR`).
+  /// - [forceActuatorState]: test-only override that writes an actuator state directly,
+  ///   **bypassing every rule**, and logs it as `FORCED` in the audit log.
   TelemetrySimulatorProvider._()
     : super(
         from: null,
@@ -57,13 +66,16 @@ final class TelemetrySimulatorProvider
 }
 
 String _$telemetrySimulatorHash() =>
-    r'0f158b2d9fd19c5cf49616af095ff35fea38aad2';
+    r'e3f2f27c653ead4413f99d6bd09010918fe36adb';
 
-/// Fake sensors: publishes readings to the [VssBroker] as if they came from ECUs.
+/// Simulated world around the car, with three clearly separated paths:
 ///
-/// This is the only place outside the zonal ECUs allowed to publish telemetry.
-/// The broker still validates every value against the spec and the active
-/// profile, so a reading the car does not have is ignored ([SignalWriteResult.notSupported]).
+/// - [report]: a **sensor** reading (speed, door open, SoC...) published to the [VssBroker],
+///   as an ECU would. Actuators are refused.
+/// - [command]: an **actuator** request that goes through the `CommandDispatcher`, so every
+///   safety rule applies (source `SIMULATOR`).
+/// - [forceActuatorState]: test-only override that writes an actuator state directly,
+///   **bypassing every rule**, and logs it as `FORCED` in the audit log.
 
 abstract class _$TelemetrySimulator extends $Notifier<void> {
   void build();
