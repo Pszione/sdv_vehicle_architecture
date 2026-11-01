@@ -7,11 +7,7 @@ class ActuatorPositionProgress {
   final ActuatorState state;
   final ActuatorFaultType fault;
 
-  ActuatorPositionProgress({
-    required this.position,
-    required this.state,
-    this.fault = ActuatorFaultType.none,
-  });
+  ActuatorPositionProgress({required this.position, required this.state, this.fault = ActuatorFaultType.none});
 }
 
 class DumbSunroofActuator {
