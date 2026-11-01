@@ -22,7 +22,8 @@ packages/
   vehicle_profiles/ pure Dart -> domain. Factory trims as lib/src/profiles/*.profile.json.
   zonal_system/     pure Dart -> domain. ZonalCommandBus (plain stream), ZonalRoute table,
                     ZonalCommandSink, zone ECUs (Top, Door west/east, Generic south/central), actuators.
-  vehicle_simulators/ pure Dart -> domain. TelemetrySimulator + SimulationScenario presets (fake sensors).
+  vehicle_simulators/ pure Dart -> domain. TelemetrySimulator: report() sensors, command() actuators via
+                    the dispatcher, forceActuatorState() bypasses rules (logged FORCED). Scenarios = steps.
   vehicle_ui_kit/   Flutter -> domain. VehicleFeatureGuard, SafetyPrecheckBanner, VehicleControlCard,
                     WidgetRef.watchSignal/dispatchCommand.
 apps/
@@ -38,6 +39,9 @@ UI -> `ref.dispatchCommand(context, VehicleCommand(signal: Vss..., value: ...))`
 -> `CommandSink` (app wires `ZonalCommandSink`) -> `ZonalRoute` -> bus -> zone ECU -> actuator
 -> ECU publishes the *confirmed* value to `VssBroker`. UI reads only the broker, never the command.
 Only zonal ECUs and `TelemetrySimulator` publish telemetry; widgets never write to the broker.
+`VehicleBehavior`s (auto-lock, auto-park...) react to broker changes and issue commands through the
+dispatcher on the next cycle (`VehicleBehaviorEngine`), so rules always apply. HMI lockouts
+(`hmiLockoutReasonProvider`) are UI policy, not commands.
 `canDispatchProvider(command)` is the dry run; it re-evaluates only when a rule's `inputs` change.
 Controls stay enabled: `SafetyPrecheckBanner` warns ahead, the dispatcher has the final word.
 
@@ -50,6 +54,8 @@ the UI (VehicleFeatureGuard), the dispatcher (notSupported) and the broker.
 ## Conventions
 - Never hardcode VSS strings: use `Vss.Vehicle...` (const `VssSignal<T>`). New signals: edit
   `vehicle.vss.json` (official vss-tools JSON shape, follow the latest COVESA VSS naming), rebuild.
+- String signal values come from `vss_values.dart` (`Gear.park`, `EscMode.off`...); door/seat groups and the
+  LHD/RHD driver door/seat from `VehicleGroups`.
 - SafetyRule: declare `target` and `inputs`, read via `SignalReader`, return `null` when safe.
   Releasing actions (unlock, close, disengage) are always allowed. State the fallback when an input is missing.
 - Widgets watch single signals (`ref.watchSignal`), never the whole broker map; use `.select` on profile fields.

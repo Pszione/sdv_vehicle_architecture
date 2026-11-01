@@ -24,7 +24,7 @@ sdv_vehicle_architecture/
 │   │   │   ├── main.dart                           # Composition root: profile + zonal bus
 │   │   │   ├── app/                                # MaterialApp + NavigationRail shell
 │   │   │   └── features/
-│   │   │       ├── settings/                       # Vehicle tab (Locks, Sunroof, 4x4, Gear...)
+│   │   │       ├── settings/                       # Vehicle tab (Gear, ESC, 4x4, ADAS, OTA, Valet...)
 │   │   │       └── simulator/                      # Simulator tab (sensors, scenarios, audit log)
 │   │   └── pubspec.yaml                            # Depends on the domain/zonal/sim/UI packages
 │   │
@@ -52,7 +52,9 @@ sdv_vehicle_architecture/
     │   │   │   ├── profile/                        # VehicleProfile + ActiveVehicleProfile
     │   │   │   ├── broker/                         # VssBroker + vssValueProvider (granular)
     │   │   │   ├── dispatcher/                     # CommandDispatcher, CommandValidator, CommandSink
-    │   │   │   ├── safety_rules/                   # DoorSafetyRule, DiffLockSafetyRule...
+    │   │   │   ├── safety_rules/                   # 19 rules: DiffLock, BrakeToShift, OtaInstall...
+    │   │   │   ├── behaviors/                      # VehicleBehaviors: auto-lock, auto-park, ESC...
+    │   │   │   ├── hmi/                            # HMI lockouts while driving (video, keyboard)
     │   │   │   └── logger/                         # VehicleLogger (audit log)
     │   │   └── vehicle_domain.dart
     │   ├── build.yaml                              # Enables vss_gen:vss_tree
@@ -81,8 +83,8 @@ sdv_vehicle_architecture/
     ├── vehicle_simulators/                         # [5. SIMULATED SENSORS (dev & test)]
     │   ├── lib/
     │   │   ├── src/
-    │   │   │   ├── telemetry_simulator.dart        # Publishes fake readings to the VssBroker
-    │   │   │   └── simulation_scenario.dart        # Scenario presets (parked, highway...)
+    │   │   │   ├── telemetry_simulator.dart        # Sensors, commands and FORCED states
+    │   │   │   └── simulation_scenario.dart        # Scenarios: readings + commands
     │   │   └── vehicle_simulators.dart
     │   └── pubspec.yaml
     │
@@ -90,6 +92,7 @@ sdv_vehicle_architecture/
         ├── lib/
         │   ├── src/
         │   │   ├── vehicle_feature_guard.dart      # Hides widgets the profile doesn't support
+        │   │   ├── vehicle_command_switch.dart     # Switch bound to a boolean actuator
         │   │   ├── safety_precheck_banner.dart     # Warns ahead with the safety rule message
         │   │   ├── vehicle_control_card.dart       # Common card shell
         │   │   ├── vehicle_widget_ref.dart         # ref.watchSignal / ref.dispatchCommand
@@ -128,11 +131,19 @@ UI ──▶ CommandDispatcher ──▶ CommandValidator (profile → actuator 
                                      zone ECU ──▶ actuator ─┘
                                          │
 UI ◀── vssValueProvider ◀── VssBroker ◀──┘  (confirmed telemetry)
-                               ▲
-                    TelemetrySimulator (simulated sensors)
+                             ▲    │
+   TelemetrySimulator ───────┘    └──▶ VehicleBehaviorEngine ──▶ CommandDispatcher (auto-lock, ...)
+   (sensor readings)
 ```
 
 The UI never reads back the command it sent: it only shows what the ECU confirmed in the broker.
+Three kinds of logic live in the domain:
+
+| Concept | Question it answers | Examples |
+|---|---|---|
+| `SafetyRule` | "Can this command run now?" | Brake to shift, diff lock below 30 km/h, OTA only when empty |
+| `VehicleBehavior` | "What should the car do on its own?" (issues commands via the dispatcher) | Auto-lock, auto-park, diff lock → ESC off, crash response |
+| HMI lockout | "Can the driver use this screen feature now?" | Video and keyboard above 8 km/h |
 
 ## Multiple models without compile errors
 
@@ -183,5 +194,5 @@ committed; run `generate` after editing the spec, a profile or a `@riverpod` pro
 1. Harden the base: fail-safe policy for missing signals, reset actuators on profile switch.
 2. Align paths with COVESA VSS 5 (`DriverSide`/`PassengerSide`) + an overlay for custom signals.
 3. 30 Hz ADAS and EV power-flow simulators, and the `digital_cluster` at 60 FPS.
-4. Features: quad-zone HVAC, Sentry/Camp/Dog/Valet Mode, drive modes.
+4. Features: quad-zone HVAC UI, drive modes, richer Sentry/Camp/Dog Mode behavior.
 5. CI (analyze, tests, generated-code check) and `riverpod_lint`.

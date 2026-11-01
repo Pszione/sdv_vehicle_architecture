@@ -1,29 +1,48 @@
 # vehicle_simulators
 
-**Simulated sensors (dev & test tooling).** Pure Dart. Publishes fake telemetry to the
-`VssBroker` as if it came from ECUs, so the HMIs and safety rules can be exercised without hardware.
+**Simulated world around the car (dev & test tooling).** Pure Dart. Drives the vehicle
+without hardware, through three clearly separated paths:
 
-The broker still validates every reading against the spec and the active profile:
-a sensor the car does not have is ignored (`SignalWriteResult.notSupported`), and an
-out-of-range value is dropped (`outOfRange`).
+| Method | For | Path |
+|---|---|---|
+| `report(signal, value)` | **Sensors** (speed, door open, SoC, seatbelt...) | Published to the `VssBroker`, as an ECU would. Actuators are refused (`ArgumentError`) |
+| `command(signal, value)` | **Actuators** (locks, gear, diff lock...) | Through the `CommandDispatcher` with source `SIMULATOR`: every safety rule applies |
+| `forceActuatorState(signal, value)` | Fault testing | Written straight to the broker, **bypassing every rule**, and logged as `FORCED` |
 
-## Components
+The broker still validates every value against the spec and the active profile: a signal
+the car does not have returns `notSupported`, an out-of-range value `outOfRange`.
 
-| Component | Role |
+`forceActuatorState` does not tell the zonal ECU, so its internal actuator state may differ
+until the next real command.
+
+## Scenarios
+
+A `SimulationScenario` is a sequence of steps: `SimulatedReading` (sensor) and
+`SimulatedCommand` (actuator, through the dispatcher).
+
+| Scenario | What it does |
 |---|---|
-| `TelemetrySimulator` | `report(signal, value)` for one reading, `apply(scenario)` for a set |
-| `SimulationScenario` | Named set of `SimulatedReading`s that puts the car in a known situation |
-| `SimulationScenario.presets` | Parked & aligned, City driving, Highway, Tight trail turn, Plugged in & low battery, Driver door open, Winter morning |
+| Parked & aligned | PARK, 0 km/h, doors closed, unplugged, 80% SoC, 20 °C, no crash |
+| City driving | Unplugged, brake pressed → DRIVE, 45 km/h (auto-lock locks the doors) |
+| Highway | Same at 130 km/h (auto-lock, suspension lowers itself) |
+| Tight trail turn | 10 km/h, wheel turned 35° |
+| Plugged in, low battery | PARK, charging, 10% SoC |
+| Driver door open | Stopped, driver door open |
+| Driver leaves in DRIVE | Stopped in DRIVE, seatbelt off, door open (auto-park) |
+| Ready for OTA | PARK, nobody inside, doors closed and locked, 80% SoC |
+| Family on board | Every seat occupied |
+| Winter morning | -5 °C outside |
+| Crash | Crash detected (doors unlock, hazards on) |
 
 ## Usage
 
 ```dart
 final simulator = ref.read(telemetrySimulatorProvider.notifier);
-simulator.report(Vss.Vehicle.Speed, 45.0);               // diff lock now blocked
-simulator.apply(SimulationScenario.presets.first);       // parked & aligned
+simulator.report(Vss.Vehicle.Speed, 45.0);                                   // sensor
+simulator.command(Vss.Vehicle.Chassis.Axle.Row2.Differential.IsLocked, true); // rejected at 45 km/h
+simulator.forceActuatorState(Vss.Vehicle.Chassis.Axle.Row2.Differential.IsLocked, true); // FORCED
+simulator.apply(SimulationScenario.presets.first);                           // parked & aligned
 ```
-
-Only simulators and zonal ECUs publish telemetry. The UI never writes to the broker directly.
 
 ## Planned
 
