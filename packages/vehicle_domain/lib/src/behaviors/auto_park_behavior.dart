@@ -21,7 +21,9 @@ final class AutoParkBehavior implements VehicleBehavior {
     final isLeaving =
         (after.read(VehicleGroups.driverDoor.open) ?? false) && !(after.read(VehicleGroups.driverSeat.belted) ?? true);
     final isDriveEngaged = after.read(gear) == Gear.drive || after.read(gear) == Gear.reverse;
-    final isAlmostStopped = (after.read(Vss.Vehicle.Speed) ?? 0) <= maxSpeedKmh;
+    // Unknown speed: never act on missing data.
+    final speed = after.read(Vss.Vehicle.Speed);
+    final isAlmostStopped = speed != null && speed <= maxSpeedKmh;
 
     if (!isLeaving || !isDriveEngaged || !isAlmostStopped) return const [];
     return [VehicleCommand(signal: gear, value: Gear.park, source: source)];

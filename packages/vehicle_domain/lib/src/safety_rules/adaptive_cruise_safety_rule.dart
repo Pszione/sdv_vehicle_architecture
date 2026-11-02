@@ -4,6 +4,7 @@ import '../profile/vehicle_groups.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import '../vss/vss_values.dart';
+import 'domain/fail_safe.dart';
 import 'domain/safety_rule.dart';
 
 /// Adaptive cruise control only engages in DRIVE, between 30 and 180 km/h,
@@ -30,7 +31,8 @@ final class AdaptiveCruiseSafetyRule implements SafetyRule {
     if (signals.read(Vss.Vehicle.Powertrain.Transmission.SelectedGear) != Gear.drive) {
       return const CommandResult.rejected('Adaptive cruise control requires DRIVE.');
     }
-    final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
+    final speed = signals.read(Vss.Vehicle.Speed);
+    if (speed == null) return FailSafe.speedUnavailable;
     if (speed < minSpeedKmh || speed > maxSpeedKmh) {
       return CommandResult.rejected(
         'Adaptive cruise control works between ${minSpeedKmh.toInt()} and ${maxSpeedKmh.toInt()} km/h '

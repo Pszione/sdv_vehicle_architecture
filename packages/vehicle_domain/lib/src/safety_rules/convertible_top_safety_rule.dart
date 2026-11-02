@@ -2,6 +2,7 @@ import '../broker/signal_reader.dart';
 import '../dispatcher/domain/vehicle_commands.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
+import 'domain/fail_safe.dart';
 import 'domain/safety_rule.dart';
 
 /// Convertible top operation: trunk closed, up to 50 km/h and above 0 °C.
@@ -25,7 +26,8 @@ final class ConvertibleTopSafetyRule implements SafetyRule {
       return const CommandResult.rejected('Close the trunk before operating the convertible top.');
     }
 
-    final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
+    final speed = signals.read(Vss.Vehicle.Speed);
+    if (speed == null) return FailSafe.speedUnavailable;
     if (speed > maxSpeedKmh) {
       return CommandResult.rejected('Convertible top is locked above ${maxSpeedKmh.toInt()} km/h.');
     }

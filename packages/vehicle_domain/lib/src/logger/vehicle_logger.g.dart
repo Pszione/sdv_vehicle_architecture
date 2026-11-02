@@ -49,7 +49,7 @@ final class VehicleLoggerProvider extends $NotifierProvider<VehicleLogger, Logge
   }
 }
 
-String _$vehicleLoggerHash() => r'69eafed5a227b24b84062114985646f1a0d3b752';
+String _$vehicleLoggerHash() => r'07c745ee719dc6b47696fb26aa65fe146fd78bcf';
 
 /// In-memory audit log (ring buffer) of commands, rejections and confirmed
 /// actuator changes.

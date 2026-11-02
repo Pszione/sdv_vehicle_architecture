@@ -9,6 +9,7 @@ import 'widgets/key_and_power_card.dart';
 import 'widgets/occupants_control_card.dart';
 import 'widgets/rear_passenger_panel_card.dart';
 import 'widgets/scenario_presets_card.dart';
+import 'widgets/signal_fault_injection_card.dart';
 import 'widgets/vehicle_dynamics_control_card.dart';
 
 /// "Simulator" tab: change the simulated world on the left, watch the production
@@ -29,6 +30,7 @@ class SimulatorScreen extends StatelessWidget {
       RearPassengerPanelCard(),
       BodyAndEnergyControlCard(),
       FaultInjectionCard(),
+      SignalFaultInjectionCard(),
       ForceActuatorCard(),
     ];
     const reactiveControls = [_SectionTitle('Infotainment controls (reactive)'), VehicleControlsPanel()];

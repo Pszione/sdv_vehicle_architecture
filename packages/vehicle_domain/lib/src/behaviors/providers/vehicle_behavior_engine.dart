@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../broker/signal_reader.dart';
 import '../../broker/vss_broker.dart';
 import '../../dispatcher/command_dispatcher.dart';
+import '../../e2e/providers/signal_status_provider.dart';
 import '../auto_park_behavior.dart';
 import '../auto_parking_brake_behavior.dart';
 import '../auto_power_off_behavior.dart';
@@ -55,8 +56,9 @@ class VehicleBehaviorEngine extends _$VehicleBehaviorEngine {
       // A profile switch rebuilds the whole state: not a real-world change, so nothing reacts.
       if (previous == null || previous.length != next.length) return;
 
-      final before = SnapshotSignalReader(previous);
-      final after = SnapshotSignalReader(next);
+      final statuses = ref.read(signalStatusRegistryProvider);
+      final before = SnapshotSignalReader(previous, statuses);
+      final after = SnapshotSignalReader(next, statuses);
       final commands = [
         for (final behavior in behaviors)
           if (behavior.triggers.any((signal) => previous[signal.path] != next[signal.path]))

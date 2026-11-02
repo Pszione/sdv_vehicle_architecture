@@ -2,6 +2,7 @@ import '../broker/signal_reader.dart';
 import '../dispatcher/domain/vehicle_commands.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
+import 'domain/fail_safe.dart';
 import 'domain/safety_rule.dart';
 
 /// Only allows locking the rear differential at low speed with the steering
@@ -20,14 +21,16 @@ final class DiffLockSafetyRule implements SafetyRule {
   CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
     if (command.value != true) return null;
 
-    final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
+    final speed = signals.read(Vss.Vehicle.Speed);
+    if (speed == null) return FailSafe.speedUnavailable;
     if (speed > maxSpeedKmh) {
       return CommandResult.rejected(
         'Slow down below ${maxSpeedKmh.toInt()} km/h to lock the differential (current: ${speed.toInt()} km/h).',
       );
     }
 
-    final steeringAngle = (signals.read(Vss.Vehicle.Chassis.SteeringWheel.Angle) ?? 0.0).abs();
+    final steeringAngle = signals.read(Vss.Vehicle.Chassis.SteeringWheel.Angle)?.abs();
+    if (steeringAngle == null) return FailSafe.steeringUnavailable;
     if (steeringAngle > maxSteeringAngleDeg) {
       return CommandResult.rejected(
         'Straighten the steering wheel to lock the differential (current: ${steeringAngle.toInt()}°).',

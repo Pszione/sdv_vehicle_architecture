@@ -81,7 +81,7 @@ final class CommandDispatcherProvider extends $NotifierProvider<CommandDispatche
   }
 }
 
-String _$commandDispatcherHash() => r'eeead98ba8ee1a4f19989a0ea8b7115e54ee1258';
+String _$commandDispatcherHash() => r'042b6403e31de4a6c140a97e6450c052ef98e8c0';
 
 /// Single entry point for vehicle commands.
 

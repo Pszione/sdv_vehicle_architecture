@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../broker/signal_reader.dart';
 import '../broker/vss_broker.dart';
+import '../e2e/providers/signal_status_provider.dart';
 import '../logger/vehicle_logger.dart';
 import '../profile/providers/active_vehicle_profile.dart';
 import '../safety_rules/providers/safety_rules_provider.dart';
@@ -45,7 +46,7 @@ class CommandDispatcher extends _$CommandDispatcher {
   /// Dry run: evaluates the command against the current state without sending it.
   CommandResult evaluate(VehicleCommand<Object> command) => CommandValidator(
     profile: ref.read(activeVehicleProfileProvider),
-    signals: SnapshotSignalReader(ref.read(vssBrokerProvider)),
+    signals: SnapshotSignalReader(ref.read(vssBrokerProvider), ref.read(signalStatusRegistryProvider)),
     rules: ref.read(activeSafetyRulesProvider),
   ).validate(command);
 }

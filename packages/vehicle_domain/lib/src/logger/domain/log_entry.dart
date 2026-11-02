@@ -8,6 +8,9 @@ enum LogType {
 
   /// Actuator moved by hand (door handle, manual tailgate): physical, so no command or rule involved.
   manual,
+
+  /// A supervised signal became stale or invalid (E2E), or recovered.
+  signalFault,
 }
 
 class LogEntry {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vehicle_domain/vehicle_domain.dart';
 import 'package:vehicle_profiles/vehicle_profiles.dart';
+import 'package:vehicle_simulators/vehicle_simulators.dart';
 import 'package:zonal_system/zonal_system.dart';
 
 import 'app/ev_suv_app.dart';
@@ -21,7 +22,12 @@ void main() {
   container
     ..listen(zonalSystemProvider, (_, _) {})
     ..listen(vehicleLoggerProvider, (_, _) {})
-    ..listen(vehicleBehaviorEngineProvider, (_, _) {});
+    ..listen(vehicleBehaviorEngineProvider, (_, _) {})
+    // E2E gateway (with deadline monitoring) and the simulated sensor ECUs (cyclic transmission).
+    ..listen(e2eReceiverProvider, (_, _) {})
+    ..listen(telemetrySimulatorProvider, (_, _) {});
+  container.read(e2eReceiverProvider.notifier).startDeadlineMonitoring();
+  container.read(telemetrySimulatorProvider.notifier).startCyclicTransmission();
 
   runApp(UncontrolledProviderScope(container: container, child: const EvSuvApp()));
 }

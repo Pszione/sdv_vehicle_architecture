@@ -11,7 +11,9 @@ part of 'telemetry_simulator.dart';
 /// Simulated world around the car, with four clearly separated paths:
 ///
 /// - [report]: a **sensor** reading (speed, seat occupancy, SoC...) published to the [VssBroker],
-///   as an ECU would. Actuators are refused.
+///   as an ECU would. Actuators are refused. E2E-protected sensors (speed, brake pedal...) go
+///   through an [E2eTransmitter] to the gateway's `E2eReceiver`, cyclically, and can be
+///   corrupted with [injectE2eFault].
 /// - [command]: an **actuator** request that goes through the `CommandDispatcher`, so every
 ///   safety rule applies (source `SIMULATOR`).
 /// - [operateManually]: a person moving an actuator by hand (door handle, manual tailgate).
@@ -25,7 +27,9 @@ final telemetrySimulatorProvider = TelemetrySimulatorProvider._();
 /// Simulated world around the car, with four clearly separated paths:
 ///
 /// - [report]: a **sensor** reading (speed, seat occupancy, SoC...) published to the [VssBroker],
-///   as an ECU would. Actuators are refused.
+///   as an ECU would. Actuators are refused. E2E-protected sensors (speed, brake pedal...) go
+///   through an [E2eTransmitter] to the gateway's `E2eReceiver`, cyclically, and can be
+///   corrupted with [injectE2eFault].
 /// - [command]: an **actuator** request that goes through the `CommandDispatcher`, so every
 ///   safety rule applies (source `SIMULATOR`).
 /// - [operateManually]: a person moving an actuator by hand (door handle, manual tailgate).
@@ -36,7 +40,9 @@ final class TelemetrySimulatorProvider extends $NotifierProvider<TelemetrySimula
   /// Simulated world around the car, with four clearly separated paths:
   ///
   /// - [report]: a **sensor** reading (speed, seat occupancy, SoC...) published to the [VssBroker],
-  ///   as an ECU would. Actuators are refused.
+  ///   as an ECU would. Actuators are refused. E2E-protected sensors (speed, brake pedal...) go
+  ///   through an [E2eTransmitter] to the gateway's `E2eReceiver`, cyclically, and can be
+  ///   corrupted with [injectE2eFault].
   /// - [command]: an **actuator** request that goes through the `CommandDispatcher`, so every
   ///   safety rule applies (source `SIMULATOR`).
   /// - [operateManually]: a person moving an actuator by hand (door handle, manual tailgate).
@@ -67,12 +73,14 @@ final class TelemetrySimulatorProvider extends $NotifierProvider<TelemetrySimula
   }
 }
 
-String _$telemetrySimulatorHash() => r'1c0c34fe7996267d275fc198c770ca12f62da6bd';
+String _$telemetrySimulatorHash() => r'77d30148a64f6d4c024c2a682af8d383aa018c0b';
 
 /// Simulated world around the car, with four clearly separated paths:
 ///
 /// - [report]: a **sensor** reading (speed, seat occupancy, SoC...) published to the [VssBroker],
-///   as an ECU would. Actuators are refused.
+///   as an ECU would. Actuators are refused. E2E-protected sensors (speed, brake pedal...) go
+///   through an [E2eTransmitter] to the gateway's `E2eReceiver`, cyclically, and can be
+///   corrupted with [injectE2eFault].
 /// - [command]: an **actuator** request that goes through the `CommandDispatcher`, so every
 ///   safety rule applies (source `SIMULATOR`).
 /// - [operateManually]: a person moving an actuator by hand (door handle, manual tailgate).

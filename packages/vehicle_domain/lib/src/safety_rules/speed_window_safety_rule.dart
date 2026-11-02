@@ -2,6 +2,7 @@ import '../broker/signal_reader.dart';
 import '../dispatcher/domain/vehicle_commands.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
+import 'domain/fail_safe.dart';
 import 'domain/safety_rule.dart';
 
 /// Driver assists that can only be switched on inside a speed window.
@@ -30,7 +31,8 @@ final class SpeedWindowSafetyRule implements SafetyRule {
   CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
     if (command.value != true) return null;
 
-    final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
+    final speed = signals.read(Vss.Vehicle.Speed);
+    if (speed == null) return FailSafe.speedUnavailable;
     if (minSpeedKmh case final min? when speed < min) {
       return CommandResult.rejected('$label activates above ${min.toInt()} km/h (current: ${speed.toInt()} km/h).');
     }

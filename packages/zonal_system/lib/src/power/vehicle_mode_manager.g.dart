@@ -70,7 +70,7 @@ final class VehicleModeManagerProvider extends $NotifierProvider<VehicleModeMana
   }
 }
 
-String _$vehicleModeManagerHash() => r'996c1b60e327eb6373339c68a47a09385ae56832';
+String _$vehicleModeManagerHash() => r'9e6fc19193ee1ebf5af79296bdccfe2f47d8b2b2';
 
 /// Vehicle mode manager (VMM), hosted by the central zone: owns the 12 V supply state
 /// (`LowVoltageSystemState`), the high-voltage contactors (`IsPowerConnected`) and the

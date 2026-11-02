@@ -3,6 +3,7 @@ import '../dispatcher/domain/vehicle_commands.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import '../vss/vss_values.dart';
+import 'domain/fail_safe.dart';
 import 'domain/safety_rule.dart';
 
 /// Electronic stability control (NORMAL, WET, SPORT_PLUS, OFF):
@@ -24,7 +25,8 @@ final class EscModeSafetyRule implements SafetyRule {
       return const CommandResult.rejected('Release the rear differential lock before re-enabling stability control.');
     }
 
-    final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
+    final speed = signals.read(Vss.Vehicle.Speed);
+    if (speed == null) return FailSafe.speedUnavailable;
     if (command.value == EscMode.off && speed > maxSpeedToDisableKmh) {
       return CommandResult.rejected(
         'Stability control can only be turned off below ${maxSpeedToDisableKmh.toInt()} km/h '

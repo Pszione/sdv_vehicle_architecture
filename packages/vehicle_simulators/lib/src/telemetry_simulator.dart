@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vehicle_domain/vehicle_domain.dart';
 
+import 'e2e_transmitter.dart';
 import 'simulation_scenario.dart';
 
 part 'telemetry_simulator.g.dart';
@@ -8,7 +11,9 @@ part 'telemetry_simulator.g.dart';
 /// Simulated world around the car, with four clearly separated paths:
 ///
 /// - [report]: a **sensor** reading (speed, seat occupancy, SoC...) published to the [VssBroker],
-///   as an ECU would. Actuators are refused.
+///   as an ECU would. Actuators are refused. E2E-protected sensors (speed, brake pedal...) go
+///   through an [E2eTransmitter] to the gateway's `E2eReceiver`, cyclically, and can be
+///   corrupted with [injectE2eFault].
 /// - [command]: an **actuator** request that goes through the `CommandDispatcher`, so every
 ///   safety rule applies (source `SIMULATOR`).
 /// - [operateManually]: a person moving an actuator by hand (door handle, manual tailgate).
@@ -19,8 +24,40 @@ part 'telemetry_simulator.g.dart';
 class TelemetrySimulator extends _$TelemetrySimulator {
   static const source = 'SIMULATOR';
 
+  late E2eTransmitter _transmitter;
+  var _isCyclicTransmissionRequested = false;
+
   @override
-  void build() {}
+  void build() {
+    final profile = ref.watch(activeVehicleProfileProvider);
+    _transmitter = E2eTransmitter(
+      deliver: (signal, frame) => ref.read(e2eReceiverProvider.notifier).receive(signal, frame),
+    );
+    // Sensor ECUs boot with their current reading, sent on the next cycle.
+    final values = ref.read(vssBrokerProvider);
+    for (final signal in E2eProtectedSignals.dataIds.keys) {
+      if (values[signal.path] case final value? when profile.metaOf(signal) != null) _transmitter.seed(signal, value);
+    }
+    if (_isCyclicTransmissionRequested) _startCycleTimer();
+  }
+
+  /// Starts the cyclic transmission of the protected sensors, as real ECUs do (the app boot
+  /// calls it). Without it, frames are only sent when a value is reported. Survives profile switches.
+  void startCyclicTransmission() {
+    if (_isCyclicTransmissionRequested) return;
+    _isCyclicTransmissionRequested = true;
+    _startCycleTimer();
+  }
+
+  void _startCycleTimer() {
+    final cycle = Timer.periodic(E2eProtectedSignals.cycleTime, (_) {
+      if (!_isAsleep) _transmitter.sendCycle();
+    });
+    ref.onDispose(cycle.cancel);
+  }
+
+  /// Sleeping ECUs do not transmit.
+  bool get _isAsleep => ref.read(powerModeProvider) == PowerMode.sleep;
 
   /// Publishes a sensor reading. Returns `notSupported` if the active profile lacks the sensor.
   SignalWriteResult report<T extends Object>(VssSignal<T> signal, T value) {
@@ -29,6 +66,7 @@ class TelemetrySimulator extends _$TelemetrySimulator {
     if (meta.isActuator) {
       throw ArgumentError.value(signal, 'signal', 'is an actuator: use command() or forceActuatorState()');
     }
+    if (E2eProtectedSignals.isProtected(signal)) return _transmitter.send(signal, value, isAsleep: _isAsleep);
     return ref.read(vssBrokerProvider.notifier).publish(signal, value);
   }
 
@@ -36,6 +74,11 @@ class TelemetrySimulator extends _$TelemetrySimulator {
   /// [from] overrides the source, e.g. to simulate the rear passenger climate panel.
   CommandResult command<T extends Object>(VssSignal<T> signal, T value, {String from = source}) =>
       ref.read(commandDispatcherProvider.notifier).dispatch(VehicleCommand(signal: signal, value: value, source: from));
+
+  /// Injects [fault] on the link of an E2E-protected sensor (see [E2eFault]).
+  void injectE2eFault(VssSignal<Object> signal, E2eFault fault) => _transmitter.injectFault(signal, fault);
+
+  E2eFault e2eFaultOf(VssSignal<Object> signal) => _transmitter.faultOf(signal);
 
   /// An occupant or bystander moves an actuator by hand, e.g. opens a door with its handle.
   SignalWriteResult operateManually<T extends Object>(VssSignal<T> signal, T value) =>

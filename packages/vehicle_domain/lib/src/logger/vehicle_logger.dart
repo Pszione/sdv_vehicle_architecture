@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../broker/vss_broker.dart';
 import '../dispatcher/domain/vehicle_commands.dart';
+import '../e2e/signal_status.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import 'domain/log_entry.dart';
@@ -52,6 +53,17 @@ class VehicleLogger extends _$VehicleLogger {
   /// Records an actuator moved by hand (e.g. a door opened with its handle), reported by its zone ECU.
   void logManual(VssSignal<Object> signal, Object value, {required String source}) =>
       _logDirectWrite(LogType.manual, signal, value, source, 'Operated by hand.');
+
+  /// Records a change of health of a supervised (E2E-protected) signal.
+  void logSignalFault(VssSignal<Object> signal, SignalStatus status, String reason) => _addEntry(
+    LogEntry(
+      type: LogType.signalFault,
+      vssPath: signal.path,
+      payload: status.label,
+      source: 'E2E_GATEWAY',
+      detailMessage: reason,
+    ),
+  );
 
   void _logDirectWrite(LogType type, VssSignal<Object> signal, Object value, String source, String detail) {
     _preLoggedPaths.add(signal.path);

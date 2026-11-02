@@ -3,6 +3,7 @@ import '../dispatcher/domain/vehicle_commands.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import '../vss/vss_values.dart';
+import 'domain/fail_safe.dart';
 import 'domain/safety_rule.dart';
 
 /// Prevents engaging PARK or REVERSE while the vehicle is moving.
@@ -20,7 +21,8 @@ final class TransmissionSafetyRule implements SafetyRule {
   CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
     if (!_lowSpeedOnlyGears.contains(command.value)) return null;
 
-    final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
+    final speed = signals.read(Vss.Vehicle.Speed);
+    if (speed == null) return FailSafe.speedUnavailable;
     if (speed > maxSpeedKmh) {
       return CommandResult.rejected(
         'Slow down below ${maxSpeedKmh.toInt()} km/h to engage ${Gear.label(command.value as int)} (current: ${speed.toInt()} km/h).',

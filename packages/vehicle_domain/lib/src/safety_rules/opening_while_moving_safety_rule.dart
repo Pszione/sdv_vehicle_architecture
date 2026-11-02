@@ -4,6 +4,7 @@ import '../profile/vehicle_groups.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import '../vss/vss_values.dart';
+import 'domain/fail_safe.dart';
 import 'domain/safety_rule.dart';
 
 /// Body openings (power doors, tailgate, frunk, charge port flap) cannot open while the car is moving.
@@ -44,7 +45,8 @@ final class OpeningWhileMovingSafetyRule implements SafetyRule {
   CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
     if (!isOpening(command.value)) return null;
 
-    final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
+    final speed = signals.read(Vss.Vehicle.Speed);
+    if (speed == null) return FailSafe.speedUnavailable;
     if (speed > maxSpeedKmh) {
       return CommandResult.rejected('$label cannot open while moving (current: ${speed.toInt()} km/h).');
     }

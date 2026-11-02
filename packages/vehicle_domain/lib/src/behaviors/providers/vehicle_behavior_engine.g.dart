@@ -88,7 +88,7 @@ final class VehicleBehaviorEngineProvider extends $NotifierProvider<VehicleBehav
   }
 }
 
-String _$vehicleBehaviorEngineHash() => r'690829ac31dc179b0c7dae5cb812ffc7e23b9f77';
+String _$vehicleBehaviorEngineHash() => r'e625850352207761ed7f73f5746543f3cfb496e6';
 
 /// Runs the behaviors: watches the broker and dispatches what they decide.
 /// Read it at app boot, like the zonal ECUs.

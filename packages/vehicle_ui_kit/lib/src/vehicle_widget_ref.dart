@@ -7,6 +7,9 @@ extension VehicleWidgetRef on WidgetRef {
   /// Watches a single signal. The widget only rebuilds when *this* value changes.
   T? watchSignal<T extends Object>(VssSignal<T> signal) => watch(vssValueProvider(signal)) as T?;
 
+  /// Watches the health of a single signal (E2E-protected signals can be stale or invalid).
+  SignalStatus watchSignalStatus(VssSignal<Object> signal) => watch(signalStatusProvider(signal));
+
   /// Sends the command through the `CommandDispatcher` and shows the reason when it is rejected.
   CommandResult dispatchCommand(BuildContext context, VehicleCommand<Object> command) {
     final result = read(commandDispatcherProvider.notifier).dispatch(command);

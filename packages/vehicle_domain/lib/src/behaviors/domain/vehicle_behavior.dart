@@ -17,12 +17,17 @@ abstract interface class VehicleBehavior {
 
 extension VehicleBehaviorReads on SignalReader {
   /// Whether [signal] crossed above [threshold] between [before] and this state.
-  bool crossedAbove(SignalReader before, VssSignal<double> signal, double threshold) =>
-      (before.read(signal) ?? 0) <= threshold && (read(signal) ?? 0) > threshold;
+  /// An unknown value on either side is not a crossing: behaviors never act on missing data.
+  bool crossedAbove(SignalReader before, VssSignal<double> signal, double threshold) {
+    final (from, to) = (before.read(signal), read(signal));
+    return from != null && to != null && from <= threshold && to > threshold;
+  }
 
   /// Whether [signal] crossed below [threshold] between [before] and this state.
-  bool crossedBelow(SignalReader before, VssSignal<double> signal, double threshold) =>
-      (before.read(signal) ?? 0) >= threshold && (read(signal) ?? 0) < threshold;
+  bool crossedBelow(SignalReader before, VssSignal<double> signal, double threshold) {
+    final (from, to) = (before.read(signal), read(signal));
+    return from != null && to != null && from >= threshold && to < threshold;
+  }
 
   /// Whether [signal] changed to [value] between [before] and this state.
   bool becameEqual<T extends Object>(SignalReader before, VssSignal<T> signal, T value) =>

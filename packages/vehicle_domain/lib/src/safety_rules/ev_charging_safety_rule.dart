@@ -3,6 +3,7 @@ import '../dispatcher/domain/vehicle_commands.dart';
 import '../vss/vss.dart';
 import '../vss/vss_signal.dart';
 import '../vss/vss_values.dart';
+import 'domain/fail_safe.dart';
 import 'domain/safety_rule.dart';
 
 /// Prevents leaving PARK/NEUTRAL while the charging cable is connected.
@@ -19,7 +20,9 @@ final class EvChargingSafetyRule implements SafetyRule {
   CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
     if (_stationaryGears.contains(command.value)) return null;
 
-    if (signals.read(Vss.Vehicle.Powertrain.TractionBattery.Charging.IsConnected) ?? false) {
+    final isCableConnected = signals.read(Vss.Vehicle.Powertrain.TractionBattery.Charging.IsConnected);
+    if (isCableConnected == null) return FailSafe.chargingCableUnavailable;
+    if (isCableConnected) {
       return const CommandResult.rejected('Cannot engage a gear: the charging cable is still connected.');
     }
     return null;
