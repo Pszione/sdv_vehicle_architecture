@@ -14,9 +14,9 @@ import '../hvac/cabin_thermal_model.dart';
 
 part 'central_zone_controller.g.dart';
 
-/// Central ECU: roof (sunroof), HVAC/thermal (cabin model + AUTO fan) and the
-/// gateway to non-zonal domain ECUs (powertrain, chassis, ADAS), which confirm
-/// the commanded value.
+/// Central ECU: roof (sunroof), HVAC/thermal (cabin model + AUTO fan), the vehicle
+/// mode manager (see `VehicleModeManager`) and the gateway to non-zonal domain ECUs
+/// (powertrain, chassis, ADAS), which confirm the commanded value.
 @Riverpod(keepAlive: true)
 class CentralZoneController extends _$CentralZoneController {
   static const _thermalTick = Duration(seconds: 1);
@@ -46,6 +46,8 @@ class CentralZoneController extends _$CentralZoneController {
     switch (command.deviceId) {
       case final id when id == ZonalRoute.sunroof.deviceId:
         _moveSunroof(command.command.value as int);
+      case final id when id == ZonalRoute.vehicleModeManager.deviceId:
+        return; // Executed by the VehicleModeManager, which listens to its own device.
       case final id when id == ZonalRoute.hvac.deviceId:
         _broker.publish(command.signal, command.command.value);
         _startThermalModel();

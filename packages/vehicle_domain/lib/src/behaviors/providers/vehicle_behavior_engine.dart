@@ -6,6 +6,8 @@ import '../../broker/signal_reader.dart';
 import '../../broker/vss_broker.dart';
 import '../../dispatcher/command_dispatcher.dart';
 import '../auto_park_behavior.dart';
+import '../auto_parking_brake_behavior.dart';
+import '../auto_power_off_behavior.dart';
 import '../climate_sync_behavior.dart';
 import '../crash_response_behavior.dart';
 import '../diff_lock_auto_release_behavior.dart';
@@ -17,6 +19,7 @@ import '../park_auto_unlock_behavior.dart';
 import '../speed_auto_lock_behavior.dart';
 import '../suspension_auto_level_behavior.dart';
 import '../valet_speed_cap_behavior.dart';
+import '../walk_away_lock_behavior.dart';
 
 part 'vehicle_behavior_engine.g.dart';
 
@@ -35,6 +38,9 @@ List<VehicleBehavior> activeVehicleBehaviors(Ref ref) => [
   ClimateSyncBehavior(),
   MaxDefrostBehavior(),
   EmptySeatClimateBehavior(),
+  WalkAwayLockBehavior(),
+  AutoPowerOffBehavior(),
+  AutoParkingBrakeBehavior(),
 ];
 
 /// Runs the behaviors: watches the broker and dispatches what they decide.

@@ -12,6 +12,13 @@ const _sunroofProfile = VehicleProfile(
   supportedPaths: {'Vehicle.Speed', 'Vehicle.Cabin.Sunroof.Position', 'Vehicle.Cabin.Sunroof.IsFaulted'},
 );
 
+const _doorProfile = VehicleProfile(
+  id: 'test_nm',
+  trimName: 'Test NM',
+  driverSide: DriverSide.left,
+  supportedPaths: {'Vehicle.LowVoltageSystemState', 'Vehicle.Cabin.Door.Row1.DriverSide.IsLocked'},
+);
+
 void main() {
   test('should confirm the sunroof position in the broker when a command goes through the central zone', () async {
     final container = ProviderContainer.test(
@@ -54,5 +61,27 @@ void main() {
 
     expect(after10s(100), lessThan(after10s(20)));
     expect(after10s(20), lessThan(30));
+  });
+
+  test('should deliver a lock command to a sleeping zone only after the bus wake-up latency', () async {
+    final container =
+        ProviderContainer.test(
+            overrides: [
+              initialVehicleProfileProvider.overrideWithValue(_doorProfile),
+              commandSinkProvider.overrideWith((ref) => ref.watch(zonalCommandSinkProvider)),
+            ],
+          )
+          // Listen, not read: Riverpod 3 does not re-evaluate providers that nobody listens to.
+          ..listen(zonalSystemProvider, (_, _) {});
+    container.read(vssBrokerProvider.notifier).publish(Vss.Vehicle.LowVoltageSystemState, LowVoltageSystemState.lock);
+    await container.pump(); // Riverpod 3 notifies the network management asynchronously.
+    await Future<void>.delayed(ZoneNetworkManagement.prepareBusSleepTime * 2);
+    final lock = VehicleGroups.driverDoor.lock;
+
+    container.read(commandDispatcherProvider.notifier).dispatch(VehicleCommand(signal: lock, value: true));
+
+    expect(container.read(vssValueProvider(lock)), isFalse);
+    await Future<void>.delayed(ZoneNetworkManagement.wakeUpLatency * 2);
+    expect(container.read(vssValueProvider(lock)), isTrue);
   });
 }

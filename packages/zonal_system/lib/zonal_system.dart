@@ -13,4 +13,6 @@ export 'src/domain/vehicle_zone.dart';
 export 'src/domain/zonal_command.dart';
 export 'src/domain/zonal_route.dart';
 export 'src/hvac/cabin_thermal_model.dart';
+export 'src/power/vehicle_mode_manager.dart';
+export 'src/power/zone_network_management.dart';
 export 'src/zonal_system_bootstrap.dart';

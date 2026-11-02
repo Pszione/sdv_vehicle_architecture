@@ -51,7 +51,11 @@ class _DriverAssistCardState extends ConsumerState<DriverAssistCard> {
                       setState(() => _dragSetSpeed = null);
                       ref.dispatchCommand(
                         context,
-                        VehicleCommand(signal: adas.CruiseControl.SpeedSet, value: value, source: infotainmentCommandSource),
+                        VehicleCommand(
+                          signal: adas.CruiseControl.SpeedSet,
+                          value: value,
+                          source: infotainmentCommandSource,
+                        ),
                       );
                     },
                   ),

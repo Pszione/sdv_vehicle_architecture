@@ -59,10 +59,16 @@ class TelemetrySimulator extends _$TelemetrySimulator {
     return ref.read(vssBrokerProvider.notifier).publish(signal, value);
   }
 
-  /// Runs every step of the scenario in order.
-  void apply(SimulationScenario scenario) {
+  /// Runs every step of the scenario in order. Steps before the first [SimulatedWait]
+  /// run synchronously; the returned future completes after the last step.
+  Future<void> apply(SimulationScenario scenario) async {
     for (final step in scenario.steps) {
-      step.runOn(this);
+      if (step is SimulatedWait) {
+        await Future<void>.delayed(step.duration);
+        if (!ref.mounted) return;
+      } else {
+        step.runOn(this);
+      }
     }
   }
 }

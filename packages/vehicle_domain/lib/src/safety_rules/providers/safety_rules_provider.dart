@@ -16,6 +16,8 @@ import '../ev_preconditioning_safety_rule.dart';
 import '../opening_while_moving_safety_rule.dart';
 import '../ota_install_safety_rule.dart';
 import '../parked_mode_safety_rule.dart';
+import '../power_mode_request_safety_rule.dart';
+import '../ready_to_shift_safety_rule.dart';
 import '../rear_climate_lock_safety_rule.dart';
 import '../speed_window_safety_rule.dart';
 import '../sunroof_speed_safety_rule.dart';
@@ -37,6 +39,8 @@ List<SafetyRule> activeSafetyRules(Ref ref) => [
   ...DoorSafetyRule.allDoors(),
   ...DoorLatchSafetyRule.allDoors(),
   SunroofSpeedSafetyRule(),
+  PowerModeRequestSafetyRule(),
+  ReadyToShiftSafetyRule(),
   TransmissionSafetyRule(),
   BrakeToShiftSafetyRule(),
   DriverPresenceSafetyRule(),

@@ -16,10 +16,12 @@ void main() {
   );
 
   // Boot: zonal ECUs, the audit log and the vehicle behaviors must be alive before the first command.
+  // Listen, not read: Riverpod 3 does not re-evaluate providers nobody listens to, so the ECUs'
+  // own `ref.listen`s (key, doors, power mode...) would stay silent until a widget watched them.
   container
-    ..read(zonalSystemProvider)
-    ..read(vehicleLoggerProvider)
-    ..read(vehicleBehaviorEngineProvider);
+    ..listen(zonalSystemProvider, (_, _) {})
+    ..listen(vehicleLoggerProvider, (_, _) {})
+    ..listen(vehicleBehaviorEngineProvider, (_, _) {});
 
   runApp(UncontrolledProviderScope(container: container, child: const EvSuvApp()));
 }

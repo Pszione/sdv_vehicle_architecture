@@ -47,4 +47,4 @@ final class ZonalCommandSinkProvider extends $FunctionalProvider<ZonalCommandSin
   }
 }
 
-String _$zonalCommandSinkHash() => r'0c03b752f2e41b20d88b619439406a7b3a42602b';
+String _$zonalCommandSinkHash() => r'b3278d04a403ab801f0d6a4b283adf12f8276de2';

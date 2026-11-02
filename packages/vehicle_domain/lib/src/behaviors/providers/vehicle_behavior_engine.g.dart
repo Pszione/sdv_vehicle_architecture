@@ -51,7 +51,7 @@ final class ActiveVehicleBehaviorsProvider
   }
 }
 
-String _$activeVehicleBehaviorsHash() => r'fef92b363d53bd4b43982864abce4f072df9270f';
+String _$activeVehicleBehaviorsHash() => r'3fb42c39a01ee5482a085750f48ba6b66fbea269';
 
 /// Runs the behaviors: watches the broker and dispatches what they decide.
 /// Read it at app boot, like the zonal ECUs.

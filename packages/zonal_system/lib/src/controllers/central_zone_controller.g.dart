@@ -8,20 +8,20 @@ part of 'central_zone_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Central ECU: roof (sunroof), HVAC/thermal (cabin model + AUTO fan) and the
-/// gateway to non-zonal domain ECUs (powertrain, chassis, ADAS), which confirm
-/// the commanded value.
+/// Central ECU: roof (sunroof), HVAC/thermal (cabin model + AUTO fan), the vehicle
+/// mode manager (see `VehicleModeManager`) and the gateway to non-zonal domain ECUs
+/// (powertrain, chassis, ADAS), which confirm the commanded value.
 
 @ProviderFor(CentralZoneController)
 final centralZoneControllerProvider = CentralZoneControllerProvider._();
 
-/// Central ECU: roof (sunroof), HVAC/thermal (cabin model + AUTO fan) and the
-/// gateway to non-zonal domain ECUs (powertrain, chassis, ADAS), which confirm
-/// the commanded value.
+/// Central ECU: roof (sunroof), HVAC/thermal (cabin model + AUTO fan), the vehicle
+/// mode manager (see `VehicleModeManager`) and the gateway to non-zonal domain ECUs
+/// (powertrain, chassis, ADAS), which confirm the commanded value.
 final class CentralZoneControllerProvider extends $NotifierProvider<CentralZoneController, void> {
-  /// Central ECU: roof (sunroof), HVAC/thermal (cabin model + AUTO fan) and the
-  /// gateway to non-zonal domain ECUs (powertrain, chassis, ADAS), which confirm
-  /// the commanded value.
+  /// Central ECU: roof (sunroof), HVAC/thermal (cabin model + AUTO fan), the vehicle
+  /// mode manager (see `VehicleModeManager`) and the gateway to non-zonal domain ECUs
+  /// (powertrain, chassis, ADAS), which confirm the commanded value.
   CentralZoneControllerProvider._()
     : super(
         from: null,
@@ -46,11 +46,11 @@ final class CentralZoneControllerProvider extends $NotifierProvider<CentralZoneC
   }
 }
 
-String _$centralZoneControllerHash() => r'0f03e7e2f72624116a06a74dc641dd520c1836f7';
+String _$centralZoneControllerHash() => r'1eb6714fa98c3734f25bef4e9df4294d22aed772';
 
-/// Central ECU: roof (sunroof), HVAC/thermal (cabin model + AUTO fan) and the
-/// gateway to non-zonal domain ECUs (powertrain, chassis, ADAS), which confirm
-/// the commanded value.
+/// Central ECU: roof (sunroof), HVAC/thermal (cabin model + AUTO fan), the vehicle
+/// mode manager (see `VehicleModeManager`) and the gateway to non-zonal domain ECUs
+/// (powertrain, chassis, ADAS), which confirm the commanded value.
 
 abstract class _$CentralZoneController extends $Notifier<void> {
   void build();

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vehicle_domain/vehicle_domain.dart';
 
-/// Switches the vehicle profile live (simulation/demo tool).
+import 'power_mode_chip.dart';
+
+/// Switches the vehicle profile live (simulation/demo tool) and shows the power mode.
 class CarProfileSelectorBar extends ConsumerWidget {
   const CarProfileSelectorBar({super.key, required this.profiles});
 
@@ -38,6 +40,8 @@ class CarProfileSelectorBar extends ConsumerWidget {
               ),
             ),
           ),
+          const SizedBox(width: 12),
+          const PowerModeChip(),
         ],
       ),
     );

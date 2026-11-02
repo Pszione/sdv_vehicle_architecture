@@ -8,6 +8,7 @@ final class ZonalRoute {
 
   static const sunroof = ZonalRoute(VehicleZone.central, 'SUNROOF_ACTUATOR');
   static const hvac = ZonalRoute(VehicleZone.central, 'HVAC_MODULE');
+  static const vehicleModeManager = ZonalRoute(VehicleZone.central, 'VEHICLE_MODE_MANAGER');
   static const fallback = ZonalRoute(VehicleZone.central, 'DOMAIN_GATEWAY');
 
   final VehicleZone zone;
@@ -20,6 +21,7 @@ final class ZonalRoute {
   /// the west zone, on a RHD car it is the east zone.
   static ZonalRoute of(VssSignal<Object> signal, DriverSide driverSide) {
     if (signal == Vss.Vehicle.Cabin.Sunroof.Position) return sunroof;
+    if (signal == Vss.Vehicle.PowerMode.Request) return vehicleModeManager;
     if (_hvacSignals.contains(signal)) return hvac;
 
     final bodySide = _bodySideDevices[signal];

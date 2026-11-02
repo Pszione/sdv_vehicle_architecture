@@ -2,7 +2,16 @@ import 'package:meta/meta.dart';
 
 import '../../vss/vss_signal.dart';
 
-enum CommandStatus { approved, rejectedBySafetyRule, notSupportedByVehicle, readOnlySignal, invalidPayload }
+enum CommandStatus {
+  approved,
+  rejectedBySafetyRule,
+  notSupportedByVehicle,
+  readOnlySignal,
+  invalidPayload,
+
+  /// The function does not exist in the current power mode (e.g. cruise control while not READY).
+  unavailableInPowerMode,
+}
 
 @immutable
 final class CommandResult {
@@ -22,6 +31,8 @@ final class CommandResult {
 
   CommandResult.invalidPayload(String vssPath, Object value)
     : this._(CommandStatus.invalidPayload, 'Value "$value" is not allowed for "$vssPath".');
+
+  const CommandResult.unavailableInPowerMode(String hint) : this._(CommandStatus.unavailableInPowerMode, hint);
 
   final CommandStatus status;
   final String? message;

@@ -43,6 +43,16 @@ final class SimulatedManualOperation<T extends Object> extends SimulationStep {
   void runOn(TelemetrySimulator simulator) => simulator.operateManually(signal, value);
 }
 
+/// A pause, for steps that take time in a real car (e.g. the HV pre-charge before READY).
+final class SimulatedWait extends SimulationStep {
+  const SimulatedWait(this.duration);
+
+  final Duration duration;
+
+  @override
+  void runOn(TelemetrySimulator simulator) {}
+}
+
 /// A named sequence of steps that puts the car in a known situation.
 final class SimulationScenario {
   const SimulationScenario({required this.name, required this.description, required this.steps});
@@ -56,11 +66,16 @@ final class SimulationScenario {
   static final _brake = Vss.Vehicle.Chassis.Brake.PedalPosition;
   static final _battery = Vss.Vehicle.Powertrain.TractionBattery;
   static final _charging = _battery.Charging;
+  static final _power = Vss.Vehicle.PowerMode.Request;
+  static final _key = Vss.Vehicle.Body.Keyless.KeyLocation;
   static final _driverSeat = VehicleGroups.driverSeat;
   static final _driverDoor = VehicleGroups.driverDoor;
 
-  /// Driver seated and belted, doors and trunk closed, unplugged: ready to drive.
-  static List<SimulationStep> get _readyToDrive => [
+  /// Covers the HV pre-charge of the vehicle mode manager.
+  static const _prechargeWait = SimulatedWait(Duration(milliseconds: 500));
+
+  /// Driver seated and belted with the key, doors and trunk closed, unplugged, ignition ON.
+  static List<SimulationStep> get _driverOnBoard => [
     SimulatedReading(_speed, 0.0),
     for (final door in VehicleGroups.doors) SimulatedManualOperation(door.open, false),
     SimulatedManualOperation(Vss.Vehicle.Body.Trunk.Rear.IsOpen, false),
@@ -68,25 +83,36 @@ final class SimulationScenario {
     SimulatedReading(_charging.IsCharging, false),
     SimulatedReading(_driverSeat.occupancy, SeatOccupancy.occupied),
     SimulatedReading(_driverSeat.belted, true),
+    SimulatedReading(_key, KeyLocation.inside),
+    SimulatedCommand(_power, PowerModeRequest.on),
   ];
 
-  /// Brake pressed, DRIVE engaged, brake released, then cruise at [speedKmh].
+  /// Brake + START (READY), DRIVE engaged, brake released, then cruise at [speedKmh].
   static List<SimulationStep> _driveAt(double speedKmh) => [
-    ..._readyToDrive,
+    ..._driverOnBoard,
     SimulatedReading(_brake, 100),
+    SimulatedCommand(_power, PowerModeRequest.ready),
+    _prechargeWait,
     SimulatedCommand(_gear, Gear.drive),
     SimulatedReading(_brake, 0),
     SimulatedReading(Vss.Vehicle.Chassis.SteeringWheel.Angle, 0.0),
     SimulatedReading(_speed, speedKmh),
   ];
 
+  /// Stops, parks and powers off with the driver still inside.
+  static List<SimulationStep> get _parkAndPowerOff => [
+    SimulatedReading(_speed, 0.0),
+    SimulatedCommand(_gear, Gear.park),
+    SimulatedCommand(_power, PowerModeRequest.off),
+  ];
+
   /// Ready-made situations that exercise the safety rules and behaviors.
   static final presets = <SimulationScenario>[
     SimulationScenario(
       name: 'Parked & aligned',
-      description: 'PARK, 0 km/h, wheel straight, doors closed, unplugged, 80% SoC, 20 °C, no crash.',
+      description: 'Driver on board, ignition ON, PARK, wheel straight, doors closed, unplugged, 80% SoC, 20 °C.',
       steps: [
-        ..._readyToDrive,
+        ..._driverOnBoard,
         SimulatedReading(Vss.Vehicle.Chassis.SteeringWheel.Angle, 0.0),
         SimulatedReading(_brake, 0),
         SimulatedReading(_battery.StateOfCharge, 80.0),
@@ -97,13 +123,18 @@ final class SimulationScenario {
       ],
     ),
     SimulationScenario(
+      name: 'Start (READY)',
+      description: 'Driver on board presses the brake and START: HV pre-charge, then READY.',
+      steps: [..._driverOnBoard, SimulatedReading(_brake, 100), SimulatedCommand(_power, PowerModeRequest.ready)],
+    ),
+    SimulationScenario(
       name: 'City driving',
-      description: 'Unplugged, DRIVE, 45 km/h. Auto-lock locks the doors.',
+      description: 'READY, DRIVE, 45 km/h. Auto-lock locks the doors.',
       steps: _driveAt(45.0),
     ),
     SimulationScenario(
       name: 'Highway',
-      description: 'Unplugged, DRIVE, 130 km/h. Auto-lock, and the suspension lowers itself.',
+      description: 'READY, DRIVE, 130 km/h. Auto-lock, and the suspension lowers itself.',
       steps: _driveAt(130.0),
     ),
     SimulationScenario(
@@ -113,10 +144,9 @@ final class SimulationScenario {
     ),
     SimulationScenario(
       name: 'Plugged in, low battery',
-      description: 'PARK, charging cable connected and charging, 10% SoC.',
+      description: 'PARK, charging cable connected and charging (power mode CHARGING), 10% SoC.',
       steps: [
-        SimulatedReading(_speed, 0.0),
-        SimulatedCommand(_gear, Gear.park),
+        ..._parkAndPowerOff,
         SimulatedReading(_charging.IsConnected, true),
         SimulatedReading(_charging.IsCharging, true),
         SimulatedReading(_battery.StateOfCharge, 10.0),
@@ -137,13 +167,27 @@ final class SimulationScenario {
       ],
     ),
     SimulationScenario(
-      name: 'Ready for OTA',
-      description: 'PARK, nobody inside, doors closed and locked, 80% SoC.',
+      name: 'Walk away',
+      description: 'Park, get out with the key and walk away: auto power off, walk-away lock, sleep after 10 s.',
       steps: [
-        SimulatedReading(_speed, 0.0),
-        SimulatedCommand(_gear, Gear.park),
+        ..._parkAndPowerOff,
+        SimulatedReading(_driverSeat.belted, false),
+        SimulatedManualOperation(_driverDoor.open, true),
+        SimulatedReading(_driverSeat.occupancy, SeatOccupancy.empty),
+        SimulatedManualOperation(_driverDoor.open, false),
+        SimulatedReading(_key, KeyLocation.near),
+        SimulatedReading(_key, KeyLocation.none),
+      ],
+    ),
+    SimulationScenario(
+      name: 'Ready for OTA',
+      description: 'PARK, powered off, nobody inside, doors closed and locked, 80% SoC.',
+      steps: [
+        ..._parkAndPowerOff,
         SimulatedReading(_battery.StateOfCharge, 80.0),
         for (final seat in VehicleGroups.seats) SimulatedReading(seat.occupancy, SeatOccupancy.empty),
+        // Opening a door ends the retained accessory power: the car is fully OFF.
+        SimulatedManualOperation(_driverDoor.open, true),
         for (final door in VehicleGroups.doors) SimulatedManualOperation(door.open, false),
         for (final door in VehicleGroups.doors) SimulatedCommand(door.lock, true),
       ],
@@ -152,6 +196,11 @@ final class SimulationScenario {
       name: 'Family on board',
       description: 'Every seat occupied.',
       steps: [for (final seat in VehicleGroups.seats) SimulatedReading(seat.occupancy, SeatOccupancy.occupied)],
+    ),
+    SimulationScenario(
+      name: 'Weak 12 V battery',
+      description: '12 V battery at 11.5 V: Sentry, Camp and Dog Mode refuse to start.',
+      steps: [SimulatedReading(Vss.Vehicle.LowVoltageBattery.CurrentVoltage, 11.5)],
     ),
     SimulationScenario(
       name: 'Winter morning',

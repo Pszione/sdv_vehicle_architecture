@@ -11,8 +11,8 @@ part of 'can_dispatch_provider.dart';
 /// Re-evaluates whether [command] would be approved right now, to warn the
 /// user before they tap a control.
 ///
-/// Only watches the profile and the `inputs` of the rules that apply to the
-/// command, so telemetry of unrelated signals does not trigger a re-evaluation.
+/// Only watches the profile, the power mode and the `inputs` of the rules that apply
+/// to the command, so telemetry of unrelated signals does not trigger a re-evaluation.
 
 @ProviderFor(canDispatch)
 final canDispatchProvider = CanDispatchFamily._();
@@ -20,16 +20,16 @@ final canDispatchProvider = CanDispatchFamily._();
 /// Re-evaluates whether [command] would be approved right now, to warn the
 /// user before they tap a control.
 ///
-/// Only watches the profile and the `inputs` of the rules that apply to the
-/// command, so telemetry of unrelated signals does not trigger a re-evaluation.
+/// Only watches the profile, the power mode and the `inputs` of the rules that apply
+/// to the command, so telemetry of unrelated signals does not trigger a re-evaluation.
 
 final class CanDispatchProvider extends $FunctionalProvider<CommandResult, CommandResult, CommandResult>
     with $Provider<CommandResult> {
   /// Re-evaluates whether [command] would be approved right now, to warn the
   /// user before they tap a control.
   ///
-  /// Only watches the profile and the `inputs` of the rules that apply to the
-  /// command, so telemetry of unrelated signals does not trigger a re-evaluation.
+  /// Only watches the profile, the power mode and the `inputs` of the rules that apply
+  /// to the command, so telemetry of unrelated signals does not trigger a re-evaluation.
   CanDispatchProvider._({required CanDispatchFamily super.from, required VehicleCommand<Object> super.argument})
     : super(
         retry: null,
@@ -75,13 +75,13 @@ final class CanDispatchProvider extends $FunctionalProvider<CommandResult, Comma
   }
 }
 
-String _$canDispatchHash() => r'cd27b076367602156c8c04ea595edb22d2478372';
+String _$canDispatchHash() => r'fb42567d50a997360f9f224da99d27b462ac9438';
 
 /// Re-evaluates whether [command] would be approved right now, to warn the
 /// user before they tap a control.
 ///
-/// Only watches the profile and the `inputs` of the rules that apply to the
-/// command, so telemetry of unrelated signals does not trigger a re-evaluation.
+/// Only watches the profile, the power mode and the `inputs` of the rules that apply
+/// to the command, so telemetry of unrelated signals does not trigger a re-evaluation.
 
 final class CanDispatchFamily extends $Family with $FunctionalFamilyOverride<CommandResult, VehicleCommand<Object>> {
   CanDispatchFamily._()
@@ -96,8 +96,8 @@ final class CanDispatchFamily extends $Family with $FunctionalFamilyOverride<Com
   /// Re-evaluates whether [command] would be approved right now, to warn the
   /// user before they tap a control.
   ///
-  /// Only watches the profile and the `inputs` of the rules that apply to the
-  /// command, so telemetry of unrelated signals does not trigger a re-evaluation.
+  /// Only watches the profile, the power mode and the `inputs` of the rules that apply
+  /// to the command, so telemetry of unrelated signals does not trigger a re-evaluation.
 
   CanDispatchProvider call(VehicleCommand<Object> command) => CanDispatchProvider._(argument: command, from: this);
 

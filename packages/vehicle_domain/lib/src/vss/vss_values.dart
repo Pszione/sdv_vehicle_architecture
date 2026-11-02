@@ -61,3 +61,28 @@ abstract final class MassageType {
   static const pulse = 'PULSE';
   static const stretch = 'STRETCH';
 }
+
+/// COVESA `LowVoltageSystemState`: state of the 12 V supply of the control units.
+abstract final class LowVoltageSystemState {
+  static const undefined = 'UNDEFINED';
+  static const lock = 'LOCK';
+  static const off = 'OFF';
+  static const acc = 'ACC';
+  static const on = 'ON';
+  static const start = 'START';
+}
+
+/// Custom `PowerMode.Request`: what the driver asks for (start button, power off).
+abstract final class PowerModeRequest {
+  static const off = 'OFF';
+  static const acc = 'ACC';
+  static const on = 'ON';
+  static const ready = 'READY';
+}
+
+/// Custom `Body.Keyless.KeyLocation`: where the passive-entry system detects the key.
+abstract final class KeyLocation {
+  static const none = 'NONE';
+  static const near = 'NEAR';
+  static const inside = 'INSIDE';
+}

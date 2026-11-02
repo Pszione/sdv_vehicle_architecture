@@ -5,6 +5,7 @@ import 'widgets/audit_log_panel.dart';
 import 'widgets/body_and_energy_control_card.dart';
 import 'widgets/fault_injection_card.dart';
 import 'widgets/force_actuator_card.dart';
+import 'widgets/key_and_power_card.dart';
 import 'widgets/occupants_control_card.dart';
 import 'widgets/rear_passenger_panel_card.dart';
 import 'widgets/scenario_presets_card.dart';
@@ -22,6 +23,7 @@ class SimulatorScreen extends StatelessWidget {
     const world = [
       _SectionTitle('Simulated world (sensors)'),
       ScenarioPresetsCard(),
+      KeyAndPowerCard(),
       VehicleDynamicsControlCard(),
       OccupantsControlCard(),
       RearPassengerPanelCard(),

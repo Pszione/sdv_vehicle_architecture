@@ -62,4 +62,4 @@ final class ActiveSafetyRulesProvider extends $FunctionalProvider<List<SafetyRul
   }
 }
 
-String _$activeSafetyRulesHash() => r'7866c474085ac26cf84e94e0c7e61bb5cf3e5f63';
+String _$activeSafetyRulesHash() => r'8c11e7838c97027e206fcfccf89d796e392cb8b9';

@@ -28,7 +28,11 @@ class CommandDispatcher extends _$CommandDispatcher {
     final logger = ref.read(vehicleLoggerProvider.notifier);
 
     if (!result.isSuccess) {
-      if (result.status == CommandStatus.rejectedBySafetyRule) logger.logSafetyRejection(command, result);
+      final isRejection = {
+        CommandStatus.rejectedBySafetyRule,
+        CommandStatus.unavailableInPowerMode,
+      }.contains(result.status);
+      if (isRejection) logger.logSafetyRejection(command, result);
       return result;
     }
 
