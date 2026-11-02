@@ -14,7 +14,7 @@ void main() {
     container = ProviderContainer.test(
       overrides: [
         initialVehicleProfileProvider.overrideWithValue(luxuryEvSuvProfile),
-        commandSinkProvider.overrideWith((ref) => ZonalCommandSink(ref.watch(zonalCommandBusProvider))),
+        commandSinkProvider.overrideWith((ref) => ref.watch(zonalCommandSinkProvider)),
       ],
     )..read(zonalSystemProvider);
   });

@@ -37,7 +37,7 @@ class _FaultInjectionCardState extends ConsumerState<FaultInjectionCard> {
           selected: {_fault},
           onSelectionChanged: (selection) {
             setState(() => _fault = selection.first);
-            ref.read(topZoneControllerProvider.notifier).injectSunroofFault(_fault);
+            ref.read(centralZoneControllerProvider.notifier).injectSunroofFault(_fault);
           },
         ),
       ),

@@ -19,7 +19,7 @@ class OccupantsControlCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: SimulatedSensorSwitch(signal: seat.occupied, label: '${seat.label} seated'),
+                  child: SimulatedOccupancySwitch(signal: seat.occupancy, label: '${seat.label} seated'),
                 ),
                 const SizedBox(width: 12),
                 Expanded(

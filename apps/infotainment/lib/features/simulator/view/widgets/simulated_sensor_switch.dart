@@ -25,3 +25,27 @@ class SimulatedSensorSwitch extends ConsumerWidget {
     );
   }
 }
+
+/// Switch that drives a seat `OccupancyStatus` sensor (OCCUPIED / EMPTY).
+class SimulatedOccupancySwitch extends ConsumerWidget {
+  const SimulatedOccupancySwitch({super.key, required this.signal, required this.label});
+
+  final VssSignal<String> signal;
+  final String label;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return VehicleFeatureGuard(
+      signal: signal,
+      child: SwitchListTile(
+        dense: true,
+        contentPadding: EdgeInsets.zero,
+        title: Text(label),
+        value: ref.watchSignal(signal) == SeatOccupancy.occupied,
+        onChanged: (occupied) => ref
+            .read(telemetrySimulatorProvider.notifier)
+            .report(signal, occupied ? SeatOccupancy.occupied : SeatOccupancy.empty),
+      ),
+    );
+  }
+}

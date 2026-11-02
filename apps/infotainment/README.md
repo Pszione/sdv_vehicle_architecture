@@ -1,11 +1,12 @@
 # infotainment
 
 Flutter app for the **EV SUV central display**, built for tablet landscape (e.g. iPad Air 11").
-Two tabs, switched from a side `NavigationRail` (bottom `NavigationBar` on phones):
+Three tabs, switched from a side `NavigationRail` (bottom `NavigationBar` on phones):
 
 | Tab | What it shows |
 |---|---|
 | **Vehicle** | Production controls: gear, ESC, rear diff lock, air suspension, driver assistance (ACC, lane keeping, hill descent), battery preconditioning, door locks, tailgate/frunk/charge port, sunroof, seat massage, parked modes (Dog/Camp/Sentry/V2L), Valet Mode, software update and media (locked while driving) |
+| **Climate** | Full-screen 3-zone climate (driver, passenger, rear): temperature per zone, animated cabin airflow, seat heat/vent and steering wheel heat, AUTO, A/C, recirculation, max/rear defrost, SYNC, rear lock, fan and airflow. Mirrors for RHD |
 | **Simulator** | Left: scenarios, simulated sensors (speed, steering, brake pedal, occupants and belts, doors, trunk, trailer, charging, SoC, temperature), sunroof fault injection and forced actuator states. Middle: the same production controls reacting live. Right: live audit log |
 
 Every control goes through the `CommandDispatcher`. Buttons stay enabled: a blocked tap is
@@ -25,6 +26,8 @@ show up in the log under their own source, and forced states as red `FORCED` ent
 7. Other rules: *Highway* + open the sunroof or tailgate, *Plugged in, low battery* + DRIVE or
    preconditioning, Valet Mode + glovebox, *Crash*, *Jam at 50%* + open the sunroof,
    *Force actuator state* → diff locked at highway speed.
+8. Climate: *Summer heat* + AUTO cools the cabin (Central ECU thermal model); *Lock rear* + the
+   *Rear passenger panel* card is rejected; SoC 5% + fan 100% hits range protection.
 
 ## Composition root
 
@@ -33,7 +36,7 @@ show up in the log under their own source, and forced states as red `FORCED` ent
 ```dart
 final container = ProviderContainer(overrides: [
   initialVehicleProfileProvider.overrideWithValue(luxuryEvSuvProfile), // car model
-  commandSinkProvider.overrideWith((ref) => ZonalCommandSink(ref.watch(zonalCommandBusProvider))),
+  commandSinkProvider.overrideWith((ref) => ref.watch(zonalCommandSinkProvider)),
 ]);
 container
   ..read(zonalSystemProvider)           // boot the zonal ECUs

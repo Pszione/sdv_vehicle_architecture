@@ -12,17 +12,12 @@ class DoorLockControlCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final door = Vss.Vehicle.Cabin.Door;
-
     return VehicleControlCard(
       icon: Icons.lock_outline,
       title: 'Door locks',
       child: Column(
         children: [
-          _DoorLockRow(label: 'Front left', lock: door.Row1.Left.IsLocked, ajar: door.Row1.Left.IsAjar),
-          _DoorLockRow(label: 'Front right', lock: door.Row1.Right.IsLocked, ajar: door.Row1.Right.IsAjar),
-          _DoorLockRow(label: 'Rear left', lock: door.Row2.Left.IsLocked, ajar: door.Row2.Left.IsAjar),
-          _DoorLockRow(label: 'Rear right', lock: door.Row2.Right.IsLocked, ajar: door.Row2.Right.IsAjar),
+          for (final door in VehicleGroups.doors) _DoorLockRow(label: door.label, lock: door.lock, open: door.open),
         ],
       ),
     );
@@ -30,16 +25,16 @@ class DoorLockControlCard extends StatelessWidget {
 }
 
 class _DoorLockRow extends ConsumerWidget {
-  const _DoorLockRow({required this.label, required this.lock, required this.ajar});
+  const _DoorLockRow({required this.label, required this.lock, required this.open});
 
   final String label;
   final VssSignal<bool> lock;
-  final VssSignal<bool> ajar;
+  final VssSignal<bool> open;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLocked = ref.watchSignal(lock) ?? false;
-    final isAjar = ref.watchSignal(ajar) ?? false;
+    final isOpen = ref.watchSignal(open) ?? false;
 
     return VehicleFeatureGuard(
       signal: lock,
@@ -49,7 +44,7 @@ class _DoorLockRow extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             secondary: Icon(isLocked ? Icons.lock : Icons.lock_open),
             title: Text(label),
-            subtitle: Text(isAjar ? 'Open' : 'Closed'),
+            subtitle: Text(isOpen ? 'Open' : 'Closed'),
             value: isLocked,
             onChanged: (value) => ref.dispatchCommand(
               context,

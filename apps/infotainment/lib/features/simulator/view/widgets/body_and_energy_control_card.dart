@@ -11,7 +11,6 @@ class BodyAndEnergyControlCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final door = Vss.Vehicle.Cabin.Door;
     final battery = Vss.Vehicle.Powertrain.TractionBattery;
 
     return VehicleControlCard(
@@ -20,10 +19,8 @@ class BodyAndEnergyControlCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SimulatedSensorSwitch(signal: door.Row1.Left.IsAjar, label: 'Front left door open'),
-          SimulatedSensorSwitch(signal: door.Row1.Right.IsAjar, label: 'Front right door open'),
-          SimulatedSensorSwitch(signal: door.Row2.Left.IsAjar, label: 'Rear left door open'),
-          SimulatedSensorSwitch(signal: door.Row2.Right.IsAjar, label: 'Rear right door open'),
+          for (final door in VehicleGroups.doors)
+            SimulatedSensorSwitch(signal: door.open, label: '${door.label} door open'),
           SimulatedSensorSwitch(signal: Vss.Vehicle.Body.Trunk.IsAjar, label: 'Trunk open'),
           SimulatedSensorSwitch(signal: Vss.Vehicle.Body.Trailer.IsConnected, label: 'Trailer connected'),
           SimulatedSensorSwitch(signal: battery.Charging.IsConnected, label: 'Charging cable connected'),
@@ -35,6 +32,13 @@ class BodyAndEnergyControlCard extends StatelessWidget {
             label: 'Outside temperature',
             min: -20,
             max: 45,
+            unit: '°C',
+          ),
+          SimulatedSensorSlider(
+            signal: Vss.Vehicle.Cabin.HVAC.AmbientAirTemperature,
+            label: 'Cabin temperature',
+            min: -20,
+            max: 60,
             unit: '°C',
           ),
         ],
