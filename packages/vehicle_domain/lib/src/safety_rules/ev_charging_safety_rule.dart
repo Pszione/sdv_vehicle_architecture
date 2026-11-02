@@ -10,7 +10,7 @@ final class EvChargingSafetyRule implements SafetyRule {
   static const _stationaryGears = {Gear.park, Gear.neutral};
 
   @override
-  VssSignal<String> get target => Vss.Vehicle.Powertrain.Transmission.SelectedGear;
+  VssSignal<int> get target => Vss.Vehicle.Powertrain.Transmission.SelectedGear;
 
   @override
   Set<VssSignal<Object>> get inputs => {Vss.Vehicle.Powertrain.TractionBattery.Charging.IsConnected};

@@ -46,7 +46,7 @@ final class CentralZoneControllerProvider extends $NotifierProvider<CentralZoneC
   }
 }
 
-String _$centralZoneControllerHash() => r'337ec4ec4f932a3beb1a0d8480209622e57371f2';
+String _$centralZoneControllerHash() => r'0f03e7e2f72624116a06a74dc641dd520c1836f7';
 
 /// Central ECU: roof (sunroof), HVAC/thermal (cabin model + AUTO fan) and the
 /// gateway to non-zonal domain ECUs (powertrain, chassis, ADAS), which confirm

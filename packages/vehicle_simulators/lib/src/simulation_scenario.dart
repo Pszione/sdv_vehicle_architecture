@@ -32,6 +32,17 @@ final class SimulatedCommand<T extends Object> extends SimulationStep {
   void runOn(TelemetrySimulator simulator) => simulator.command(signal, value);
 }
 
+/// An actuator moved by hand (door handle): published as the zone ECU would report it, no rules.
+final class SimulatedManualOperation<T extends Object> extends SimulationStep {
+  const SimulatedManualOperation(this.signal, this.value);
+
+  final VssSignal<T> signal;
+  final T value;
+
+  @override
+  void runOn(TelemetrySimulator simulator) => simulator.operateManually(signal, value);
+}
+
 /// A named sequence of steps that puts the car in a known situation.
 final class SimulationScenario {
   const SimulationScenario({required this.name, required this.description, required this.steps});
@@ -51,8 +62,8 @@ final class SimulationScenario {
   /// Driver seated and belted, doors and trunk closed, unplugged: ready to drive.
   static List<SimulationStep> get _readyToDrive => [
     SimulatedReading(_speed, 0.0),
-    for (final door in VehicleGroups.doors) SimulatedReading(door.open, false),
-    SimulatedReading(Vss.Vehicle.Body.Trunk.IsAjar, false),
+    for (final door in VehicleGroups.doors) SimulatedManualOperation(door.open, false),
+    SimulatedManualOperation(Vss.Vehicle.Body.Trunk.Rear.IsOpen, false),
     SimulatedReading(_charging.IsConnected, false),
     SimulatedReading(_charging.IsCharging, false),
     SimulatedReading(_driverSeat.occupancy, SeatOccupancy.occupied),
@@ -114,7 +125,7 @@ final class SimulationScenario {
     SimulationScenario(
       name: 'Driver door open',
       description: 'Stopped with the driver door open.',
-      steps: [SimulatedReading(_speed, 0.0), SimulatedReading(_driverDoor.open, true)],
+      steps: [SimulatedReading(_speed, 0.0), SimulatedManualOperation(_driverDoor.open, true)],
     ),
     SimulationScenario(
       name: 'Driver leaves in DRIVE',
@@ -122,7 +133,7 @@ final class SimulationScenario {
       steps: [
         SimulatedReading(_speed, 0.0),
         SimulatedReading(_driverSeat.belted, false),
-        SimulatedReading(_driverDoor.open, true),
+        SimulatedManualOperation(_driverDoor.open, true),
       ],
     ),
     SimulationScenario(
@@ -133,7 +144,7 @@ final class SimulationScenario {
         SimulatedCommand(_gear, Gear.park),
         SimulatedReading(_battery.StateOfCharge, 80.0),
         for (final seat in VehicleGroups.seats) SimulatedReading(seat.occupancy, SeatOccupancy.empty),
-        for (final door in VehicleGroups.doors) SimulatedReading(door.open, false),
+        for (final door in VehicleGroups.doors) SimulatedManualOperation(door.open, false),
         for (final door in VehicleGroups.doors) SimulatedCommand(door.lock, true),
       ],
     ),

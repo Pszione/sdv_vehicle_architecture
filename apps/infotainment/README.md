@@ -12,7 +12,8 @@ Three tabs, switched from a side `NavigationRail` (bottom `NavigationBar` on pho
 Every control goes through the `CommandDispatcher`. Buttons stay enabled: a blocked tap is
 rejected by the safety rules (red SnackBar + orange `REJECTED` entry in the audit log), and an
 orange banner warns ahead with the rule's message. Vehicle behaviors (auto-lock, auto-park...)
-show up in the log under their own source, and forced states as red `FORCED` entries.
+show up in the log under their own source, forced states as red `FORCED` entries and doors
+opened by hand in the simulator as amber `MANUAL` entries.
 
 ## Try it
 

@@ -45,7 +45,7 @@ class CentralZoneController extends _$CentralZoneController {
   void _process(ZonalCommand command) {
     switch (command.deviceId) {
       case final id when id == ZonalRoute.sunroof.deviceId:
-        _moveSunroof(command.command.value as double);
+        _moveSunroof(command.command.value as int);
       case final id when id == ZonalRoute.hvac.deviceId:
         _broker.publish(command.signal, command.command.value);
         _startThermalModel();
@@ -54,12 +54,12 @@ class CentralZoneController extends _$CentralZoneController {
     }
   }
 
-  void _moveSunroof(double target) {
+  void _moveSunroof(int targetPercent) {
     final position = Vss.Vehicle.Cabin.Sunroof.Position;
     // A new command replaces the movement in progress.
     _movement?.cancel();
-    _movement = _sunroof.moveTo(target).listen((progress) {
-      _broker.publish(position, progress.position);
+    _movement = _sunroof.moveTo(targetPercent.toDouble()).listen((progress) {
+      _broker.publish(position, progress.position.round());
       final isFaulted = progress.state == ActuatorState.stuck || progress.state == ActuatorState.fault;
       if (isFaulted) {
         developer.log('Actuator fault: ${progress.fault} at ${progress.position}', name: 'CentralZoneController');

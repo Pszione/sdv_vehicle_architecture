@@ -24,10 +24,10 @@ void main() {
     final position = Vss.Vehicle.Cabin.Sunroof.Position;
     final reachedTarget = Completer<void>();
     container.listen(vssValueProvider(position), (_, value) {
-      if (value == 0.1 && !reachedTarget.isCompleted) reachedTarget.complete();
+      if (value == 10 && !reachedTarget.isCompleted) reachedTarget.complete();
     });
 
-    container.read(commandDispatcherProvider.notifier).dispatch(VehicleCommand(signal: position, value: 0.1));
+    container.read(commandDispatcherProvider.notifier).dispatch(VehicleCommand(signal: position, value: 10));
 
     await reachedTarget.future.timeout(const Duration(seconds: 5));
     expect(container.read(vssValueProvider(Vss.Vehicle.Cabin.Sunroof.IsFaulted)), isFalse);
@@ -36,10 +36,10 @@ void main() {
   test('should stop at half travel and report stuck when a mechanical jam is injected', () async {
     final sunroof = DumbSunroofActuator('SUNROOF_ACTUATOR')..injectFault(ActuatorFaultType.mechanicalJam);
 
-    final last = await sunroof.moveTo(1.0, speedPerSecond: 2.5).last;
+    final last = await sunroof.moveTo(100, speedPerSecond: 250).last;
 
     expect(last.state, ActuatorState.stuck);
-    expect(last.position, 0.5);
+    expect(last.position, 50);
     expect(last.fault, ActuatorFaultType.mechanicalJam);
   });
 

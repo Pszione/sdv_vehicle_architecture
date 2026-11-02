@@ -36,6 +36,7 @@ export 'src/safety_rules/climate_range_protection_safety_rule.dart';
 export 'src/safety_rules/convertible_top_safety_rule.dart';
 export 'src/safety_rules/diff_lock_safety_rule.dart';
 export 'src/safety_rules/domain/safety_rule.dart';
+export 'src/safety_rules/door_latch_safety_rule.dart';
 export 'src/safety_rules/door_safety_rule.dart';
 export 'src/safety_rules/driver_presence_safety_rule.dart';
 export 'src/safety_rules/esc_mode_safety_rule.dart';

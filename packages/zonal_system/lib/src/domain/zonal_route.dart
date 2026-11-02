@@ -45,7 +45,7 @@ final class ZonalRoute {
     Vss.Vehicle.Chassis.SteeringWheel.HeatingCooling,
   };
 
-  /// Body actuators by role: door locks, door shades and seat comfort.
+  /// Body actuators by role: door locks and e-latches, door shades and seat comfort.
   static final Map<VssSignal<Object>, ({bool isDriverSide, String device})> _bodySideDevices = () {
     final door = Vss.Vehicle.Cabin.Door;
     final seat = Vss.Vehicle.Cabin.Seat;
@@ -54,6 +54,10 @@ final class ZonalRoute {
       door.Row1.PassengerSide.IsLocked: (isDriverSide: false, device: 'DOOR_FRONT'),
       door.Row2.DriverSide.IsLocked: (isDriverSide: true, device: 'DOOR_REAR'),
       door.Row2.PassengerSide.IsLocked: (isDriverSide: false, device: 'DOOR_REAR'),
+      door.Row1.DriverSide.IsOpen: (isDriverSide: true, device: 'DOOR_FRONT'),
+      door.Row1.PassengerSide.IsOpen: (isDriverSide: false, device: 'DOOR_FRONT'),
+      door.Row2.DriverSide.IsOpen: (isDriverSide: true, device: 'DOOR_REAR'),
+      door.Row2.PassengerSide.IsOpen: (isDriverSide: false, device: 'DOOR_REAR'),
       door.Row2.DriverSide.Shade.Position: (isDriverSide: true, device: 'DOOR_REAR'),
       door.Row2.PassengerSide.Shade.Position: (isDriverSide: false, device: 'DOOR_REAR'),
       seat.Row1.DriverSide.HeatingCooling: (isDriverSide: true, device: 'SEAT_FRONT'),

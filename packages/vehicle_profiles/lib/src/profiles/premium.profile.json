@@ -9,5 +9,9 @@
     "Vehicle.Cabin.Sunroof.Position",
     "Vehicle.Cabin.Sunroof.IsFaulted"
   ],
-  "overrides": {}
+  "overrides": {
+    "Vehicle.Cabin.Sunroof.Position": {
+      "min": 0
+    }
+  }
 }

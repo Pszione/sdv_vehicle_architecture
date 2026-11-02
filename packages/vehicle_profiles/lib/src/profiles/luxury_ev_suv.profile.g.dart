@@ -76,8 +76,7 @@ const luxuryEvSuvProfile = VehicleProfile(
     'Vehicle.Powertrain.TractionBattery.Charging.IsCharging',
     'Vehicle.Powertrain.TractionBattery.Charging.ChargePower',
     'Vehicle.Powertrain.TractionBattery.Charging.TargetSoC',
-    'Vehicle.Body.Trunk.IsAjar',
-    'Vehicle.Body.Trunk.PowerOpeningAngle',
+    'Vehicle.Body.Trunk.Rear.IsOpen',
     'Vehicle.Body.Lights.IsLeftIndicatorOn',
     'Vehicle.Body.Lights.IsRightIndicatorOn',
     'Vehicle.Body.Lights.IsHazardOn',
@@ -135,5 +134,9 @@ const luxuryEvSuvProfile = VehicleProfile(
     'Vehicle.Cabin.HVAC.Station.Row1.Passenger.AirDistribution',
     'Vehicle.Cabin.HVAC.Station.Row2.Driver.AirDistribution',
     'Vehicle.Cabin.HVAC.Station.Row2.Passenger.AirDistribution',
+  },
+  overrides: {
+    'Vehicle.Powertrain.Transmission.SelectedGear': VssMetaOverride(allowed: [126, -1, 0, 127]),
+    'Vehicle.Cabin.Sunroof.Position': VssMetaOverride(min: 0),
   },
 );

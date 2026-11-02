@@ -60,8 +60,8 @@ final class _VssVehicleCabin {
 final class _VssVehicleCabinSunroof {
   const _VssVehicleCabinSunroof();
 
-  /// 0.0 = closed, 1.0 = fully open.
-  VssSignal<double> get Position => const VssSignal<double>('Vehicle.Cabin.Sunroof.Position');
+  /// Sunroof position. 0 = Fully closed 100 = Fully opened. -100 = Fully tilted.
+  VssSignal<int> get Position => const VssSignal<int>('Vehicle.Cabin.Sunroof.Position');
 
   VssSignal<bool> get IsFaulted => const VssSignal<bool>('Vehicle.Cabin.Sunroof.IsFaulted');
 
@@ -87,7 +87,7 @@ final class _VssVehicleCabinDoorRow1 {
 final class _VssVehicleCabinDoorRow1DriverSide {
   const _VssVehicleCabinDoorRow1DriverSide();
 
-  /// Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS.
+  /// Is door open or closed. True = Open. False = Closed.
   VssSignal<bool> get IsOpen => const VssSignal<bool>('Vehicle.Cabin.Door.Row1.DriverSide.IsOpen');
 
   VssSignal<bool> get IsLocked => const VssSignal<bool>('Vehicle.Cabin.Door.Row1.DriverSide.IsLocked');
@@ -99,7 +99,7 @@ final class _VssVehicleCabinDoorRow1DriverSide {
 final class _VssVehicleCabinDoorRow1PassengerSide {
   const _VssVehicleCabinDoorRow1PassengerSide();
 
-  /// Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS.
+  /// Is door open or closed. True = Open. False = Closed.
   VssSignal<bool> get IsOpen => const VssSignal<bool>('Vehicle.Cabin.Door.Row1.PassengerSide.IsOpen');
 
   VssSignal<bool> get IsLocked => const VssSignal<bool>('Vehicle.Cabin.Door.Row1.PassengerSide.IsLocked');
@@ -120,7 +120,7 @@ final class _VssVehicleCabinDoorRow2 {
 final class _VssVehicleCabinDoorRow2DriverSide {
   const _VssVehicleCabinDoorRow2DriverSide();
 
-  /// Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS.
+  /// Is door open or closed. True = Open. False = Closed.
   VssSignal<bool> get IsOpen => const VssSignal<bool>('Vehicle.Cabin.Door.Row2.DriverSide.IsOpen');
 
   VssSignal<bool> get IsLocked => const VssSignal<bool>('Vehicle.Cabin.Door.Row2.DriverSide.IsLocked');
@@ -138,7 +138,7 @@ final class _VssVehicleCabinDoorRow2DriverSideShade {
 final class _VssVehicleCabinDoorRow2PassengerSide {
   const _VssVehicleCabinDoorRow2PassengerSide();
 
-  /// Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS.
+  /// Is door open or closed. True = Open. False = Closed.
   VssSignal<bool> get IsOpen => const VssSignal<bool>('Vehicle.Cabin.Door.Row2.PassengerSide.IsOpen');
 
   VssSignal<bool> get IsLocked => const VssSignal<bool>('Vehicle.Cabin.Door.Row2.PassengerSide.IsLocked');
@@ -632,7 +632,8 @@ final class _VssVehiclePowertrainCombustionEngine {
 final class _VssVehiclePowertrainTransmission {
   const _VssVehiclePowertrainTransmission();
 
-  VssSignal<String> get SelectedGear => const VssSignal<String>('Vehicle.Powertrain.Transmission.SelectedGear');
+  /// The selected gear. 0=Neutral, 1/2/..=Forward, -1/-2/..=Reverse, 126=Park, 127=Drive.
+  VssSignal<int> get SelectedGear => const VssSignal<int>('Vehicle.Powertrain.Transmission.SelectedGear');
 }
 
 final class _VssVehicleBody {
@@ -650,12 +651,10 @@ final class _VssVehicleBody {
 final class _VssVehicleBodyTrunk {
   const _VssVehicleBodyTrunk();
 
-  VssSignal<bool> get IsAjar => const VssSignal<bool>('Vehicle.Body.Trunk.IsAjar');
-
-  /// Power tailgate angle. 0 = closed.
-  VssSignal<double> get PowerOpeningAngle => const VssSignal<double>('Vehicle.Body.Trunk.PowerOpeningAngle');
-
   _VssVehicleBodyTrunkFront get Front => const _VssVehicleBodyTrunkFront();
+
+  /// Rear trunk (power tailgate).
+  _VssVehicleBodyTrunkRear get Rear => const _VssVehicleBodyTrunkRear();
 }
 
 final class _VssVehicleBodyTrunkFront {
@@ -663,6 +662,13 @@ final class _VssVehicleBodyTrunkFront {
 
   /// Front trunk (frunk).
   VssSignal<bool> get IsOpen => const VssSignal<bool>('Vehicle.Body.Trunk.Front.IsOpen');
+}
+
+final class _VssVehicleBodyTrunkRear {
+  const _VssVehicleBodyTrunkRear();
+
+  /// Is trunk open or closed. True = Open. False = Closed.
+  VssSignal<bool> get IsOpen => const VssSignal<bool>('Vehicle.Body.Trunk.Rear.IsOpen');
 }
 
 final class _VssVehicleBodyTrailer {
@@ -793,15 +799,16 @@ const Map<String, VssSignalMeta> vssCatalog = {
   'Vehicle.DriveMode': VssSignalMeta(type: VssNodeType.actuator, datatype: 'string'),
   'Vehicle.Cabin.Sunroof.Position': VssSignalMeta(
     type: VssNodeType.actuator,
-    datatype: 'float',
-    min: 0,
-    max: 1,
-    defaultValue: 0.0,
+    datatype: 'int8',
+    unit: 'percent',
+    min: -100,
+    max: 100,
+    defaultValue: 0,
   ),
   'Vehicle.Cabin.Sunroof.IsFaulted': VssSignalMeta(type: VssNodeType.sensor, datatype: 'boolean', defaultValue: false),
   'Vehicle.Cabin.Sunroof.ElectrochromicOpacity': VssSignalMeta(type: VssNodeType.actuator, datatype: 'float'),
   'Vehicle.Cabin.Door.Row1.DriverSide.IsOpen': VssSignalMeta(
-    type: VssNodeType.sensor,
+    type: VssNodeType.actuator,
     datatype: 'boolean',
     defaultValue: false,
   ),
@@ -812,7 +819,7 @@ const Map<String, VssSignalMeta> vssCatalog = {
   ),
   'Vehicle.Cabin.Door.Row1.DriverSide.SoftCloseState': VssSignalMeta(type: VssNodeType.sensor, datatype: 'string'),
   'Vehicle.Cabin.Door.Row1.PassengerSide.IsOpen': VssSignalMeta(
-    type: VssNodeType.sensor,
+    type: VssNodeType.actuator,
     datatype: 'boolean',
     defaultValue: false,
   ),
@@ -823,7 +830,7 @@ const Map<String, VssSignalMeta> vssCatalog = {
   ),
   'Vehicle.Cabin.Door.Row1.PassengerSide.SoftCloseState': VssSignalMeta(type: VssNodeType.sensor, datatype: 'string'),
   'Vehicle.Cabin.Door.Row2.DriverSide.IsOpen': VssSignalMeta(
-    type: VssNodeType.sensor,
+    type: VssNodeType.actuator,
     datatype: 'boolean',
     defaultValue: false,
   ),
@@ -841,7 +848,7 @@ const Map<String, VssSignalMeta> vssCatalog = {
     defaultValue: 0,
   ),
   'Vehicle.Cabin.Door.Row2.PassengerSide.IsOpen': VssSignalMeta(
-    type: VssNodeType.sensor,
+    type: VssNodeType.actuator,
     datatype: 'boolean',
     defaultValue: false,
   ),
@@ -1277,24 +1284,15 @@ const Map<String, VssSignalMeta> vssCatalog = {
   'Vehicle.Powertrain.CombustionEngine.Speed': VssSignalMeta(type: VssNodeType.sensor, datatype: 'float'),
   'Vehicle.Powertrain.Transmission.SelectedGear': VssSignalMeta(
     type: VssNodeType.actuator,
-    datatype: 'string',
-    allowed: ['PARK', 'REVERSE', 'NEUTRAL', 'DRIVE'],
-    defaultValue: 'PARK',
-  ),
-  'Vehicle.Body.Trunk.IsAjar': VssSignalMeta(type: VssNodeType.sensor, datatype: 'boolean', defaultValue: false),
-  'Vehicle.Body.Trunk.PowerOpeningAngle': VssSignalMeta(
-    type: VssNodeType.actuator,
-    datatype: 'float',
-    unit: 'degrees',
-    min: 0,
-    max: 90,
-    defaultValue: 0.0,
+    datatype: 'int8',
+    defaultValue: 126,
   ),
   'Vehicle.Body.Trunk.Front.IsOpen': VssSignalMeta(
     type: VssNodeType.actuator,
     datatype: 'boolean',
     defaultValue: false,
   ),
+  'Vehicle.Body.Trunk.Rear.IsOpen': VssSignalMeta(type: VssNodeType.actuator, datatype: 'boolean', defaultValue: false),
   'Vehicle.Body.Trailer.IsConnected': VssSignalMeta(type: VssNodeType.sensor, datatype: 'boolean', defaultValue: false),
   'Vehicle.Body.Trailer.BrakeGain': VssSignalMeta(type: VssNodeType.actuator, datatype: 'float'),
   'Vehicle.Body.Lights.IsLeftIndicatorOn': VssSignalMeta(type: VssNodeType.actuator, datatype: 'boolean'),

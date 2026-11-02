@@ -10,7 +10,7 @@ final class BrakeToShiftSafetyRule implements SafetyRule {
   static const minPedalPercent = 10;
 
   @override
-  VssSignal<String> get target => Vss.Vehicle.Powertrain.Transmission.SelectedGear;
+  VssSignal<int> get target => Vss.Vehicle.Powertrain.Transmission.SelectedGear;
 
   @override
   Set<VssSignal<Object>> get inputs => {target, Vss.Vehicle.Chassis.Brake.PedalPosition};

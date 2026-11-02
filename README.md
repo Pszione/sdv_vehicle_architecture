@@ -86,7 +86,7 @@ sdv_vehicle_architecture/
     ├── vehicle_simulators/                         # [5. SIMULATED SENSORS (dev & test)]
     │   ├── lib/
     │   │   ├── src/
-    │   │   │   ├── telemetry_simulator.dart        # Sensors, commands and FORCED states
+    │   │   │   ├── telemetry_simulator.dart        # Sensors, commands, MANUAL and FORCED
     │   │   │   └── simulation_scenario.dart        # Scenarios: readings + commands
     │   │   └── vehicle_simulators.dart
     │   └── pubspec.yaml

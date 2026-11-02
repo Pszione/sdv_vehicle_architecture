@@ -14,14 +14,14 @@ final class ConvertibleTopSafetyRule implements SafetyRule {
 
   @override
   Set<VssSignal<Object>> get inputs => {
-    Vss.Vehicle.Body.Trunk.IsAjar,
+    Vss.Vehicle.Body.Trunk.Rear.IsOpen,
     Vss.Vehicle.Speed,
     Vss.Vehicle.Exterior.AirTemperature,
   };
 
   @override
   CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
-    if (signals.read(Vss.Vehicle.Body.Trunk.IsAjar) ?? false) {
+    if (signals.read(Vss.Vehicle.Body.Trunk.Rear.IsOpen) ?? false) {
       return const CommandResult.rejected('Close the trunk before operating the convertible top.');
     }
 

@@ -11,7 +11,7 @@ final class TransmissionSafetyRule implements SafetyRule {
   static const _lowSpeedOnlyGears = {Gear.park, Gear.reverse};
 
   @override
-  VssSignal<String> get target => Vss.Vehicle.Powertrain.Transmission.SelectedGear;
+  VssSignal<int> get target => Vss.Vehicle.Powertrain.Transmission.SelectedGear;
 
   @override
   Set<VssSignal<Object>> get inputs => {Vss.Vehicle.Speed};
@@ -23,7 +23,7 @@ final class TransmissionSafetyRule implements SafetyRule {
     final speed = signals.read(Vss.Vehicle.Speed) ?? 0.0;
     if (speed > maxSpeedKmh) {
       return CommandResult.rejected(
-        'Slow down below ${maxSpeedKmh.toInt()} km/h to engage ${command.value} (current: ${speed.toInt()} km/h).',
+        'Slow down below ${maxSpeedKmh.toInt()} km/h to engage ${Gear.label(command.value as int)} (current: ${speed.toInt()} km/h).',
       );
     }
     return null;

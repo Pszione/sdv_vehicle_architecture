@@ -1,10 +1,23 @@
-/// Allowed values of string VSS signals, so rules and behaviors never repeat literals.
-/// They must match the `allowed` lists in `vehicle.vss.json`.
+// Named values of enum-like VSS signals, so rules and behaviors never repeat literals.
+// String values must match the `allowed` lists in `vehicle.vss.json`.
+
+/// COVESA `Transmission.SelectedGear` (int8): 0 = Neutral, 1..n = forward,
+/// -1..-n = reverse, 126 = Park, 127 = Drive.
 abstract final class Gear {
-  static const park = 'PARK';
-  static const reverse = 'REVERSE';
-  static const neutral = 'NEUTRAL';
-  static const drive = 'DRIVE';
+  static const park = 126;
+  static const reverse = -1;
+  static const neutral = 0;
+  static const drive = 127;
+
+  /// Readable name for HMIs and rule messages: PARK, REVERSE, NEUTRAL, DRIVE or `GEAR n`.
+  static String label(int gear) => switch (gear) {
+    park => 'PARK',
+    drive => 'DRIVE',
+    neutral => 'NEUTRAL',
+    reverse => 'REVERSE',
+    < 0 => 'REVERSE ${-gear}',
+    _ => 'GEAR $gear',
+  };
 }
 
 abstract final class EscMode {

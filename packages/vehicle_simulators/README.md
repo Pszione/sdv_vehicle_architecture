@@ -1,12 +1,13 @@
 # vehicle_simulators
 
 **Simulated world around the car (dev & test tooling).** Pure Dart. Drives the vehicle
-without hardware, through three clearly separated paths:
+without hardware, through four clearly separated paths:
 
 | Method | For | Path |
 |---|---|---|
-| `report(signal, value)` | **Sensors** (speed, door open, SoC, seatbelt...) | Published to the `VssBroker`, as an ECU would. Actuators are refused (`ArgumentError`) |
+| `report(signal, value)` | **Sensors** (speed, seat occupancy, SoC, seatbelt...) | Published to the `VssBroker`, as an ECU would. Actuators are refused (`ArgumentError`) |
 | `command(signal, value)` | **Actuators** (locks, gear, diff lock...) | Through the `CommandDispatcher` with source `SIMULATOR`: every safety rule applies |
+| `operateManually(signal, value)` | **By hand** (door handle, manual tailgate) | Published as the zone ECU reports the latch, no command so no rule, logged as `MANUAL` |
 | `forceActuatorState(signal, value)` | Fault testing | Written straight to the broker, **bypassing every rule**, and logged as `FORCED` |
 
 The broker still validates every value against the spec and the active profile: a signal
@@ -17,7 +18,7 @@ until the next real command.
 
 ## Scenarios
 
-A `SimulationScenario` is a sequence of steps: `SimulatedReading` (sensor) and
+A `SimulationScenario` is a sequence of steps: `SimulatedReading` (sensor), `SimulatedManualOperation` (by hand) and
 `SimulatedCommand` (actuator, through the dispatcher).
 
 | Scenario | What it does |

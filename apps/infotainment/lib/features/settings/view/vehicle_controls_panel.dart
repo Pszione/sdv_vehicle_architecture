@@ -42,7 +42,7 @@ class VehicleControlsPanel extends StatelessWidget {
     ];
     final cabin = [
       const DoorLockControlCard(),
-      VehicleFeatureGuard(signal: Vss.Vehicle.Body.Trunk.PowerOpeningAngle, child: const BodyOpeningsCard()),
+      VehicleFeatureGuard(signal: Vss.Vehicle.Body.Trunk.Rear.IsOpen, child: const BodyOpeningsCard()),
       VehicleFeatureGuard(signal: Vss.Vehicle.Cabin.Sunroof.Position, child: const SunroofControlCard()),
       // The card picks the driver seat (LHD/RHD) and hides itself without massage.
       const SeatMassageControlCard(),

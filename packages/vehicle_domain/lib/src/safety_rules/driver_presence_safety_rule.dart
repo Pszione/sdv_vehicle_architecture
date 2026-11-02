@@ -11,7 +11,7 @@ final class DriverPresenceSafetyRule implements SafetyRule {
   static const _movingGears = {Gear.drive, Gear.reverse};
 
   @override
-  VssSignal<String> get target => Vss.Vehicle.Powertrain.Transmission.SelectedGear;
+  VssSignal<int> get target => Vss.Vehicle.Powertrain.Transmission.SelectedGear;
 
   @override
   Set<VssSignal<Object>> get inputs => {VehicleGroups.driverDoor.open, VehicleGroups.driverSeat.belted};
@@ -21,11 +21,11 @@ final class DriverPresenceSafetyRule implements SafetyRule {
     if (!_movingGears.contains(command.value)) return null;
 
     if (signals.read(VehicleGroups.driverDoor.open) ?? false) {
-      return CommandResult.rejected('Close the driver door before engaging ${command.value}.');
+      return CommandResult.rejected('Close the driver door before engaging ${Gear.label(command.value as int)}.');
     }
     // Cars without a belt sensor (signal not in the profile) are not blocked.
     if (!(signals.read(VehicleGroups.driverSeat.belted) ?? true)) {
-      return CommandResult.rejected('Fasten the driver seatbelt before engaging ${command.value}.');
+      return CommandResult.rejected('Fasten the driver seatbelt before engaging ${Gear.label(command.value as int)}.');
     }
     return null;
   }

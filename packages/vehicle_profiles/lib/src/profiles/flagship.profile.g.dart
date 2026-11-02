@@ -86,8 +86,7 @@ const flagshipProfile = VehicleProfile(
     'Vehicle.Powertrain.TractionBattery.Charging.ChargePower',
     'Vehicle.Powertrain.TractionBattery.Charging.TargetSoC',
     'Vehicle.Powertrain.V2L.IsExportingPower',
-    'Vehicle.Body.Trunk.IsAjar',
-    'Vehicle.Body.Trunk.PowerOpeningAngle',
+    'Vehicle.Body.Trunk.Rear.IsOpen',
     'Vehicle.Body.Trailer.IsConnected',
     'Vehicle.Body.Trailer.BrakeGain',
     'Vehicle.Body.Lights.IsLeftIndicatorOn',
@@ -133,5 +132,8 @@ const flagshipProfile = VehicleProfile(
     'Vehicle.Cabin.HVAC.Station.Row1.Passenger.AirDistribution',
     'Vehicle.Cabin.HVAC.Station.Row2.Driver.AirDistribution',
     'Vehicle.Cabin.HVAC.Station.Row2.Passenger.AirDistribution',
+  },
+  overrides: {
+    'Vehicle.Powertrain.Transmission.SelectedGear': VssMetaOverride(allowed: [126, -1, 0, 127]),
   },
 );

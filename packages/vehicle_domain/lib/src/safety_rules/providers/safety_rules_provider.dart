@@ -7,6 +7,7 @@ import '../climate_range_protection_safety_rule.dart';
 import '../convertible_top_safety_rule.dart';
 import '../diff_lock_safety_rule.dart';
 import '../domain/safety_rule.dart';
+import '../door_latch_safety_rule.dart';
 import '../door_safety_rule.dart';
 import '../driver_presence_safety_rule.dart';
 import '../esc_mode_safety_rule.dart';
@@ -34,6 +35,7 @@ part 'safety_rules_provider.g.dart';
 @Riverpod(keepAlive: true)
 List<SafetyRule> activeSafetyRules(Ref ref) => [
   ...DoorSafetyRule.allDoors(),
+  ...DoorLatchSafetyRule.allDoors(),
   SunroofSpeedSafetyRule(),
   TransmissionSafetyRule(),
   BrakeToShiftSafetyRule(),

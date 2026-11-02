@@ -9,13 +9,11 @@ import '../../../../core/command_source.dart';
 class BodyOpeningsCard extends ConsumerWidget {
   const BodyOpeningsCard({super.key});
 
-  static const _tailgateOpenAngle = 90.0;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tailgate = Vss.Vehicle.Body.Trunk.PowerOpeningAngle;
+    final tailgate = Vss.Vehicle.Body.Trunk.Rear.IsOpen;
     final flap = Vss.Vehicle.Powertrain.TractionBattery.Charging.ChargePortFlap;
-    final isTailgateOpen = (ref.watchSignal(tailgate) ?? 0) > 0;
+    final isTailgateOpen = ref.watchSignal(tailgate) ?? false;
     final isFlapOpen = ref.watchSignal(flap) == ChargePortFlapState.open;
 
     return VehicleControlCard(
@@ -28,8 +26,8 @@ class BodyOpeningsCard extends ConsumerWidget {
             signal: tailgate,
             label: 'Power tailgate',
             isOpen: isTailgateOpen,
-            openValue: _tailgateOpenAngle,
-            closedValue: 0.0,
+            openValue: true,
+            closedValue: false,
           ),
           VehicleCommandSwitch(
             signal: Vss.Vehicle.Body.Trunk.Front.IsOpen,

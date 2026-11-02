@@ -16,4 +16,7 @@ const premiumProfile = VehicleProfile(
     'Vehicle.Cabin.Sunroof.Position',
     'Vehicle.Cabin.Sunroof.IsFaulted',
   },
+  overrides: {
+    'Vehicle.Cabin.Sunroof.Position': VssMetaOverride(min: 0),
+  },
 );

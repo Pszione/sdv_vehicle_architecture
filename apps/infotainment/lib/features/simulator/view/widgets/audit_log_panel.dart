@@ -53,6 +53,7 @@ class _LogEntryTile extends StatelessWidget {
     LogType.safetyRejection: ('REJECTED', Colors.deepOrangeAccent),
     LogType.signalChange: ('CONFIRMED', Colors.greenAccent),
     LogType.forced: ('FORCED', Colors.redAccent),
+    LogType.manual: ('MANUAL', Colors.amberAccent),
   };
 
   @override

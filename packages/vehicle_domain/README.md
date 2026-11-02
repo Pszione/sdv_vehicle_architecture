@@ -40,7 +40,8 @@ The physical confirmation arrives later, as telemetry published to the `VssBroke
 | Rule | Blocks |
 |---|---|
 | `DoorSafetyRule` | Locking a door that is open |
-| `SunroofSpeedSafetyRule` | Opening the sunroof above 120 km/h |
+| `DoorLatchSafetyRule` | Opening a locked door by command (e-latch) |
+| `SunroofSpeedSafetyRule` | Sliding the sunroof open above 120 km/h (tilt allowed) |
 | `TransmissionSafetyRule` | PARK/REVERSE above 5 km/h |
 | `BrakeToShiftSafetyRule` | Leaving PARK without the brake pedal |
 | `DriverPresenceSafetyRule` | DRIVE/REVERSE with the driver door open or seatbelt off |
@@ -50,7 +51,7 @@ The physical confirmation arrives later, as telemetry published to the `VssBroke
 | `EscModeSafetyRule` | Re-enabling ESC with the diff locked; ESC OFF above 50 km/h |
 | `SuvAirSuspensionSafetyRule` | OFFROAD_MAX above 50 km/h |
 | `ConvertibleTopSafetyRule` | Top with trunk open, above 50 km/h or at ≤ 0 °C |
-| `OpeningWhileMovingSafetyRule` | Tailgate, frunk or charge port flap above 3 km/h |
+| `OpeningWhileMovingSafetyRule` | Doors, tailgate, frunk or charge port flap above 3 km/h |
 | `TowingTailgateSafetyRule` | Power tailgate with a trailer connected |
 | `ChargeCableLockSafetyRule` | Releasing the cable while charging |
 | `AdaptiveCruiseSafetyRule` | ACC outside DRIVE, 30–180 km/h, doors closed and driver belted |

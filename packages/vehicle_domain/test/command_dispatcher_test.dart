@@ -59,7 +59,7 @@ void main() {
   });
 
   test('should return notSupported when the profile does not have the signal', () {
-    final result = dispatch(VehicleCommand(signal: Vss.Vehicle.Cabin.Sunroof.Position, value: 0.5));
+    final result = dispatch(VehicleCommand(signal: Vss.Vehicle.Cabin.Sunroof.Position, value: 50));
 
     expect(result.status, CommandStatus.notSupportedByVehicle);
     expect(sink.sent, isEmpty);

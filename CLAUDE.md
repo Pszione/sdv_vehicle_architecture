@@ -25,7 +25,8 @@ packages/
                     physical side, LHD/RHD aware) and Central (sunroof, HVAC + CabinThermalModel, gateway
                     echo for domain ECUs: powertrain, chassis, ADAS). No other zones.
   vehicle_simulators/ pure Dart -> domain. TelemetrySimulator: report() sensors, command() actuators via
-                    the dispatcher, forceActuatorState() bypasses rules (logged FORCED). Scenarios = steps.
+                    the dispatcher, operateManually() for by-hand actuators (doors, logged MANUAL),
+                    forceActuatorState() bypasses rules (logged FORCED). Scenarios = steps.
   vehicle_ui_kit/   Flutter -> domain. VehicleFeatureGuard, SafetyPrecheckBanner, VehicleControlCard,
                     WidgetRef.watchSignal/dispatchCommand.
 apps/
@@ -87,8 +88,10 @@ Capture outputs with a recording fake (e.g. a `CommandSink` that stores commands
 values a mock was told to return. Avoid editing existing tests unless broken.
 
 ## Known gaps
-- Still non-COVESA: `Sunroof.Position` (0..1, official int8 %), `Trunk.IsAjar` (official `Trunk.Rear.IsOpen`),
-  `SelectedGear` string. `Door.IsOpen` is modeled as a sensor. Custom: `HVAC.IsAutoActive/IsSyncActive/
-  IsRearControlLocked`, `Door.SoftCloseState`. Row2 middle seat not modeled.
+- COVESA-typed: `Sunroof.Position` int8 % (-100 tilt..100, profiles set `min: 0` when slide-only),
+  `SelectedGear` int8 (`Gear.park` 126, `drive` 127, `neutral` 0, `reverse` -1; the gear set comes from the
+  profile `allowed` override), `Door.IsOpen` and `Trunk.Rear.IsOpen` are actuators (opened by hand via the
+  simulator's `operateManually`). Custom: `HVAC.IsAutoActive/IsSyncActive/IsRearControlLocked`,
+  `Door.SoftCloseState`. Row2 middle seat not modeled.
 - Switching profile resets the broker but not the actuators' internal state.
 - digital_cluster and the 30 Hz ADAS simulator are not wired yet.

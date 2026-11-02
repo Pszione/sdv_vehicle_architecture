@@ -3,6 +3,7 @@ import 'dart:async';
 import '../domain/actuator_state.dart';
 
 class ActuatorPositionProgress {
+  /// Percent: 0 = closed, 100 = fully open, -100 = fully tilted (COVESA `Sunroof.Position`).
   final double position;
   final ActuatorState state;
   final ActuatorFaultType fault;
@@ -12,7 +13,7 @@ class ActuatorPositionProgress {
 
 class DumbSunroofActuator {
   final String id;
-  double _currentPosition = 0.0; // 0.0 (closed) to 1.0 (fully open)
+  double _currentPosition = 0; // percent, -100 (tilted) .. 0 (closed) .. 100 (open)
   ActuatorState _state = ActuatorState.idle;
   ActuatorFaultType _injectedFault = ActuatorFaultType.none;
 
@@ -27,11 +28,11 @@ class DumbSunroofActuator {
     _injectedFault = fault;
   }
 
-  /// Runs the physical movement with simulated latency.
-  Stream<ActuatorPositionProgress> moveTo(double targetPosition, {double speedPerSecond = 0.25}) async* {
-    targetPosition = targetPosition.clamp(0.0, 1.0);
+  /// Runs the physical movement with simulated latency. [targetPosition] and [speedPerSecond] in percent.
+  Stream<ActuatorPositionProgress> moveTo(double targetPosition, {double speedPerSecond = 25}) async* {
+    targetPosition = targetPosition.clamp(-100, 100);
 
-    if ((_currentPosition - targetPosition).abs() < 0.01) {
+    if ((_currentPosition - targetPosition).abs() < 1) {
       yield ActuatorPositionProgress(position: _currentPosition, state: ActuatorState.idle);
       return;
     }
@@ -47,7 +48,7 @@ class DumbSunroofActuator {
 
       // 1. Mechanical fault (jam/obstacle) halfway through the travel
       if (_injectedFault == ActuatorFaultType.mechanicalJam &&
-          _currentPosition >= 0.5 &&
+          _currentPosition >= 50 &&
           targetPosition > _currentPosition) {
         _state = ActuatorState.stuck;
         yield ActuatorPositionProgress(
@@ -71,13 +72,13 @@ class DumbSunroofActuator {
 
       // 3. Move the physical position
       if (_currentPosition < targetPosition) {
-        _currentPosition = (_currentPosition + stepDelta).clamp(0.0, targetPosition);
+        _currentPosition = (_currentPosition + stepDelta).clamp(-100, targetPosition);
       } else {
-        _currentPosition = (_currentPosition - stepDelta).clamp(targetPosition, 1.0);
+        _currentPosition = (_currentPosition - stepDelta).clamp(targetPosition, 100);
       }
 
       // Target reached?
-      if ((_currentPosition - targetPosition).abs() < 0.001) {
+      if ((_currentPosition - targetPosition).abs() < 0.1) {
         _currentPosition = targetPosition;
         _state = ActuatorState.idle;
       }

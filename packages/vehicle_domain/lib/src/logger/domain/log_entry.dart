@@ -1,4 +1,14 @@
-enum LogType { command, signalChange, safetyRejection, forced }
+enum LogType {
+  command,
+  signalChange,
+  safetyRejection,
+
+  /// Actuator state written by a simulator, bypassing the safety rules.
+  forced,
+
+  /// Actuator moved by hand (door handle, manual tailgate): physical, so no command or rule involved.
+  manual,
+}
 
 class LogEntry {
   final String id;

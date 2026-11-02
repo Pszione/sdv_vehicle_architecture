@@ -44,12 +44,14 @@ class RearPassengerPanelCard extends ConsumerWidget {
         status: isLocked ? 'LOCKED' : null,
         statusColor: Colors.orangeAccent,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton.filledTonal(icon: const Icon(Icons.remove), onPressed: () => change(-_step)),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text('${temperature.toStringAsFixed(1)}°', style: Theme.of(context).textTheme.headlineMedium),
+            // The simulator column is narrow: the reading shrinks instead of overflowing.
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text('${temperature.toStringAsFixed(1)}°', style: Theme.of(context).textTheme.headlineMedium),
+              ),
             ),
             IconButton.filledTonal(icon: const Icon(Icons.add), onPressed: () => change(_step)),
           ],

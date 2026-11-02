@@ -23,11 +23,12 @@
             "children": {
               "Position": {
                 "type": "actuator",
-                "datatype": "float",
-                "description": "0.0 = closed, 1.0 = fully open.",
-                "min": 0,
-                "max": 1,
-                "default": 0.0
+                "datatype": "int8",
+                "unit": "percent",
+                "min": -100,
+                "max": 100,
+                "default": 0,
+                "description": "Sunroof position. 0 = Fully closed 100 = Fully opened. -100 = Fully tilted."
               },
               "IsFaulted": {
                 "type": "sensor",
@@ -50,10 +51,10 @@
                     "type": "branch",
                     "children": {
                       "IsOpen": {
-                        "type": "sensor",
+                        "type": "actuator",
                         "datatype": "boolean",
                         "default": false,
-                        "description": "Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS."
+                        "description": "Is door open or closed. True = Open. False = Closed."
                       },
                       "IsLocked": {
                         "type": "actuator",
@@ -71,10 +72,10 @@
                     "type": "branch",
                     "children": {
                       "IsOpen": {
-                        "type": "sensor",
+                        "type": "actuator",
                         "datatype": "boolean",
                         "default": false,
-                        "description": "Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS."
+                        "description": "Is door open or closed. True = Open. False = Closed."
                       },
                       "IsLocked": {
                         "type": "actuator",
@@ -97,10 +98,10 @@
                     "type": "branch",
                     "children": {
                       "IsOpen": {
-                        "type": "sensor",
+                        "type": "actuator",
                         "datatype": "boolean",
                         "default": false,
-                        "description": "Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS."
+                        "description": "Is door open or closed. True = Open. False = Closed."
                       },
                       "IsLocked": {
                         "type": "actuator",
@@ -127,10 +128,10 @@
                     "type": "branch",
                     "children": {
                       "IsOpen": {
-                        "type": "sensor",
+                        "type": "actuator",
                         "datatype": "boolean",
                         "default": false,
-                        "description": "Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS."
+                        "description": "Is door open or closed. True = Open. False = Closed."
                       },
                       "IsLocked": {
                         "type": "actuator",
@@ -965,14 +966,9 @@
             "children": {
               "SelectedGear": {
                 "type": "actuator",
-                "datatype": "string",
-                "allowed": [
-                  "PARK",
-                  "REVERSE",
-                  "NEUTRAL",
-                  "DRIVE"
-                ],
-                "default": "PARK"
+                "datatype": "int8",
+                "default": 126,
+                "description": "The selected gear. 0=Neutral, 1/2/..=Forward, -1/-2/..=Reverse, 126=Park, 127=Drive."
               }
             }
           }
@@ -984,20 +980,6 @@
           "Trunk": {
             "type": "branch",
             "children": {
-              "IsAjar": {
-                "type": "sensor",
-                "datatype": "boolean",
-                "default": false
-              },
-              "PowerOpeningAngle": {
-                "type": "actuator",
-                "datatype": "float",
-                "unit": "degrees",
-                "min": 0,
-                "max": 90,
-                "default": 0.0,
-                "description": "Power tailgate angle. 0 = closed."
-              },
               "Front": {
                 "type": "branch",
                 "children": {
@@ -1006,6 +988,18 @@
                     "datatype": "boolean",
                     "default": false,
                     "description": "Front trunk (frunk)."
+                  }
+                }
+              },
+              "Rear": {
+                "type": "branch",
+                "description": "Rear trunk (power tailgate).",
+                "children": {
+                  "IsOpen": {
+                    "type": "actuator",
+                    "datatype": "boolean",
+                    "default": false,
+                    "description": "Is trunk open or closed. True = Open. False = Closed."
                   }
                 }
               }
