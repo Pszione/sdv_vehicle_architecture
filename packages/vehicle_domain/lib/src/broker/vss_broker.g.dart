@@ -24,8 +24,7 @@ final vssBrokerProvider = VssBrokerProvider._();
 /// Only zonal ECUs and simulators publish here. The UI never writes: it sends a
 /// `VehicleCommand` to the `CommandDispatcher`.
 /// To read a signal in the UI use `vssValueProvider`, which is granular.
-final class VssBrokerProvider
-    extends $NotifierProvider<VssBroker, Map<String, Object?>> {
+final class VssBrokerProvider extends $NotifierProvider<VssBroker, Map<String, Object?>> {
   /// Confirmed vehicle state: the latest value of every signal in the active
   /// profile, keyed by VSS path.
   ///
@@ -52,10 +51,7 @@ final class VssBrokerProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Map<String, Object?> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Map<String, Object?>>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Map<String, Object?>>(value));
   }
 }
 

@@ -20,8 +20,7 @@ final vehicleLoggerProvider = VehicleLoggerProvider._();
 /// actuator changes.
 ///
 /// Sensor telemetry (speed, 30 Hz ADAS...) is not recorded, as it would flood the buffer.
-final class VehicleLoggerProvider
-    extends $NotifierProvider<VehicleLogger, LoggerState> {
+final class VehicleLoggerProvider extends $NotifierProvider<VehicleLogger, LoggerState> {
   /// In-memory audit log (ring buffer) of commands, rejections and confirmed
   /// actuator changes.
   ///
@@ -46,14 +45,11 @@ final class VehicleLoggerProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(LoggerState value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<LoggerState>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<LoggerState>(value));
   }
 }
 
-String _$vehicleLoggerHash() => r'bc9408e05dac21fda9b991e5facfb2894f697f29';
+String _$vehicleLoggerHash() => r'69eafed5a227b24b84062114985646f1a0d3b752';
 
 /// In-memory audit log (ring buffer) of commands, rejections and confirmed
 /// actuator changes.
@@ -67,13 +63,7 @@ abstract class _$VehicleLogger extends $Notifier<LoggerState> {
   void runBuild() {
     final ref = this.ref as $Ref<LoggerState, LoggerState>;
     final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<LoggerState, LoggerState>,
-              LoggerState,
-              Object?,
-              Object?
-            >;
+        ref.element as $ClassProviderElement<AnyNotifier<LoggerState, LoggerState>, LoggerState, Object?, Object?>;
     element.handleCreate(ref, build);
   }
 }

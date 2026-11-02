@@ -23,24 +23,21 @@ final canDispatchProvider = CanDispatchFamily._();
 /// Only watches the profile and the `inputs` of the rules that apply to the
 /// command, so telemetry of unrelated signals does not trigger a re-evaluation.
 
-final class CanDispatchProvider
-    extends $FunctionalProvider<CommandResult, CommandResult, CommandResult>
+final class CanDispatchProvider extends $FunctionalProvider<CommandResult, CommandResult, CommandResult>
     with $Provider<CommandResult> {
   /// Re-evaluates whether [command] would be approved right now, to warn the
   /// user before they tap a control.
   ///
   /// Only watches the profile and the `inputs` of the rules that apply to the
   /// command, so telemetry of unrelated signals does not trigger a re-evaluation.
-  CanDispatchProvider._({
-    required CanDispatchFamily super.from,
-    required VehicleCommand<Object> super.argument,
-  }) : super(
-         retry: null,
-         name: r'canDispatchProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  CanDispatchProvider._({required CanDispatchFamily super.from, required VehicleCommand<Object> super.argument})
+    : super(
+        retry: null,
+        name: r'canDispatchProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$canDispatchHash();
@@ -54,8 +51,7 @@ final class CanDispatchProvider
 
   @$internal
   @override
-  $ProviderElement<CommandResult> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<CommandResult> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   CommandResult create(Ref ref) {
@@ -65,10 +61,7 @@ final class CanDispatchProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(CommandResult value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<CommandResult>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<CommandResult>(value));
   }
 
   @override
@@ -90,8 +83,7 @@ String _$canDispatchHash() => r'cd27b076367602156c8c04ea595edb22d2478372';
 /// Only watches the profile and the `inputs` of the rules that apply to the
 /// command, so telemetry of unrelated signals does not trigger a re-evaluation.
 
-final class CanDispatchFamily extends $Family
-    with $FunctionalFamilyOverride<CommandResult, VehicleCommand<Object>> {
+final class CanDispatchFamily extends $Family with $FunctionalFamilyOverride<CommandResult, VehicleCommand<Object>> {
   CanDispatchFamily._()
     : super(
         retry: null,
@@ -107,8 +99,7 @@ final class CanDispatchFamily extends $Family
   /// Only watches the profile and the `inputs` of the rules that apply to the
   /// command, so telemetry of unrelated signals does not trigger a re-evaluation.
 
-  CanDispatchProvider call(VehicleCommand<Object> command) =>
-      CanDispatchProvider._(argument: command, from: this);
+  CanDispatchProvider call(VehicleCommand<Object> command) => CanDispatchProvider._(argument: command, from: this);
 
   @override
   String toString() => r'canDispatchProvider';

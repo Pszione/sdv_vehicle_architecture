@@ -19,7 +19,7 @@ class _DriverAssistCardState extends ConsumerState<DriverAssistCard> {
   @override
   Widget build(BuildContext context) {
     final adas = Vss.Vehicle.ADAS;
-    final setSpeed = ref.watchSignal(adas.ACC.SetSpeed) ?? 100;
+    final setSpeed = ref.watchSignal(adas.CruiseControl.SpeedSet) ?? 100;
     final limiter = ref.watchSignal(adas.SpeedLimiter.SetSpeed);
 
     return VehicleControlCard(
@@ -30,12 +30,12 @@ class _DriverAssistCardState extends ConsumerState<DriverAssistCard> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           VehicleCommandSwitch(
-            signal: adas.ACC.IsEngaged,
+            signal: adas.CruiseControl.IsActive,
             title: 'Adaptive cruise control',
             source: infotainmentCommandSource,
           ),
           VehicleFeatureGuard(
-            signal: adas.ACC.SetSpeed,
+            signal: adas.CruiseControl.SpeedSet,
             child: Row(
               children: [
                 const Text('Set speed'),
@@ -51,7 +51,7 @@ class _DriverAssistCardState extends ConsumerState<DriverAssistCard> {
                       setState(() => _dragSetSpeed = null);
                       ref.dispatchCommand(
                         context,
-                        VehicleCommand(signal: adas.ACC.SetSpeed, value: value, source: infotainmentCommandSource),
+                        VehicleCommand(signal: adas.CruiseControl.SpeedSet, value: value, source: infotainmentCommandSource),
                       );
                     },
                   ),

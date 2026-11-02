@@ -17,7 +17,7 @@ final class CrashResponseBehavior implements VehicleBehavior {
     if (!after.becameEqual(before, Vss.Vehicle.Body.IsCrashDetected, true)) return const [];
     return [
       for (final door in VehicleGroups.doors) VehicleCommand(signal: door.lock, value: false, source: source),
-      VehicleCommand(signal: Vss.Vehicle.Body.Lights.IsHazardOn, value: true, source: source),
+      VehicleCommand(signal: Vss.Vehicle.Body.Lights.Hazard.IsSignaling, value: true, source: source),
     ];
   }
 }

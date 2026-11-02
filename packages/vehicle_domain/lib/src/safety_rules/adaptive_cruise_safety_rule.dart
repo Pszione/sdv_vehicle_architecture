@@ -13,7 +13,7 @@ final class AdaptiveCruiseSafetyRule implements SafetyRule {
   static const maxSpeedKmh = 180.0;
 
   @override
-  VssSignal<bool> get target => Vss.Vehicle.ADAS.ACC.IsEngaged;
+  VssSignal<bool> get target => Vss.Vehicle.ADAS.CruiseControl.IsActive;
 
   @override
   Set<VssSignal<Object>> get inputs => {

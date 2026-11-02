@@ -12,9 +12,7 @@ part of 'zonal_command_bus.dart';
 @ProviderFor(zonalCommandBus)
 final zonalCommandBusProvider = ZonalCommandBusProvider._();
 
-final class ZonalCommandBusProvider
-    extends
-        $FunctionalProvider<ZonalCommandBus, ZonalCommandBus, ZonalCommandBus>
+final class ZonalCommandBusProvider extends $FunctionalProvider<ZonalCommandBus, ZonalCommandBus, ZonalCommandBus>
     with $Provider<ZonalCommandBus> {
   ZonalCommandBusProvider._()
     : super(
@@ -32,8 +30,7 @@ final class ZonalCommandBusProvider
 
   @$internal
   @override
-  $ProviderElement<ZonalCommandBus> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<ZonalCommandBus> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   ZonalCommandBus create(Ref ref) {
@@ -42,10 +39,7 @@ final class ZonalCommandBusProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(ZonalCommandBus value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<ZonalCommandBus>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<ZonalCommandBus>(value));
   }
 }
 

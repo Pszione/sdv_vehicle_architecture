@@ -848,8 +848,110 @@
                         "default": false
                       }
                     }
+                  },
+                  "Wheel": {
+                    "type": "branch",
+                    "description": "Wheels.",
+                    "children": {
+                      "Left": {
+                        "type": "branch",
+                        "description": "Left wheel.",
+                        "children": {
+                          "Tire": {
+                            "type": "branch",
+                            "description": "Tire signals.",
+                            "children": {
+                              "IsPressureLow": {
+                                "type": "sensor",
+                                "datatype": "boolean",
+                                "default": false,
+                                "description": "Tire Pressure Status. True = Low tire pressure."
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Right": {
+                        "type": "branch",
+                        "description": "Right wheel.",
+                        "children": {
+                          "Tire": {
+                            "type": "branch",
+                            "description": "Tire signals.",
+                            "children": {
+                              "IsPressureLow": {
+                                "type": "sensor",
+                                "datatype": "boolean",
+                                "default": false,
+                                "description": "Tire Pressure Status. True = Low tire pressure."
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
+              },
+              "Row1": {
+                "type": "branch",
+                "description": "Front axle.",
+                "children": {
+                  "Wheel": {
+                    "type": "branch",
+                    "description": "Wheels.",
+                    "children": {
+                      "Left": {
+                        "type": "branch",
+                        "description": "Left wheel.",
+                        "children": {
+                          "Tire": {
+                            "type": "branch",
+                            "description": "Tire signals.",
+                            "children": {
+                              "IsPressureLow": {
+                                "type": "sensor",
+                                "datatype": "boolean",
+                                "default": false,
+                                "description": "Tire Pressure Status. True = Low tire pressure."
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Right": {
+                        "type": "branch",
+                        "description": "Right wheel.",
+                        "children": {
+                          "Tire": {
+                            "type": "branch",
+                            "description": "Tire signals.",
+                            "children": {
+                              "IsPressureLow": {
+                                "type": "sensor",
+                                "datatype": "boolean",
+                                "default": false,
+                                "description": "Tire Pressure Status. True = Low tire pressure."
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "ParkingBrake": {
+            "type": "branch",
+            "description": "Parking brake signals.",
+            "children": {
+              "IsEngaged": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": true,
+                "description": "Parking brake status. True = Parking Brake is Engaged."
               }
             }
           }
@@ -877,10 +979,6 @@
                 "min": 0,
                 "max": 100,
                 "default": 80.0
-              },
-              "Power": {
-                "type": "sensor",
-                "datatype": "float"
               },
               "Temperature": {
                 "type": "sensor",
@@ -939,6 +1037,19 @@
                     "default": false
                   }
                 }
+              },
+              "CurrentPower": {
+                "type": "sensor",
+                "datatype": "float",
+                "unit": "W",
+                "default": 0.0,
+                "description": "Current electrical energy flowing in/out of battery. Positive = Energy flowing in to battery, e.g. during charging. Negative = Energy flowing out of battery, e.g. during driving."
+              },
+              "IsPowerConnected": {
+                "type": "sensor",
+                "datatype": "boolean",
+                "default": false,
+                "description": "Indicating if the high voltage battery is connected (contactors closed)."
               }
             }
           },
@@ -971,6 +1082,13 @@
                 "description": "The selected gear. 0=Neutral, 1/2/..=Forward, -1/-2/..=Reverse, 126=Park, 127=Drive."
               }
             }
+          },
+          "Range": {
+            "type": "sensor",
+            "datatype": "uint32",
+            "unit": "m",
+            "default": 420000,
+            "description": "Remaining range in meters using all energy sources available in the vehicle."
           }
         }
       },
@@ -1022,22 +1140,81 @@
           "Lights": {
             "type": "branch",
             "children": {
-              "IsLeftIndicatorOn": {
-                "type": "actuator",
-                "datatype": "boolean"
-              },
-              "IsRightIndicatorOn": {
-                "type": "actuator",
-                "datatype": "boolean"
-              },
-              "IsHazardOn": {
-                "type": "actuator",
-                "datatype": "boolean",
-                "default": false
-              },
               "MatrixBeamMode": {
                 "type": "actuator",
                 "datatype": "string"
+              },
+              "DirectionIndicator": {
+                "type": "branch",
+                "description": "Indicator lights.",
+                "children": {
+                  "Left": {
+                    "type": "branch",
+                    "description": "Left indicator.",
+                    "children": {
+                      "IsSignaling": {
+                        "type": "actuator",
+                        "datatype": "boolean",
+                        "default": false,
+                        "description": "Indicates if light is signaling or off."
+                      }
+                    }
+                  },
+                  "Right": {
+                    "type": "branch",
+                    "description": "Right indicator.",
+                    "children": {
+                      "IsSignaling": {
+                        "type": "actuator",
+                        "datatype": "boolean",
+                        "default": false,
+                        "description": "Indicates if light is signaling or off."
+                      }
+                    }
+                  }
+                }
+              },
+              "Hazard": {
+                "type": "branch",
+                "description": "Hazard lights.",
+                "children": {
+                  "IsSignaling": {
+                    "type": "actuator",
+                    "datatype": "boolean",
+                    "default": false,
+                    "description": "Indicates if light is signaling or off."
+                  }
+                }
+              },
+              "Beam": {
+                "type": "branch",
+                "description": "Beam lights.",
+                "children": {
+                  "Low": {
+                    "type": "branch",
+                    "description": "Low beam.",
+                    "children": {
+                      "IsOn": {
+                        "type": "actuator",
+                        "datatype": "boolean",
+                        "default": true,
+                        "description": "Indicates if light is on or off."
+                      }
+                    }
+                  },
+                  "High": {
+                    "type": "branch",
+                    "description": "High beam.",
+                    "children": {
+                      "IsOn": {
+                        "type": "actuator",
+                        "datatype": "boolean",
+                        "default": false,
+                        "description": "Indicates if light is on or off."
+                      }
+                    }
+                  }
+                }
               }
             }
           },
@@ -1045,6 +1222,23 @@
             "type": "sensor",
             "datatype": "boolean",
             "default": false
+          },
+          "Keyless": {
+            "type": "branch",
+            "description": "Custom (not in COVESA VSS). Passive entry / passive start.",
+            "children": {
+              "KeyLocation": {
+                "type": "sensor",
+                "datatype": "string",
+                "allowed": [
+                  "NONE",
+                  "NEAR",
+                  "INSIDE"
+                ],
+                "default": "INSIDE",
+                "description": "Custom (not in COVESA VSS). Where the key (fob or phone key) is detected."
+              }
+            }
           }
         }
       },
@@ -1068,55 +1262,67 @@
       "ADAS": {
         "type": "branch",
         "children": {
-          "ACC": {
-            "type": "branch",
-            "children": {
-              "IsEngaged": {
-                "type": "actuator",
-                "datatype": "boolean",
-                "default": false
-              },
-              "SetSpeed": {
-                "type": "actuator",
-                "datatype": "float",
-                "unit": "km/h",
-                "min": 30,
-                "max": 180,
-                "default": 100.0
-              }
-            }
-          },
           "ObstacleDetection": {
             "type": "branch",
             "children": {
-              "LeadVehicle": {
-                "type": "sensor",
-                "datatype": "string",
-                "description": "Lead vehicle object serialized as JSON."
+              "Front": {
+                "type": "branch",
+                "description": "Front obstacle detection.",
+                "children": {
+                  "Center": {
+                    "type": "branch",
+                    "description": "Front center sensor.",
+                    "children": {
+                      "Distance": {
+                        "type": "sensor",
+                        "datatype": "float",
+                        "unit": "m",
+                        "min": 0,
+                        "max": 250,
+                        "default": 250.0,
+                        "description": "Distance in meters to detected object. 250 = nothing in range."
+                      },
+                      "IsWarning": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false,
+                        "description": "Indicates if a forward collision warning is active."
+                      }
+                    }
+                  }
+                }
               }
             }
           },
           "LaneKeepingAssist": {
             "type": "branch",
             "children": {
-              "Status": {
-                "type": "sensor",
-                "datatype": "string"
-              },
-              "LeftLaneOffsetMeters": {
-                "type": "sensor",
-                "datatype": "float"
-              },
-              "RightLaneOffsetMeters": {
-                "type": "sensor",
-                "datatype": "float"
-              },
               "IsEnabled": {
                 "type": "actuator",
                 "datatype": "boolean",
-                "default": false
+                "default": false,
+                "description": "Custom (not in COVESA VSS). Lane keeping assist switch."
+              },
+              "LateralOffset": {
+                "type": "sensor",
+                "datatype": "float",
+                "unit": "m",
+                "min": -2,
+                "max": 2,
+                "default": 0.0,
+                "description": "Custom (not in COVESA VSS). Ego offset from the lane center. Positive = right of center."
+              },
+              "Curvature": {
+                "type": "sensor",
+                "datatype": "float",
+                "unit": "1/m",
+                "min": -0.02,
+                "max": 0.02,
+                "default": 0.0,
+                "description": "Custom (not in COVESA VSS). Lane curvature ahead. Positive = curving right."
               }
-            }
+            },
+            "description": "Custom (not in COVESA VSS). Lane keeping assist and lane geometry from the front camera."
           },
           "HillDescentControl": {
             "type": "branch",
@@ -1142,6 +1348,12 @@
                 ],
                 "default": "NORMAL",
                 "description": "Electronic stability control mode."
+              },
+              "IsEngaged": {
+                "type": "sensor",
+                "datatype": "boolean",
+                "default": false,
+                "description": "Indicates if ESC is currently regulating vehicle stability. True = Engaged."
               }
             }
           },
@@ -1155,6 +1367,62 @@
                 "min": 30,
                 "max": 250,
                 "default": 250.0
+              }
+            },
+            "description": "Custom (not in COVESA VSS). Driver-set speed limiter."
+          },
+          "CruiseControl": {
+            "type": "branch",
+            "description": "Signals from Cruise Control system.",
+            "children": {
+              "IsActive": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": false,
+                "description": "Indicates if cruise control system is active (i.e. actively controls speed). True = Active. False = Inactive."
+              },
+              "SpeedSet": {
+                "type": "actuator",
+                "datatype": "float",
+                "unit": "km/h",
+                "min": 30,
+                "max": 180,
+                "default": 100.0,
+                "description": "Set cruise control speed in kilometers per hour."
+              },
+              "AdaptiveIntervalSet": {
+                "type": "actuator",
+                "datatype": "float",
+                "unit": "s",
+                "min": 1,
+                "max": 3,
+                "default": 2.0,
+                "description": "Set cruise control time interval (gap) in seconds."
+              }
+            }
+          },
+          "LaneDepartureDetection": {
+            "type": "branch",
+            "description": "Signals from Lane Departure Detection System.",
+            "children": {
+              "IsWarning": {
+                "type": "sensor",
+                "datatype": "boolean",
+                "default": false,
+                "description": "Indicates if lane departure detection registered a lane departure."
+              }
+            }
+          },
+          "TrafficSignRecognition": {
+            "type": "branch",
+            "description": "Custom (not in COVESA VSS). Traffic sign recognition.",
+            "children": {
+              "SpeedLimit": {
+                "type": "sensor",
+                "datatype": "uint16",
+                "unit": "km/h",
+                "default": 0,
+                "description": "Custom (not in COVESA VSS). Current speed limit from signs or map. 0 = unknown."
               }
             }
           }
@@ -1196,6 +1464,67 @@
             "min": -40,
             "max": 60,
             "default": 20.0
+          }
+        }
+      },
+      "LowVoltageSystemState": {
+        "type": "sensor",
+        "datatype": "string",
+        "allowed": [
+          "UNDEFINED",
+          "LOCK",
+          "OFF",
+          "ACC",
+          "ON",
+          "START"
+        ],
+        "default": "ON",
+        "description": "State of the supply voltage of the control units (usually 12V)."
+      },
+      "TraveledDistance": {
+        "type": "sensor",
+        "datatype": "uint32",
+        "unit": "m",
+        "default": 18432000,
+        "description": "Odometer reading, total distance traveled during the lifetime of the vehicle."
+      },
+      "TripMeterReading": {
+        "type": "actuator",
+        "datatype": "uint32",
+        "unit": "m",
+        "default": 0,
+        "description": "Trip meter reading. The driver can reset it."
+      },
+      "LowVoltageBattery": {
+        "type": "branch",
+        "description": "Signals related to low voltage battery.",
+        "children": {
+          "CurrentVoltage": {
+            "type": "sensor",
+            "datatype": "float",
+            "unit": "V",
+            "min": 0,
+            "max": 16,
+            "default": 12.6,
+            "description": "Current voltage of the low voltage battery."
+          }
+        }
+      },
+      "PowerMode": {
+        "type": "branch",
+        "description": "Custom (not in COVESA VSS). Driver power requests (start button / power off).",
+        "children": {
+          "Request": {
+            "type": "actuator",
+            "datatype": "string",
+            "allowed": [
+              "OFF",
+              "ACC",
+              "ON",
+              "READY"
+            ],
+            "default": "ON",
+            "description": "Custom (not in COVESA VSS). Requested power mode. READY closes the high-voltage contactors."
           }
         }
       }

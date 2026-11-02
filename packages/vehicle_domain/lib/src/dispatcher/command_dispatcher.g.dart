@@ -15,8 +15,7 @@ final commandSinkProvider = CommandSinkProvider._();
 
 /// Where approved commands go. The app wires it to the zonal bus.
 
-final class CommandSinkProvider
-    extends $FunctionalProvider<CommandSink, CommandSink, CommandSink>
+final class CommandSinkProvider extends $FunctionalProvider<CommandSink, CommandSink, CommandSink>
     with $Provider<CommandSink> {
   /// Where approved commands go. The app wires it to the zonal bus.
   CommandSinkProvider._()
@@ -35,8 +34,7 @@ final class CommandSinkProvider
 
   @$internal
   @override
-  $ProviderElement<CommandSink> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<CommandSink> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   CommandSink create(Ref ref) {
@@ -45,10 +43,7 @@ final class CommandSinkProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(CommandSink value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<CommandSink>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<CommandSink>(value));
   }
 }
 
@@ -60,8 +55,7 @@ String _$commandSinkHash() => r'127397e785831d3abe31b62ca178fea14913cc37';
 final commandDispatcherProvider = CommandDispatcherProvider._();
 
 /// Single entry point for vehicle commands.
-final class CommandDispatcherProvider
-    extends $NotifierProvider<CommandDispatcher, void> {
+final class CommandDispatcherProvider extends $NotifierProvider<CommandDispatcher, void> {
   /// Single entry point for vehicle commands.
   CommandDispatcherProvider._()
     : super(
@@ -83,10 +77,7 @@ final class CommandDispatcherProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(void value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<void>(value));
   }
 }
 
@@ -100,14 +91,7 @@ abstract class _$CommandDispatcher extends $Notifier<void> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<void, void>, void, Object?, Object?>;
     element.handleCreate(ref, build);
   }
 }

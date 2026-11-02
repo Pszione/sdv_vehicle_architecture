@@ -17,21 +17,17 @@ final hmiLockoutReasonProvider = HmiLockoutReasonFamily._();
 /// Reason why [feature] is locked right now, or `null` if it is available.
 /// Only rebuilds when the "moving" state flips, not on every speed sample.
 
-final class HmiLockoutReasonProvider
-    extends $FunctionalProvider<String?, String?, String?>
-    with $Provider<String?> {
+final class HmiLockoutReasonProvider extends $FunctionalProvider<String?, String?, String?> with $Provider<String?> {
   /// Reason why [feature] is locked right now, or `null` if it is available.
   /// Only rebuilds when the "moving" state flips, not on every speed sample.
-  HmiLockoutReasonProvider._({
-    required HmiLockoutReasonFamily super.from,
-    required HmiFeature super.argument,
-  }) : super(
-         retry: null,
-         name: r'hmiLockoutReasonProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  HmiLockoutReasonProvider._({required HmiLockoutReasonFamily super.from, required HmiFeature super.argument})
+    : super(
+        retry: null,
+        name: r'hmiLockoutReasonProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$hmiLockoutReasonHash();
@@ -45,8 +41,7 @@ final class HmiLockoutReasonProvider
 
   @$internal
   @override
-  $ProviderElement<String?> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<String?> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   String? create(Ref ref) {
@@ -56,10 +51,7 @@ final class HmiLockoutReasonProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String?>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<String?>(value));
   }
 
   @override
@@ -78,8 +70,7 @@ String _$hmiLockoutReasonHash() => r'2bd8dcd1a17fd36b8fabf679ca3376464c689833';
 /// Reason why [feature] is locked right now, or `null` if it is available.
 /// Only rebuilds when the "moving" state flips, not on every speed sample.
 
-final class HmiLockoutReasonFamily extends $Family
-    with $FunctionalFamilyOverride<String?, HmiFeature> {
+final class HmiLockoutReasonFamily extends $Family with $FunctionalFamilyOverride<String?, HmiFeature> {
   HmiLockoutReasonFamily._()
     : super(
         retry: null,
@@ -92,8 +83,7 @@ final class HmiLockoutReasonFamily extends $Family
   /// Reason why [feature] is locked right now, or `null` if it is available.
   /// Only rebuilds when the "moving" state flips, not on every speed sample.
 
-  HmiLockoutReasonProvider call(HmiFeature feature) =>
-      HmiLockoutReasonProvider._(argument: feature, from: this);
+  HmiLockoutReasonProvider call(HmiFeature feature) => HmiLockoutReasonProvider._(argument: feature, from: this);
 
   @override
   String toString() => r'hmiLockoutReasonProvider';

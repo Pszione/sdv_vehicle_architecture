@@ -21,23 +21,19 @@ final vssValueProvider = VssValueFamily._();
 ///
 /// Prefer the typed `ref.watchSignal(Vss.Vehicle.Speed)` from vehicle_ui_kit.
 
-final class VssValueProvider
-    extends $FunctionalProvider<Object?, Object?, Object?>
-    with $Provider<Object?> {
+final class VssValueProvider extends $FunctionalProvider<Object?, Object?, Object?> with $Provider<Object?> {
   /// Value of a single signal. Only notifies when *this* signal changes, so a
   /// cluster widget is not rebuilt by telemetry of other signals.
   ///
   /// Prefer the typed `ref.watchSignal(Vss.Vehicle.Speed)` from vehicle_ui_kit.
-  VssValueProvider._({
-    required VssValueFamily super.from,
-    required VssSignal<Object> super.argument,
-  }) : super(
-         retry: null,
-         name: r'vssValueProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  VssValueProvider._({required VssValueFamily super.from, required VssSignal<Object> super.argument})
+    : super(
+        retry: null,
+        name: r'vssValueProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$vssValueHash();
@@ -51,8 +47,7 @@ final class VssValueProvider
 
   @$internal
   @override
-  $ProviderElement<Object?> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<Object?> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   Object? create(Ref ref) {
@@ -62,10 +57,7 @@ final class VssValueProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Object? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Object?>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<Object?>(value));
   }
 
   @override
@@ -86,8 +78,7 @@ String _$vssValueHash() => r'e5910392b6bc574761d6c1d78d62c73b32cbc18e';
 ///
 /// Prefer the typed `ref.watchSignal(Vss.Vehicle.Speed)` from vehicle_ui_kit.
 
-final class VssValueFamily extends $Family
-    with $FunctionalFamilyOverride<Object?, VssSignal<Object>> {
+final class VssValueFamily extends $Family with $FunctionalFamilyOverride<Object?, VssSignal<Object>> {
   VssValueFamily._()
     : super(
         retry: null,
@@ -102,8 +93,7 @@ final class VssValueFamily extends $Family
   ///
   /// Prefer the typed `ref.watchSignal(Vss.Vehicle.Speed)` from vehicle_ui_kit.
 
-  VssValueProvider call(VssSignal<Object> signal) =>
-      VssValueProvider._(argument: signal, from: this);
+  VssValueProvider call(VssSignal<Object> signal) => VssValueProvider._(argument: signal, from: this);
 
   @override
   String toString() => r'vssValueProvider';

@@ -34,7 +34,7 @@ class VehicleControlsPanel extends StatelessWidget {
         child: const DiffLockControlCard(),
       ),
       VehicleFeatureGuard(signal: Vss.Vehicle.Chassis.Suspension.Height, child: const SuspensionHeightCard()),
-      VehicleFeatureGuard(signal: Vss.Vehicle.ADAS.ACC.IsEngaged, child: const DriverAssistCard()),
+      VehicleFeatureGuard(signal: Vss.Vehicle.ADAS.CruiseControl.IsActive, child: const DriverAssistCard()),
       VehicleFeatureGuard(
         signal: Vss.Vehicle.Powertrain.TractionBattery.Preconditioning.IsEnabled,
         child: const BatteryPreconditioningCard(),

@@ -31,7 +31,7 @@ final class ValetModeSafetyRule implements SafetyRule {
       isBlocked: (_) => true,
       reason: 'Drive mode is locked in Valet Mode.',
     ),
-    for (final speedSetting in [Vss.Vehicle.ADAS.ACC.SetSpeed, Vss.Vehicle.ADAS.SpeedLimiter.SetSpeed])
+    for (final speedSetting in [Vss.Vehicle.ADAS.CruiseControl.SpeedSet, Vss.Vehicle.ADAS.SpeedLimiter.SetSpeed])
       ValetModeSafetyRule(
         target: speedSetting,
         isBlocked: (value) => (value as double) > maxSpeedKmh,
