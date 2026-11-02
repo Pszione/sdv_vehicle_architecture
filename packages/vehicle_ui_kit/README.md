@@ -7,12 +7,14 @@
 | Component | Role |
 |---|---|
 | `ref.watchSignal(Vss...)` | Watches **one** typed signal; the widget only rebuilds when it changes |
+| `ref.watchSignalStatus(signal)` | Health of an E2E-protected signal (VALID, N/A, STALE, INVALID) |
 | `ref.dispatchCommand(context, command)` | Sends through the `CommandDispatcher` and shows the reason (SnackBar) when rejected |
 | `SafetyPrecheckBanner(command)` | Warns ahead, with the blocking rule's message, that a command would be rejected |
 | `VehicleCommandSwitch` | Switch bound to a boolean actuator: command + pre-check, hidden if unsupported |
 | `VehicleControlCard` | Common card shell: icon, title, status and content |
 | `VehicleFeatureGuard` | Shows a widget only if the signal exists in the active profile (or a `fallback`) |
-| `CarProfileSelectorBar` | Switches the profile live (simulation tool) |
+| `CarProfileSelectorBar` | Switches the profile live (simulation tool) and shows the power mode |
+| `PowerModeChip` | Current power mode (OFF, ACC, ON, READY, CHARGING...) |
 
 ## Example
 

@@ -106,6 +106,18 @@ final class SimulationScenario {
     SimulatedCommand(_power, PowerModeRequest.off),
   ];
 
+  /// Driver on board presses the brake and START. The future of `apply` completes once READY.
+  static final startReady = SimulationScenario(
+    name: 'Start (READY)',
+    description: 'Driver on board presses the brake and START: HV pre-charge, then READY.',
+    steps: [
+      ..._driverOnBoard,
+      SimulatedReading(_brake, 100),
+      SimulatedCommand(_power, PowerModeRequest.ready),
+      _prechargeWait,
+    ],
+  );
+
   /// Ready-made situations that exercise the safety rules and behaviors.
   static final presets = <SimulationScenario>[
     SimulationScenario(
@@ -122,11 +134,7 @@ final class SimulationScenario {
         SimulatedCommand(_gear, Gear.park),
       ],
     ),
-    SimulationScenario(
-      name: 'Start (READY)',
-      description: 'Driver on board presses the brake and START: HV pre-charge, then READY.',
-      steps: [..._driverOnBoard, SimulatedReading(_brake, 100), SimulatedCommand(_power, PowerModeRequest.ready)],
-    ),
+    startReady,
     SimulationScenario(
       name: 'City driving',
       description: 'READY, DRIVE, 45 km/h. Auto-lock locks the doors.',

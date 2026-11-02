@@ -73,7 +73,7 @@ final class TelemetrySimulatorProvider extends $NotifierProvider<TelemetrySimula
   }
 }
 
-String _$telemetrySimulatorHash() => r'77d30148a64f6d4c024c2a682af8d383aa018c0b';
+String _$telemetrySimulatorHash() => r'cb4773219571779753c112d4359868aa3b9c86d0';
 
 /// Simulated world around the car, with four clearly separated paths:
 ///

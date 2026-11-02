@@ -14,6 +14,8 @@ Implements the `CommandSink` from `vehicle_domain`.
 | `WestZoneController` / `EastZoneController` | One per physical side, both via `BodySideEcu`: door locks (`DumbDoorActuator`), shades, seat heat/massage |
 | `CentralZoneController` | Sunroof (10 Hz, fault injection), HVAC with the 1 s `CabinThermalModel` (cabin temperature, AUTO fan) and the gateway echo for domain ECUs (powertrain, chassis, ADAS) |
 | `CabinThermalModel` | Pure functions: cabin temperature step toward target/outside, AUTO fan percentage |
+| `VehicleModeManager` | Central zone: 12 V state, HV contactors with pre-charge, retained accessory power, sleep, 12 V battery model (see [docs/power-modes.md](../../docs/power-modes.md)) |
+| `ZoneNetworkManagement` | Per-zone bus state (awake / prepare sleep / asleep); a command to a sleeping zone wakes it and waits for the wake-up latency |
 | `DumbSunroofActuator`, `DumbDoorActuator` | Simulated physical actuators |
 | `zonalSystemProvider` | Starts one ECU per zone. Read it when the app boots |
 
@@ -30,7 +32,8 @@ CommandSink.send ─▶ ZonalRoute.of(signal) ─▶ ZonalCommandBus.emit
 final container = ProviderContainer(overrides: [
   commandSinkProvider.overrideWith((ref) => ref.watch(zonalCommandSinkProvider)),
 ]);
-container.read(zonalSystemProvider); // boot the ECUs before the first command
+// Listen, not read: Riverpod 3 does not re-evaluate providers nobody listens to.
+container.listen(zonalSystemProvider, (_, _) {}); // boot the ECUs before the first command
 ```
 
 ## Fault injection

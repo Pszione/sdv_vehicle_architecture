@@ -13,7 +13,9 @@ part of 'e2e_receiver.dart';
 /// and only then publishes the value to the `VssBroker`.
 ///
 /// It lives in the domain so any producer (the simulators today, a vehicle bus bridge later)
-/// can feed it. Supervision starts with the first frame.
+/// can feed it. Supervision starts with the first frame; deadline monitoring (STALE) runs
+/// once the app calls [startDeadlineMonitoring] at boot, so tests that only check frames
+/// leave no periodic timer behind.
 
 @ProviderFor(E2eReceiver)
 final e2eReceiverProvider = E2eReceiverProvider._();
@@ -23,14 +25,18 @@ final e2eReceiverProvider = E2eReceiverProvider._();
 /// and only then publishes the value to the `VssBroker`.
 ///
 /// It lives in the domain so any producer (the simulators today, a vehicle bus bridge later)
-/// can feed it. Supervision starts with the first frame.
+/// can feed it. Supervision starts with the first frame; deadline monitoring (STALE) runs
+/// once the app calls [startDeadlineMonitoring] at boot, so tests that only check frames
+/// leave no periodic timer behind.
 final class E2eReceiverProvider extends $NotifierProvider<E2eReceiver, void> {
   /// Receiving end of the E2E-protected signals, conceptually running in the central gateway:
   /// checks every frame (CRC, alive counter), runs the E2E state machine, supervises deadlines,
   /// and only then publishes the value to the `VssBroker`.
   ///
   /// It lives in the domain so any producer (the simulators today, a vehicle bus bridge later)
-  /// can feed it. Supervision starts with the first frame.
+  /// can feed it. Supervision starts with the first frame; deadline monitoring (STALE) runs
+  /// once the app calls [startDeadlineMonitoring] at boot, so tests that only check frames
+  /// leave no periodic timer behind.
   E2eReceiverProvider._()
     : super(
         from: null,
@@ -55,14 +61,16 @@ final class E2eReceiverProvider extends $NotifierProvider<E2eReceiver, void> {
   }
 }
 
-String _$e2eReceiverHash() => r'86fc9ed410bf1398db87cc133a72a70f8f9a3b57';
+String _$e2eReceiverHash() => r'e981516a590087b9d619060558c590d7c2d734e8';
 
 /// Receiving end of the E2E-protected signals, conceptually running in the central gateway:
 /// checks every frame (CRC, alive counter), runs the E2E state machine, supervises deadlines,
 /// and only then publishes the value to the `VssBroker`.
 ///
 /// It lives in the domain so any producer (the simulators today, a vehicle bus bridge later)
-/// can feed it. Supervision starts with the first frame.
+/// can feed it. Supervision starts with the first frame; deadline monitoring (STALE) runs
+/// once the app calls [startDeadlineMonitoring] at boot, so tests that only check frames
+/// leave no periodic timer behind.
 
 abstract class _$E2eReceiver extends $Notifier<void> {
   void build();

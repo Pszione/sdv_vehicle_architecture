@@ -47,6 +47,8 @@ class TelemetrySimulator extends _$TelemetrySimulator {
     if (_isCyclicTransmissionRequested) return;
     _isCyclicTransmissionRequested = true;
     _startCycleTimer();
+    // First frames right away, so the gateway does not wait a full cycle after boot.
+    if (!_isAsleep) _transmitter.sendCycle();
   }
 
   void _startCycleTimer() {

@@ -19,7 +19,14 @@ the confirmed vehicle state, the command pipeline and the safety rules.
 | `VehicleBehavior`s + `VehicleBehaviorEngine` | React to state: "what should the car do on its own?" Issue commands through the dispatcher |
 | `hmiLockoutReasonProvider(feature)` | HMI policy: video playback and keyboard input locked above 8 km/h |
 | `VehicleGroups` | Shared signal groups: doors, seats, HVAC stations (front/rear), driver door/seat |
-| `VehicleLogger` | Ring-buffer audit log: commands, rejections, actuator changes and forced states |
+| `VehicleLogger` | Ring-buffer audit log: commands, rejections, actuator changes, forced/manual states and signal faults |
+| `PowerMode` + `powerModeProvider` | Power mode derived from COVESA signals (SLEEP, OFF, ACC, ON, READY, CHARGING, SW UPDATE) |
+| `PowerModeAvailability` | Which functions exist in which power mode, checked before the safety rules |
+| `E2eProtector` / `E2eChecker` / `E2eStateMachine` | AUTOSAR-style E2E protection (alive counter + CRC-8) |
+| `E2eReceiver` + `signalStatusProvider(signal)` | Gateway side: checks frames, deadline monitoring, signal status (VALID / N/A / STALE / INVALID) |
+| `FailSafe` | Shared rule answers when an input is unavailable |
+| `TelltaleLogic` + `telltaleStateProvider(t)` | Cluster telltales: activation logic, bulb check |
+| `DriverMessageCenter` | Cluster message queue fed by the audit log and power mode |
 
 ## Command flow
 
@@ -29,6 +36,7 @@ VehicleCommand(signal: Vss..., value: ...)
         ├─ signal in the profile?           no  → notSupportedByVehicle
         ├─ is it an actuator?               no  → readOnlySignal
         ├─ value within min/max/allowed?    no  → invalidPayload
+        ├─ available in this power mode?    no  → unavailableInPowerMode (logged)
         ├─ SafetyRules whose target matches fail → rejectedBySafetyRule (logged)
         └─ CommandSink.send(command)             → approved
 ```
@@ -59,6 +67,9 @@ The physical confirmation arrives later, as telemetry published to the `VssBroke
 | `ParkedModeSafetyRule` | Dog/Camp/Sentry/V2L outside PARK or below 20% SoC |
 | `OtaInstallSafetyRule` | OTA unless PARK, SoC > 30%, every door locked and nobody inside |
 | `ValetModeSafetyRule` | In Valet Mode: glovebox, frunk, ESC, drive mode, speeds above 80 km/h |
+| `PowerModeRequestSafetyRule` | READY without key inside, brake or with the cable plugged; OFF while moving or outside PARK |
+| `ReadyToShiftSafetyRule` | Leaving PARK unless READY |
+| `DoorLatchSafetyRule` | Opening a locked door by command |
 | `RearClimateLockSafetyRule` | Rear-panel (`REAR_PANEL`) climate changes while the front locked them |
 | `ClimateRangeProtectionSafetyRule` | Fan above 50% below 10% SoC |
 
@@ -77,6 +88,9 @@ The physical confirmation arrives later, as telemetry published to the `VssBroke
 | `ClimateSyncBehavior` (`CLIMATE_SYNC`) | SYNC on → the other stations follow the driver temperature |
 | `MaxDefrostBehavior` (`DEFROST`) | Front defrost on → A/C on, fresh air, front airflow UP, fan ≥ 70% |
 | `EmptySeatClimateBehavior` (`SEAT_CLIMATE`) | Seat becomes EMPTY → its heating/ventilation off |
+| `AutoPowerOffBehavior` (`AUTO_OFF`) | PARK, driver seat empty and driver door open → power off |
+| `WalkAwayLockBehavior` (`WALK_AWAY`) | Key gone **and** car off → lock every door |
+| `AutoParkingBrakeBehavior` (`AUTO_EPB`) | Parking brake follows PARK |
 
 Behaviors never write to the broker: their commands go through the dispatcher, so the
 safety rules still apply (an auto-lock on an open door is rejected and logged). The engine
@@ -90,15 +104,19 @@ ProviderContainer(overrides: [
   initialVehicleProfileProvider.overrideWithValue(luxuryEvSuvProfile),
   commandSinkProvider.overrideWith((ref) => ref.watch(zonalCommandSinkProvider)),
 ]);
-container.read(vehicleBehaviorEngineProvider); // start the behaviors at boot
+// Listen, not read: Riverpod 3 does not re-evaluate providers nobody listens to.
+container.listen(vehicleBehaviorEngineProvider, (_, _) {}); // start the behaviors at boot
 ```
 
 ## Adding a SafetyRule
 
 1. Implement `SafetyRule`: declare `target` (actuator), `inputs` (signals read) and `validate`.
 2. Return `null` when safe and `CommandResult.rejected('reason')` otherwise. Releasing actions
-   (unlock, close, disengage) are always allowed. Document what happens when an input is missing.
-3. Register it in `activeSafetyRulesProvider`. The rule only runs if its `target` exists in the active profile.
+   (unlock, close, disengage) are always allowed. `signals.read()` returns `null` when an input is
+   missing **or not valid** (E2E): reject with a `FailSafe` answer, never default a speed to 0.
+3. If the function only exists in some power modes, add it to `PowerModeAvailability` instead of
+   checking the power mode in the rule.
+4. Register it in `activeSafetyRulesProvider`. The rule only runs if its `target` exists in the active profile.
 
 ## Adding a VehicleBehavior
 
@@ -118,6 +136,8 @@ lib/src/
 ├── vss/            # vehicle.vss.json (master spec), VssSignal, value constants, generated tree
 ├── profile/        # VehicleProfile, active profile, isSignalSupported, VehicleGroups
 ├── broker/         # VssBroker, vssValueProvider, SignalReader
+├── power/          # PowerMode, PowerModeAvailability, powerModeProvider
+├── e2e/            # E2E protection, E2eReceiver, signal status
 ├── dispatcher/     # CommandDispatcher, CommandValidator, CommandSink, canDispatch
 ├── safety_rules/   # SafetyRule + implementations + activeSafetyRulesProvider
 ├── behaviors/      # VehicleBehavior + implementations + VehicleBehaviorEngine

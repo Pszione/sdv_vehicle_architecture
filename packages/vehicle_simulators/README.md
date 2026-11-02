@@ -32,6 +32,9 @@ A `SimulationScenario` is a sequence of steps: `SimulatedReading` (sensor), `Sim
 | Driver leaves in DRIVE | Stopped in DRIVE, seatbelt off, door open (auto-park) |
 | Ready for OTA | PARK, nobody inside, doors closed and locked, 80% SoC |
 | Family on board | Every seat occupied |
+| Start (READY) | Driver on board, brake + START, HV pre-charge (`SimulationScenario.startReady`) |
+| Walk away | Park, power off, get out, key away: walk-away lock, sleep after 10 s |
+| Weak 12 V battery | 12 V at 11.5 V: Sentry/Camp/Dog refuse to start |
 | Winter morning | -5 °C outside, 2 °C cabin |
 | Summer heat | 35 °C outside, 48 °C cabin (try AUTO on the Climate tab) |
 | Crash | Crash detected (doors unlock, hazards on) |
@@ -46,7 +49,27 @@ simulator.forceActuatorState(Vss.Vehicle.Chassis.Axle.Row2.Differential.IsLocked
 simulator.apply(SimulationScenario.presets.first);                           // parked & aligned
 ```
 
+## E2E-protected sensors
+
+Speed, brake pedal, steering angle, charging cable, crash and the ADAS camera/radar signals go
+through an `E2eTransmitter` (alive counter + CRC) to the gateway's `E2eReceiver`, on change and
+cyclically once `startCyclicTransmission()` is called at boot. Faults can be injected per signal:
+
+```dart
+simulator.injectE2eFault(Vss.Vehicle.Speed, E2eFault.frozenSender); // REPEATED -> INVALID
+```
+
+`frozenSender`, `bitFlip`, `frameLoss`, `senderDead` (STALE) and `masquerade`. Sleeping sensor ECUs
+(power mode SLEEP) stop transmitting. See [docs/e2e-signal-protection.md](../../docs/e2e-signal-protection.md).
+
+## Driving simulator (30 Hz)
+
+`drivingSimulatorProvider.notifier.start(DriveProfile.highway)` plays a drive while the car is READY
+in DRIVE: ego speed with adaptive cruise gap control, a lead vehicle (optionally braking hard),
+lane drift and curvature, forward-collision and lane-departure warnings, traction power (regen
+included), odometer, SoC and range. Presets: City, Highway, Lane drift, Lead car brakes.
+
 ## Planned
 
-- `AdasSimulatorEngine` at 30 Hz (speed, lead vehicle, lane offsets) for the digital cluster.
-- EV power-flow simulator (power, SoC drain, regeneration).
+- Gaussian sensor noise and plausibility faults (a *valid* frame with a wrong value).
+- Recording and replay of drives.
