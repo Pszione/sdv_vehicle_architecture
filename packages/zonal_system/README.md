@@ -9,11 +9,11 @@ Implements the `CommandSink` from `vehicle_domain`.
 | Component | Role |
 |---|---|
 | `ZonalCommandSink` | Receives approved commands and resolves their route (`ZonalRoute`) |
-| `ZonalRoute` | Typed table signal → (zone, device). No entry → central ECU |
+| `ZonalRoute` | Signal → (zone, device). Body signals map `DriverSide`/`PassengerSide` to the physical west/east zone using the profile's `driverSide`; HVAC and sunroof → central; anything else → central gateway |
 | `ZonalCommandBus` | Broadcast event stream (not Riverpod state, so no command is ever coalesced) |
-| `TopZoneController` | Sunroof, moving at 10 Hz with fault injection |
-| `DoorZoneController(zone)` | Door locks in the west/east zones |
-| `GenericZoneController(zone)` | South/central: confirms the commanded value (HVAC, seats, suspension…) |
+| `WestZoneController` / `EastZoneController` | One per physical side, both via `BodySideEcu`: door locks (`DumbDoorActuator`), shades, seat heat/massage |
+| `CentralZoneController` | Sunroof (10 Hz, fault injection), HVAC with the 1 s `CabinThermalModel` (cabin temperature, AUTO fan) and the gateway echo for domain ECUs (powertrain, chassis, ADAS) |
+| `CabinThermalModel` | Pure functions: cabin temperature step toward target/outside, AUTO fan percentage |
 | `DumbSunroofActuator`, `DumbDoorActuator` | Simulated physical actuators |
 | `zonalSystemProvider` | Starts one ECU per zone. Read it when the app boots |
 
@@ -28,7 +28,7 @@ CommandSink.send ─▶ ZonalRoute.of(signal) ─▶ ZonalCommandBus.emit
 
 ```dart
 final container = ProviderContainer(overrides: [
-  commandSinkProvider.overrideWith((ref) => ZonalCommandSink(ref.watch(zonalCommandBusProvider))),
+  commandSinkProvider.overrideWith((ref) => ref.watch(zonalCommandSinkProvider)),
 ]);
 container.read(zonalSystemProvider); // boot the ECUs before the first command
 ```
@@ -36,7 +36,7 @@ container.read(zonalSystemProvider); // boot the ECUs before the first command
 ## Fault injection
 
 ```dart
-container.read(topZoneControllerProvider.notifier).injectSunroofFault(ActuatorFaultType.mechanicalJam);
+container.read(centralZoneControllerProvider.notifier).injectSunroofFault(ActuatorFaultType.mechanicalJam);
 ```
 
 The actuator stops at 50% travel and the ECU publishes `Vehicle.Cabin.Sunroof.IsFaulted = true`.

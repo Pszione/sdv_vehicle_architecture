@@ -18,12 +18,7 @@ final activeVehicleBehaviorsProvider = ActiveVehicleBehaviorsProvider._();
 /// commands target signals the profile lacks simply gets `notSupported` from the dispatcher.
 
 final class ActiveVehicleBehaviorsProvider
-    extends
-        $FunctionalProvider<
-          List<VehicleBehavior>,
-          List<VehicleBehavior>,
-          List<VehicleBehavior>
-        >
+    extends $FunctionalProvider<List<VehicleBehavior>, List<VehicleBehavior>, List<VehicleBehavior>>
     with $Provider<List<VehicleBehavior>> {
   /// Every automatic behavior of the vehicle. Like safety rules, a behavior whose
   /// commands target signals the profile lacks simply gets `notSupported` from the dispatcher.
@@ -43,9 +38,7 @@ final class ActiveVehicleBehaviorsProvider
 
   @$internal
   @override
-  $ProviderElement<List<VehicleBehavior>> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+  $ProviderElement<List<VehicleBehavior>> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   List<VehicleBehavior> create(Ref ref) {
@@ -54,15 +47,11 @@ final class ActiveVehicleBehaviorsProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<VehicleBehavior> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<List<VehicleBehavior>>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<List<VehicleBehavior>>(value));
   }
 }
 
-String _$activeVehicleBehaviorsHash() =>
-    r'e0e6aed4a4b847d1208caa4611fe727ceab9beaf';
+String _$activeVehicleBehaviorsHash() => r'fef92b363d53bd4b43982864abce4f072df9270f';
 
 /// Runs the behaviors: watches the broker and dispatches what they decide.
 /// Read it at app boot, like the zonal ECUs.
@@ -72,8 +61,7 @@ final vehicleBehaviorEngineProvider = VehicleBehaviorEngineProvider._();
 
 /// Runs the behaviors: watches the broker and dispatches what they decide.
 /// Read it at app boot, like the zonal ECUs.
-final class VehicleBehaviorEngineProvider
-    extends $NotifierProvider<VehicleBehaviorEngine, void> {
+final class VehicleBehaviorEngineProvider extends $NotifierProvider<VehicleBehaviorEngine, void> {
   /// Runs the behaviors: watches the broker and dispatches what they decide.
   /// Read it at app boot, like the zonal ECUs.
   VehicleBehaviorEngineProvider._()
@@ -96,15 +84,11 @@ final class VehicleBehaviorEngineProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(void value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<void>(value));
   }
 }
 
-String _$vehicleBehaviorEngineHash() =>
-    r'690829ac31dc179b0c7dae5cb812ffc7e23b9f77';
+String _$vehicleBehaviorEngineHash() => r'690829ac31dc179b0c7dae5cb812ffc7e23b9f77';
 
 /// Runs the behaviors: watches the broker and dispatches what they decide.
 /// Read it at app boot, like the zonal ECUs.
@@ -115,14 +99,7 @@ abstract class _$VehicleBehaviorEngine extends $Notifier<void> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<void, void>, void, Object?, Object?>;
     element.handleCreate(ref, build);
   }
 }

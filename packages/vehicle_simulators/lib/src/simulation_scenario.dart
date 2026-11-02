@@ -45,17 +45,18 @@ final class SimulationScenario {
   static final _brake = Vss.Vehicle.Chassis.Brake.PedalPosition;
   static final _battery = Vss.Vehicle.Powertrain.TractionBattery;
   static final _charging = _battery.Charging;
-  static final _driverSeat = Vss.Vehicle.Seat.Row1.Left;
+  static final _driverSeat = VehicleGroups.driverSeat;
+  static final _driverDoor = VehicleGroups.driverDoor;
 
   /// Driver seated and belted, doors and trunk closed, unplugged: ready to drive.
   static List<SimulationStep> get _readyToDrive => [
     SimulatedReading(_speed, 0.0),
-    for (final door in VehicleGroups.doors) SimulatedReading(door.ajar, false),
+    for (final door in VehicleGroups.doors) SimulatedReading(door.open, false),
     SimulatedReading(Vss.Vehicle.Body.Trunk.IsAjar, false),
     SimulatedReading(_charging.IsConnected, false),
     SimulatedReading(_charging.IsCharging, false),
-    SimulatedReading(_driverSeat.IsOccupied, true),
-    SimulatedReading(_driverSeat.IsBelted, true),
+    SimulatedReading(_driverSeat.occupancy, SeatOccupancy.occupied),
+    SimulatedReading(_driverSeat.belted, true),
   ];
 
   /// Brake pressed, DRIVE engaged, brake released, then cruise at [speedKmh].
@@ -113,15 +114,15 @@ final class SimulationScenario {
     SimulationScenario(
       name: 'Driver door open',
       description: 'Stopped with the driver door open.',
-      steps: [SimulatedReading(_speed, 0.0), SimulatedReading(Vss.Vehicle.Cabin.Door.Row1.Left.IsAjar, true)],
+      steps: [SimulatedReading(_speed, 0.0), SimulatedReading(_driverDoor.open, true)],
     ),
     SimulationScenario(
       name: 'Driver leaves in DRIVE',
       description: 'Stopped in DRIVE, seatbelt off, door open. Auto-park engages PARK.',
       steps: [
         SimulatedReading(_speed, 0.0),
-        SimulatedReading(_driverSeat.IsBelted, false),
-        SimulatedReading(Vss.Vehicle.Cabin.Door.Row1.Left.IsAjar, true),
+        SimulatedReading(_driverSeat.belted, false),
+        SimulatedReading(_driverDoor.open, true),
       ],
     ),
     SimulationScenario(
@@ -131,20 +132,32 @@ final class SimulationScenario {
         SimulatedReading(_speed, 0.0),
         SimulatedCommand(_gear, Gear.park),
         SimulatedReading(_battery.StateOfCharge, 80.0),
-        for (final seat in VehicleGroups.seats) SimulatedReading(seat.occupied, false),
-        for (final door in VehicleGroups.doors) SimulatedReading(door.ajar, false),
+        for (final seat in VehicleGroups.seats) SimulatedReading(seat.occupancy, SeatOccupancy.empty),
+        for (final door in VehicleGroups.doors) SimulatedReading(door.open, false),
         for (final door in VehicleGroups.doors) SimulatedCommand(door.lock, true),
       ],
     ),
     SimulationScenario(
       name: 'Family on board',
       description: 'Every seat occupied.',
-      steps: [for (final seat in VehicleGroups.seats) SimulatedReading(seat.occupied, true)],
+      steps: [for (final seat in VehicleGroups.seats) SimulatedReading(seat.occupancy, SeatOccupancy.occupied)],
     ),
     SimulationScenario(
       name: 'Winter morning',
-      description: 'Stopped, -5 °C outside.',
-      steps: [SimulatedReading(_speed, 0.0), SimulatedReading(Vss.Vehicle.Exterior.AirTemperature, -5.0)],
+      description: 'Stopped, -5 °C outside and a cold cabin (2 °C).',
+      steps: [
+        SimulatedReading(_speed, 0.0),
+        SimulatedReading(Vss.Vehicle.Exterior.AirTemperature, -5.0),
+        SimulatedReading(Vss.Vehicle.Cabin.HVAC.AmbientAirTemperature, 2.0),
+      ],
+    ),
+    SimulationScenario(
+      name: 'Summer heat',
+      description: 'Parked in the sun: 35 °C outside and a hot cabin (48 °C).',
+      steps: [
+        SimulatedReading(Vss.Vehicle.Exterior.AirTemperature, 35.0),
+        SimulatedReading(Vss.Vehicle.Cabin.HVAC.AmbientAirTemperature, 48.0),
+      ],
     ),
     SimulationScenario(
       name: 'Crash',

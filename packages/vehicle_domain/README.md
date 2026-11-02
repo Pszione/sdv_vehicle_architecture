@@ -18,7 +18,7 @@ the confirmed vehicle state, the command pipeline and the safety rules.
 | `SafetyRule`s | Gate commands: "can this run now?" (see table below) |
 | `VehicleBehavior`s + `VehicleBehaviorEngine` | React to state: "what should the car do on its own?" Issue commands through the dispatcher |
 | `hmiLockoutReasonProvider(feature)` | HMI policy: video playback and keyboard input locked above 8 km/h |
-| `VehicleGroups` | Shared signal groups: all doors, all seats, driver door/seat for LHD/RHD |
+| `VehicleGroups` | Shared signal groups: doors, seats, HVAC stations (front/rear), driver door/seat |
 | `VehicleLogger` | Ring-buffer audit log: commands, rejections, actuator changes and forced states |
 
 ## Command flow
@@ -58,6 +58,8 @@ The physical confirmation arrives later, as telemetry published to the `VssBroke
 | `ParkedModeSafetyRule` | Dog/Camp/Sentry/V2L outside PARK or below 20% SoC |
 | `OtaInstallSafetyRule` | OTA unless PARK, SoC > 30%, every door locked and nobody inside |
 | `ValetModeSafetyRule` | In Valet Mode: glovebox, frunk, ESC, drive mode, speeds above 80 km/h |
+| `RearClimateLockSafetyRule` | Rear-panel (`REAR_PANEL`) climate changes while the front locked them |
+| `ClimateRangeProtectionSafetyRule` | Fan above 50% below 10% SoC |
 
 ## Vehicle behaviors
 
@@ -71,6 +73,9 @@ The physical confirmation arrives later, as telemetry published to the `VssBroke
 | `SuspensionAutoLevelBehavior` (`AUTO_LEVEL`) | Above 110 km/h → LOW; below 80 km/h → back to NORMAL |
 | `CrashResponseBehavior` (`CRASH_RESPONSE`) | Crash detected → unlock every door, hazards on |
 | `ValetSpeedCapBehavior` (`VALET`) | Valet Mode on → speed limiter at 80 km/h |
+| `ClimateSyncBehavior` (`CLIMATE_SYNC`) | SYNC on → the other stations follow the driver temperature |
+| `MaxDefrostBehavior` (`DEFROST`) | Front defrost on → A/C on, fresh air, front airflow UP, fan ≥ 70% |
+| `EmptySeatClimateBehavior` (`SEAT_CLIMATE`) | Seat becomes EMPTY → its heating/ventilation off |
 
 Behaviors never write to the broker: their commands go through the dispatcher, so the
 safety rules still apply (an auto-lock on an open door is rejected and logged). The engine
@@ -82,7 +87,7 @@ ignores the full state reset caused by a profile switch.
 ```dart
 ProviderContainer(overrides: [
   initialVehicleProfileProvider.overrideWithValue(luxuryEvSuvProfile),
-  commandSinkProvider.overrideWith((ref) => ZonalCommandSink(ref.watch(zonalCommandBusProvider))),
+  commandSinkProvider.overrideWith((ref) => ref.watch(zonalCommandSinkProvider)),
 ]);
 container.read(vehicleBehaviorEngineProvider); // start the behaviors at boot
 ```

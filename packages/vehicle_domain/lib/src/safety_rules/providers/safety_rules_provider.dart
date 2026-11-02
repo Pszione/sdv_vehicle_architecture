@@ -1,10 +1,9 @@
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../profile/providers/active_vehicle_profile.dart';
 import '../adaptive_cruise_safety_rule.dart';
 import '../brake_to_shift_safety_rule.dart';
 import '../charge_cable_lock_safety_rule.dart';
+import '../climate_range_protection_safety_rule.dart';
 import '../convertible_top_safety_rule.dart';
 import '../diff_lock_safety_rule.dart';
 import '../domain/safety_rule.dart';
@@ -16,6 +15,7 @@ import '../ev_preconditioning_safety_rule.dart';
 import '../opening_while_moving_safety_rule.dart';
 import '../ota_install_safety_rule.dart';
 import '../parked_mode_safety_rule.dart';
+import '../rear_climate_lock_safety_rule.dart';
 import '../speed_window_safety_rule.dart';
 import '../sunroof_speed_safety_rule.dart';
 import '../suv_air_suspension_safety_rule.dart';
@@ -29,30 +29,29 @@ part 'safety_rules_provider.g.dart';
 ///
 /// A rule only runs if its `target` exists in the active profile, so the list
 /// can be universal: a car without a lockable differential never reaches
-/// [DiffLockSafetyRule]. Driver-side rules are rebuilt when the profile's LHD/RHD layout changes.
+/// [DiffLockSafetyRule].
 /// Override it in the app only to change thresholds per model.
 @Riverpod(keepAlive: true)
-List<SafetyRule> activeSafetyRules(Ref ref) {
-  final driverSide = ref.watch(activeVehicleProfileProvider.select((profile) => profile.driverSide));
-  return [
-    ...DoorSafetyRule.allDoors(),
-    SunroofSpeedSafetyRule(),
-    TransmissionSafetyRule(),
-    BrakeToShiftSafetyRule(),
-    DriverPresenceSafetyRule(driverSide),
-    EvChargingSafetyRule(),
-    EvPreconditioningSafetyRule(),
-    DiffLockSafetyRule(),
-    EscModeSafetyRule(),
-    SuvAirSuspensionSafetyRule(),
-    ConvertibleTopSafetyRule(),
-    ...OpeningWhileMovingSafetyRule.all(),
-    TowingTailgateSafetyRule(),
-    ChargeCableLockSafetyRule(),
-    AdaptiveCruiseSafetyRule(driverSide),
-    ...SpeedWindowSafetyRule.all(),
-    ...ParkedModeSafetyRule.all(),
-    OtaInstallSafetyRule(),
-    ...ValetModeSafetyRule.all(),
-  ];
-}
+List<SafetyRule> activeSafetyRules(Ref ref) => [
+  ...DoorSafetyRule.allDoors(),
+  SunroofSpeedSafetyRule(),
+  TransmissionSafetyRule(),
+  BrakeToShiftSafetyRule(),
+  DriverPresenceSafetyRule(),
+  EvChargingSafetyRule(),
+  EvPreconditioningSafetyRule(),
+  DiffLockSafetyRule(),
+  EscModeSafetyRule(),
+  SuvAirSuspensionSafetyRule(),
+  ConvertibleTopSafetyRule(),
+  ...OpeningWhileMovingSafetyRule.all(),
+  TowingTailgateSafetyRule(),
+  ChargeCableLockSafetyRule(),
+  AdaptiveCruiseSafetyRule(),
+  ...SpeedWindowSafetyRule.all(),
+  ...ParkedModeSafetyRule.all(),
+  OtaInstallSafetyRule(),
+  ...ValetModeSafetyRule.all(),
+  ...RearClimateLockSafetyRule.all(),
+  ...ClimateRangeProtectionSafetyRule.all(),
+];

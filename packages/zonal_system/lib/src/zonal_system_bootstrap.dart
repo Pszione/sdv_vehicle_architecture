@@ -1,9 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'controllers/door_zone_controller.dart';
-import 'controllers/generic_zone_controller.dart';
-import 'controllers/top_zonal_controller.dart';
-import 'domain/vehicle_zone.dart';
+import 'controllers/central_zone_controller.dart';
+import 'controllers/east_zone_controller.dart';
+import 'controllers/west_zone_controller.dart';
 
 part 'zonal_system_bootstrap.g.dart';
 
@@ -12,9 +11,7 @@ part 'zonal_system_bootstrap.g.dart';
 @Riverpod(keepAlive: true)
 void zonalSystem(Ref ref) {
   ref
-    ..watch(topZoneControllerProvider)
-    ..watch(doorZoneControllerProvider(VehicleZone.west))
-    ..watch(doorZoneControllerProvider(VehicleZone.east))
-    ..watch(genericZoneControllerProvider(VehicleZone.south))
-    ..watch(genericZoneControllerProvider(VehicleZone.central));
+    ..watch(westZoneControllerProvider)
+    ..watch(eastZoneControllerProvider)
+    ..watch(centralZoneControllerProvider);
 }

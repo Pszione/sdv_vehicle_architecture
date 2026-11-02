@@ -18,7 +18,9 @@ final _profile = VehicleProfile(
     'Vehicle.Speed',
     'Vehicle.Chassis.Axle.Row2.Differential.IsLocked',
     'Vehicle.ADAS.ESC.Mode',
-    for (final door in VehicleGroups.doors) ...[door.lock.path, door.ajar.path],
+    for (final door in VehicleGroups.doors) ...[door.lock.path, door.open.path],
+    for (final station in VehicleGroups.hvacStations) station.temperature.path,
+    'Vehicle.Cabin.HVAC.IsSyncActive',
   },
 );
 
@@ -54,6 +56,18 @@ void main() {
 
     expect(sink.sent, [
       VehicleCommand(signal: Vss.Vehicle.ADAS.ESC.Mode, value: EscMode.off, source: DiffLockEscBehavior.source),
+    ]);
+  });
+
+  test('should make passenger and rear zones follow the driver temperature when SYNC is on', () async {
+    final [driver, ...others] = VehicleGroups.hvacStations;
+    await publish(Vss.Vehicle.Cabin.HVAC.IsSyncActive, true);
+
+    await publish(driver.temperature, 24.0);
+
+    expect(sink.sent, [
+      for (final station in others)
+        VehicleCommand(signal: station.temperature, value: 24.0, source: ClimateSyncBehavior.source),
     ]);
   });
 }

@@ -31,7 +31,8 @@ A `SimulationScenario` is a sequence of steps: `SimulatedReading` (sensor) and
 | Driver leaves in DRIVE | Stopped in DRIVE, seatbelt off, door open (auto-park) |
 | Ready for OTA | PARK, nobody inside, doors closed and locked, 80% SoC |
 | Family on board | Every seat occupied |
-| Winter morning | -5 °C outside |
+| Winter morning | -5 °C outside, 2 °C cabin |
+| Summer heat | 35 °C outside, 48 °C cabin (try AUTO on the Climate tab) |
 | Crash | Crash detected (doors unlock, hazards on) |
 
 ## Usage

@@ -46,41 +46,45 @@
               "Row1": {
                 "type": "branch",
                 "children": {
-                  "Left": {
+                  "DriverSide": {
                     "type": "branch",
                     "children": {
+                      "IsOpen": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false,
+                        "description": "Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS."
+                      },
                       "IsLocked": {
                         "type": "actuator",
                         "datatype": "boolean",
                         "default": false
                       },
-                      "IsAjar": {
-                        "type": "sensor",
-                        "datatype": "boolean",
-                        "default": false
-                      },
                       "SoftCloseState": {
                         "type": "sensor",
-                        "datatype": "string"
+                        "datatype": "string",
+                        "description": "Custom signal (not in COVESA VSS)."
                       }
                     }
                   },
-                  "Right": {
+                  "PassengerSide": {
                     "type": "branch",
                     "children": {
+                      "IsOpen": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false,
+                        "description": "Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS."
+                      },
                       "IsLocked": {
                         "type": "actuator",
                         "datatype": "boolean",
                         "default": false
                       },
-                      "IsAjar": {
-                        "type": "sensor",
-                        "datatype": "boolean",
-                        "default": false
-                      },
                       "SoftCloseState": {
                         "type": "sensor",
-                        "datatype": "string"
+                        "datatype": "string",
+                        "description": "Custom signal (not in COVESA VSS)."
                       }
                     }
                   }
@@ -89,41 +93,63 @@
               "Row2": {
                 "type": "branch",
                 "children": {
-                  "Left": {
+                  "DriverSide": {
                     "type": "branch",
                     "children": {
+                      "IsOpen": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false,
+                        "description": "Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS."
+                      },
                       "IsLocked": {
                         "type": "actuator",
                         "datatype": "boolean",
                         "default": false
                       },
-                      "IsAjar": {
-                        "type": "sensor",
-                        "datatype": "boolean",
-                        "default": false
-                      },
-                      "SunshadePosition": {
-                        "type": "actuator",
-                        "datatype": "float"
+                      "Shade": {
+                        "type": "branch",
+                        "children": {
+                          "Position": {
+                            "type": "actuator",
+                            "datatype": "uint8",
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "default": 0,
+                            "description": "Side window shade. 0 = retracted, 100 = deployed."
+                          }
+                        }
                       }
                     }
                   },
-                  "Right": {
+                  "PassengerSide": {
                     "type": "branch",
                     "children": {
+                      "IsOpen": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false,
+                        "description": "Is the door open. Modeled as a sensor (manually operated doors); actuator in COVESA VSS."
+                      },
                       "IsLocked": {
                         "type": "actuator",
                         "datatype": "boolean",
                         "default": false
                       },
-                      "IsAjar": {
-                        "type": "sensor",
-                        "datatype": "boolean",
-                        "default": false
-                      },
-                      "SunshadePosition": {
-                        "type": "actuator",
-                        "datatype": "float"
+                      "Shade": {
+                        "type": "branch",
+                        "children": {
+                          "Position": {
+                            "type": "actuator",
+                            "datatype": "uint8",
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "default": 0,
+                            "description": "Side window shade. 0 = retracted, 100 = deployed."
+                          }
+                        }
                       }
                     }
                   }
@@ -178,92 +204,6 @@
                   }
                 }
               },
-              "Row1": {
-                "type": "branch",
-                "children": {
-                  "Left": {
-                    "type": "branch",
-                    "children": {
-                      "Temperature": {
-                        "type": "actuator",
-                        "datatype": "float",
-                        "unit": "celsius",
-                        "min": 16,
-                        "max": 30
-                      },
-                      "FanSpeed": {
-                        "type": "actuator",
-                        "datatype": "uint8",
-                        "unit": "percent",
-                        "min": 0,
-                        "max": 100
-                      }
-                    }
-                  },
-                  "Right": {
-                    "type": "branch",
-                    "children": {
-                      "Temperature": {
-                        "type": "actuator",
-                        "datatype": "float",
-                        "unit": "celsius",
-                        "min": 16,
-                        "max": 30
-                      },
-                      "FanSpeed": {
-                        "type": "actuator",
-                        "datatype": "uint8",
-                        "unit": "percent",
-                        "min": 0,
-                        "max": 100
-                      }
-                    }
-                  }
-                }
-              },
-              "Row2": {
-                "type": "branch",
-                "children": {
-                  "Left": {
-                    "type": "branch",
-                    "children": {
-                      "Temperature": {
-                        "type": "actuator",
-                        "datatype": "float",
-                        "unit": "celsius",
-                        "min": 16,
-                        "max": 30
-                      },
-                      "FanSpeed": {
-                        "type": "actuator",
-                        "datatype": "uint8",
-                        "unit": "percent",
-                        "min": 0,
-                        "max": 100
-                      }
-                    }
-                  },
-                  "Right": {
-                    "type": "branch",
-                    "children": {
-                      "Temperature": {
-                        "type": "actuator",
-                        "datatype": "float",
-                        "unit": "celsius",
-                        "min": 16,
-                        "max": 30
-                      },
-                      "FanSpeed": {
-                        "type": "actuator",
-                        "datatype": "uint8",
-                        "unit": "percent",
-                        "min": 0,
-                        "max": 100
-                      }
-                    }
-                  }
-                }
-              },
               "CampMode": {
                 "type": "branch",
                 "children": {
@@ -273,6 +213,196 @@
                     "default": false
                   }
                 }
+              },
+              "Station": {
+                "type": "branch",
+                "children": {
+                  "Row1": {
+                    "type": "branch",
+                    "children": {
+                      "Driver": {
+                        "type": "branch",
+                        "children": {
+                          "Temperature": {
+                            "type": "actuator",
+                            "datatype": "float",
+                            "unit": "celsius",
+                            "min": 16,
+                            "max": 30,
+                            "default": 21.0
+                          },
+                          "FanSpeed": {
+                            "type": "actuator",
+                            "datatype": "uint8",
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "default": 0,
+                            "description": "Fan speed. 0 = off, 100 = max."
+                          },
+                          "AirDistribution": {
+                            "type": "actuator",
+                            "datatype": "string",
+                            "allowed": [
+                              "UP",
+                              "MIDDLE",
+                              "DOWN"
+                            ],
+                            "default": "MIDDLE"
+                          }
+                        }
+                      },
+                      "Passenger": {
+                        "type": "branch",
+                        "children": {
+                          "Temperature": {
+                            "type": "actuator",
+                            "datatype": "float",
+                            "unit": "celsius",
+                            "min": 16,
+                            "max": 30,
+                            "default": 21.0
+                          },
+                          "FanSpeed": {
+                            "type": "actuator",
+                            "datatype": "uint8",
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "default": 0,
+                            "description": "Fan speed. 0 = off, 100 = max."
+                          },
+                          "AirDistribution": {
+                            "type": "actuator",
+                            "datatype": "string",
+                            "allowed": [
+                              "UP",
+                              "MIDDLE",
+                              "DOWN"
+                            ],
+                            "default": "MIDDLE"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Row2": {
+                    "type": "branch",
+                    "children": {
+                      "Driver": {
+                        "type": "branch",
+                        "children": {
+                          "Temperature": {
+                            "type": "actuator",
+                            "datatype": "float",
+                            "unit": "celsius",
+                            "min": 16,
+                            "max": 30,
+                            "default": 21.0
+                          },
+                          "FanSpeed": {
+                            "type": "actuator",
+                            "datatype": "uint8",
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "default": 0,
+                            "description": "Fan speed. 0 = off, 100 = max."
+                          },
+                          "AirDistribution": {
+                            "type": "actuator",
+                            "datatype": "string",
+                            "allowed": [
+                              "UP",
+                              "MIDDLE",
+                              "DOWN"
+                            ],
+                            "default": "MIDDLE"
+                          }
+                        }
+                      },
+                      "Passenger": {
+                        "type": "branch",
+                        "children": {
+                          "Temperature": {
+                            "type": "actuator",
+                            "datatype": "float",
+                            "unit": "celsius",
+                            "min": 16,
+                            "max": 30,
+                            "default": 21.0
+                          },
+                          "FanSpeed": {
+                            "type": "actuator",
+                            "datatype": "uint8",
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "default": 0,
+                            "description": "Fan speed. 0 = off, 100 = max."
+                          },
+                          "AirDistribution": {
+                            "type": "actuator",
+                            "datatype": "string",
+                            "allowed": [
+                              "UP",
+                              "MIDDLE",
+                              "DOWN"
+                            ],
+                            "default": "MIDDLE"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "IsAirConditioningActive": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": false
+              },
+              "IsRecirculationActive": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": false
+              },
+              "IsFrontDefrosterActive": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": false
+              },
+              "IsRearDefrosterActive": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": false
+              },
+              "AmbientAirTemperature": {
+                "type": "sensor",
+                "datatype": "float",
+                "unit": "celsius",
+                "min": -40,
+                "max": 80,
+                "default": 20.0,
+                "description": "Cabin (ambient) air temperature."
+              },
+              "IsAutoActive": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": false,
+                "description": "Automatic climate: the HVAC ECU drives fan speed. Custom signal (not in COVESA VSS)."
+              },
+              "IsSyncActive": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": false,
+                "description": "Passenger and rear zones follow the driver temperature. Custom signal (not in COVESA VSS)."
+              },
+              "IsRearControlLocked": {
+                "type": "actuator",
+                "datatype": "boolean",
+                "default": false,
+                "description": "Rear passengers cannot change the rear zone. Custom signal (not in COVESA VSS)."
               }
             }
           },
@@ -359,205 +489,261 @@
                 "max": 1
               }
             }
-          }
-        }
-      },
-      "Seat": {
-        "type": "branch",
-        "children": {
-          "Row1": {
-            "type": "branch",
-            "children": {
-              "Left": {
-                "type": "branch",
-                "children": {
-                  "HeatingLevel": {
-                    "type": "actuator",
-                    "datatype": "uint8"
-                  },
-                  "VentilationLevel": {
-                    "type": "actuator",
-                    "datatype": "uint8"
-                  },
-                  "Massage": {
-                    "type": "branch",
-                    "children": {
-                      "Mode": {
-                        "type": "actuator",
-                        "datatype": "string",
-                        "allowed": [
-                          "OFF",
-                          "WAVE",
-                          "PULSE",
-                          "STRETCH"
-                        ],
-                        "default": "OFF"
-                      },
-                      "Intensity": {
-                        "type": "actuator",
-                        "datatype": "uint8"
-                      }
-                    }
-                  },
-                  "MemoryProfile": {
-                    "type": "actuator",
-                    "datatype": "uint8"
-                  },
-                  "SideBolsterSupport": {
-                    "type": "actuator",
-                    "datatype": "float"
-                  },
-                  "IsOccupied": {
-                    "type": "sensor",
-                    "datatype": "boolean",
-                    "default": false
-                  },
-                  "IsBelted": {
-                    "type": "sensor",
-                    "datatype": "boolean",
-                    "default": false
-                  }
-                }
-              },
-              "Right": {
-                "type": "branch",
-                "children": {
-                  "HeatingLevel": {
-                    "type": "actuator",
-                    "datatype": "uint8"
-                  },
-                  "VentilationLevel": {
-                    "type": "actuator",
-                    "datatype": "uint8"
-                  },
-                  "Massage": {
-                    "type": "branch",
-                    "children": {
-                      "Mode": {
-                        "type": "actuator",
-                        "datatype": "string",
-                        "allowed": [
-                          "OFF",
-                          "WAVE",
-                          "PULSE",
-                          "STRETCH"
-                        ],
-                        "default": "OFF"
-                      },
-                      "Intensity": {
-                        "type": "actuator",
-                        "datatype": "uint8"
-                      }
-                    }
-                  },
-                  "IsOccupied": {
-                    "type": "sensor",
-                    "datatype": "boolean",
-                    "default": false
-                  },
-                  "IsBelted": {
-                    "type": "sensor",
-                    "datatype": "boolean",
-                    "default": false
-                  }
-                }
-              }
-            }
           },
-          "Row2": {
+          "Seat": {
             "type": "branch",
             "children": {
-              "Left": {
+              "Row1": {
                 "type": "branch",
                 "children": {
-                  "ReclineAngle": {
-                    "type": "actuator",
-                    "datatype": "float"
-                  },
-                  "HeatingLevel": {
-                    "type": "actuator",
-                    "datatype": "uint8"
-                  },
-                  "VentilationLevel": {
-                    "type": "actuator",
-                    "datatype": "uint8"
-                  },
-                  "Massage": {
+                  "DriverSide": {
                     "type": "branch",
                     "children": {
-                      "Mode": {
-                        "type": "actuator",
+                      "OccupancyStatus": {
+                        "type": "sensor",
                         "datatype": "string",
                         "allowed": [
-                          "OFF",
-                          "WAVE",
-                          "PULSE",
-                          "STRETCH"
+                          "UNKNOWN",
+                          "OCCUPIED",
+                          "EMPTY"
                         ],
-                        "default": "OFF"
+                        "default": "EMPTY"
                       },
-                      "Intensity": {
+                      "IsBelted": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "HeatingCooling": {
                         "type": "actuator",
-                        "datatype": "uint8"
+                        "datatype": "int8",
+                        "unit": "percent",
+                        "min": -100,
+                        "max": 100,
+                        "default": 0,
+                        "description": "-100 = maximum cooling (ventilation), 0 = off, 100 = maximum heating."
+                      },
+                      "Massage": {
+                        "type": "branch",
+                        "children": {
+                          "Level": {
+                            "type": "actuator",
+                            "datatype": "uint8",
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "default": 0,
+                            "description": "Massage level. 0 = off."
+                          },
+                          "TypeActive": {
+                            "type": "actuator",
+                            "datatype": "string",
+                            "allowed": [
+                              "WAVE",
+                              "PULSE",
+                              "STRETCH"
+                            ],
+                            "default": "WAVE"
+                          }
+                        }
+                      },
+                      "Backrest": {
+                        "type": "branch",
+                        "children": {
+                          "SideBolsterSupport": {
+                            "type": "actuator",
+                            "datatype": "float",
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100
+                          }
+                        }
                       }
                     }
                   },
-                  "IsOccupied": {
-                    "type": "sensor",
-                    "datatype": "boolean",
-                    "default": false
-                  },
-                  "IsBelted": {
-                    "type": "sensor",
-                    "datatype": "boolean",
-                    "default": false
+                  "PassengerSide": {
+                    "type": "branch",
+                    "children": {
+                      "OccupancyStatus": {
+                        "type": "sensor",
+                        "datatype": "string",
+                        "allowed": [
+                          "UNKNOWN",
+                          "OCCUPIED",
+                          "EMPTY"
+                        ],
+                        "default": "EMPTY"
+                      },
+                      "IsBelted": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "HeatingCooling": {
+                        "type": "actuator",
+                        "datatype": "int8",
+                        "unit": "percent",
+                        "min": -100,
+                        "max": 100,
+                        "default": 0,
+                        "description": "-100 = maximum cooling (ventilation), 0 = off, 100 = maximum heating."
+                      },
+                      "Massage": {
+                        "type": "branch",
+                        "children": {
+                          "Level": {
+                            "type": "actuator",
+                            "datatype": "uint8",
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "default": 0,
+                            "description": "Massage level. 0 = off."
+                          },
+                          "TypeActive": {
+                            "type": "actuator",
+                            "datatype": "string",
+                            "allowed": [
+                              "WAVE",
+                              "PULSE",
+                              "STRETCH"
+                            ],
+                            "default": "WAVE"
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               },
-              "Right": {
+              "Row2": {
                 "type": "branch",
                 "children": {
-                  "ReclineAngle": {
-                    "type": "actuator",
-                    "datatype": "float"
-                  },
-                  "HeatingLevel": {
-                    "type": "actuator",
-                    "datatype": "uint8"
-                  },
-                  "VentilationLevel": {
-                    "type": "actuator",
-                    "datatype": "uint8"
-                  },
-                  "Massage": {
+                  "DriverSide": {
                     "type": "branch",
                     "children": {
-                      "Mode": {
-                        "type": "actuator",
+                      "OccupancyStatus": {
+                        "type": "sensor",
                         "datatype": "string",
                         "allowed": [
-                          "OFF",
-                          "WAVE",
-                          "PULSE",
-                          "STRETCH"
+                          "UNKNOWN",
+                          "OCCUPIED",
+                          "EMPTY"
                         ],
-                        "default": "OFF"
+                        "default": "EMPTY"
                       },
-                      "Intensity": {
+                      "IsBelted": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "HeatingCooling": {
                         "type": "actuator",
-                        "datatype": "uint8"
+                        "datatype": "int8",
+                        "unit": "percent",
+                        "min": -100,
+                        "max": 100,
+                        "default": 0,
+                        "description": "-100 = maximum cooling (ventilation), 0 = off, 100 = maximum heating."
+                      },
+                      "Massage": {
+                        "type": "branch",
+                        "children": {
+                          "Level": {
+                            "type": "actuator",
+                            "datatype": "uint8",
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "default": 0,
+                            "description": "Massage level. 0 = off."
+                          },
+                          "TypeActive": {
+                            "type": "actuator",
+                            "datatype": "string",
+                            "allowed": [
+                              "WAVE",
+                              "PULSE",
+                              "STRETCH"
+                            ],
+                            "default": "WAVE"
+                          }
+                        }
+                      },
+                      "Backrest": {
+                        "type": "branch",
+                        "children": {
+                          "Recline": {
+                            "type": "actuator",
+                            "datatype": "float",
+                            "unit": "degrees"
+                          }
+                        }
                       }
                     }
                   },
-                  "IsOccupied": {
-                    "type": "sensor",
-                    "datatype": "boolean",
-                    "default": false
-                  },
-                  "IsBelted": {
-                    "type": "sensor",
-                    "datatype": "boolean",
-                    "default": false
+                  "PassengerSide": {
+                    "type": "branch",
+                    "children": {
+                      "OccupancyStatus": {
+                        "type": "sensor",
+                        "datatype": "string",
+                        "allowed": [
+                          "UNKNOWN",
+                          "OCCUPIED",
+                          "EMPTY"
+                        ],
+                        "default": "EMPTY"
+                      },
+                      "IsBelted": {
+                        "type": "sensor",
+                        "datatype": "boolean",
+                        "default": false
+                      },
+                      "HeatingCooling": {
+                        "type": "actuator",
+                        "datatype": "int8",
+                        "unit": "percent",
+                        "min": -100,
+                        "max": 100,
+                        "default": 0,
+                        "description": "-100 = maximum cooling (ventilation), 0 = off, 100 = maximum heating."
+                      },
+                      "Massage": {
+                        "type": "branch",
+                        "children": {
+                          "Level": {
+                            "type": "actuator",
+                            "datatype": "uint8",
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "default": 0,
+                            "description": "Massage level. 0 = off."
+                          },
+                          "TypeActive": {
+                            "type": "actuator",
+                            "datatype": "string",
+                            "allowed": [
+                              "WAVE",
+                              "PULSE",
+                              "STRETCH"
+                            ],
+                            "default": "WAVE"
+                          }
+                        }
+                      },
+                      "Backrest": {
+                        "type": "branch",
+                        "children": {
+                          "Recline": {
+                            "type": "actuator",
+                            "datatype": "float",
+                            "unit": "degrees"
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -579,9 +765,14 @@
                 "max": 540,
                 "default": 0.0
               },
-              "Heated": {
+              "HeatingCooling": {
                 "type": "actuator",
-                "datatype": "boolean"
+                "datatype": "int8",
+                "unit": "percent",
+                "min": -100,
+                "max": 100,
+                "default": 0,
+                "description": "-100 = maximum cooling, 0 = off, 100 = maximum heating."
               }
             }
           },

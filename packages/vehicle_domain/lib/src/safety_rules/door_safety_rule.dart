@@ -6,27 +6,26 @@ import 'domain/safety_rule.dart';
 
 /// Blocks locking a door that is open. Unlocking is always allowed.
 ///
-/// Uses the physical side (Left/Right), so it behaves the same on LHD and RHD.
 final class DoorSafetyRule implements SafetyRule {
-  DoorSafetyRule({required VssSignal<bool> lock, required this.ajar, required this.label}) : target = lock;
+  DoorSafetyRule({required VssSignal<bool> lock, required this.open, required this.label}) : target = lock;
 
   /// One rule per door in the spec.
   static List<DoorSafetyRule> allDoors() => [
-    for (final door in VehicleGroups.doors) DoorSafetyRule(lock: door.lock, ajar: door.ajar, label: door.label),
+    for (final door in VehicleGroups.doors) DoorSafetyRule(lock: door.lock, open: door.open, label: door.label),
   ];
 
   @override
   final VssSignal<bool> target;
-  final VssSignal<bool> ajar;
+  final VssSignal<bool> open;
   final String label;
 
   @override
-  Set<VssSignal<Object>> get inputs => {ajar};
+  Set<VssSignal<Object>> get inputs => {open};
 
   @override
   CommandResult? validate(VehicleCommand<Object> command, SignalReader signals) {
     if (command.value != true) return null;
-    if (signals.read(ajar) ?? false) {
+    if (signals.read(open) ?? false) {
       return CommandResult.rejected('$label door is open. Close it before locking.');
     }
     return null;

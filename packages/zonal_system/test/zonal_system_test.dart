@@ -13,11 +13,11 @@ const _sunroofProfile = VehicleProfile(
 );
 
 void main() {
-  test('should confirm the sunroof position in the broker when a command goes through the top zone', () async {
+  test('should confirm the sunroof position in the broker when a command goes through the central zone', () async {
     final container = ProviderContainer.test(
       overrides: [
         initialVehicleProfileProvider.overrideWithValue(_sunroofProfile),
-        commandSinkProvider.overrideWith((ref) => ZonalCommandSink(ref.watch(zonalCommandBusProvider))),
+        commandSinkProvider.overrideWith((ref) => ref.watch(zonalCommandSinkProvider)),
       ],
     );
     container.read(zonalSystemProvider);
@@ -41,5 +41,18 @@ void main() {
     expect(last.state, ActuatorState.stuck);
     expect(last.position, 0.5);
     expect(last.fault, ActuatorFaultType.mechanicalJam);
+  });
+
+  test('should move the cabin temperature toward the target faster with a higher fan speed', () {
+    double after10s(int fan) {
+      var cabin = 30.0;
+      for (var i = 0; i < 10; i++) {
+        cabin = CabinThermalModel.step(cabin: cabin, target: 21, outside: 30, fanPercent: fan);
+      }
+      return cabin;
+    }
+
+    expect(after10s(100), lessThan(after10s(20)));
+    expect(after10s(20), lessThan(30));
   });
 }

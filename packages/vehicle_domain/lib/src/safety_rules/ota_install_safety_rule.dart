@@ -18,7 +18,7 @@ final class OtaInstallSafetyRule implements SafetyRule {
     Vss.Vehicle.Powertrain.Transmission.SelectedGear,
     Vss.Vehicle.Powertrain.TractionBattery.StateOfCharge,
     for (final door in VehicleGroups.doors) door.lock,
-    for (final seat in VehicleGroups.seats) seat.occupied,
+    for (final seat in VehicleGroups.seats) seat.occupancy,
   };
 
   @override
@@ -40,7 +40,7 @@ final class OtaInstallSafetyRule implements SafetyRule {
       }
     }
     for (final seat in VehicleGroups.seats) {
-      if (signals.read(seat.occupied) ?? false) {
+      if (signals.read(seat.occupancy) == SeatOccupancy.occupied) {
         return CommandResult.rejected('${seat.label} seat is occupied. Nobody can be inside during the update.');
       }
     }

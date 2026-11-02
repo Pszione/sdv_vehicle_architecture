@@ -17,8 +17,7 @@ final zonalSystemProvider = ZonalSystemProvider._();
 /// Starts one ECU per zone. The app reads this provider at boot, before the
 /// first command: otherwise no controller would exist to listen to the bus.
 
-final class ZonalSystemProvider extends $FunctionalProvider<void, void, void>
-    with $Provider<void> {
+final class ZonalSystemProvider extends $FunctionalProvider<void, void, void> with $Provider<void> {
   /// Starts one ECU per zone. The app reads this provider at boot, before the
   /// first command: otherwise no controller would exist to listen to the bus.
   ZonalSystemProvider._()
@@ -37,8 +36,7 @@ final class ZonalSystemProvider extends $FunctionalProvider<void, void, void>
 
   @$internal
   @override
-  $ProviderElement<void> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<void> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   void create(Ref ref) {
@@ -47,11 +45,8 @@ final class ZonalSystemProvider extends $FunctionalProvider<void, void, void>
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(void value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<void>(value));
   }
 }
 
-String _$zonalSystemHash() => r'ca817c49489097d091bb6cd41bfedeffff6e333e';
+String _$zonalSystemHash() => r'e278fb459dba3e5b8a2d8eff39803ae55671c3ae';

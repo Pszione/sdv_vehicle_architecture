@@ -31,9 +31,9 @@ class TelemetrySimulator extends _$TelemetrySimulator {
   }
 
   /// Requests an actuator change through the dispatcher, like any other HMI.
-  CommandResult command<T extends Object>(VssSignal<T> signal, T value) => ref
-      .read(commandDispatcherProvider.notifier)
-      .dispatch(VehicleCommand(signal: signal, value: value, source: source));
+  /// [from] overrides the source, e.g. to simulate the rear passenger climate panel.
+  CommandResult command<T extends Object>(VssSignal<T> signal, T value, {String from = source}) =>
+      ref.read(commandDispatcherProvider.notifier).dispatch(VehicleCommand(signal: signal, value: value, source: from));
 
   /// Writes an actuator state directly, bypassing the dispatcher and its safety rules.
   /// Use it to reproduce states that rules would never allow (fault testing).

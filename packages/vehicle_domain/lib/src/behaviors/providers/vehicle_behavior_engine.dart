@@ -1,16 +1,17 @@
 import 'dart:async';
 
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../broker/signal_reader.dart';
 import '../../broker/vss_broker.dart';
 import '../../dispatcher/command_dispatcher.dart';
-import '../../profile/providers/active_vehicle_profile.dart';
 import '../auto_park_behavior.dart';
+import '../climate_sync_behavior.dart';
 import '../crash_response_behavior.dart';
 import '../diff_lock_auto_release_behavior.dart';
 import '../diff_lock_esc_behavior.dart';
+import '../empty_seat_climate_behavior.dart';
+import '../max_defrost_behavior.dart';
 import '../domain/vehicle_behavior.dart';
 import '../park_auto_unlock_behavior.dart';
 import '../speed_auto_lock_behavior.dart';
@@ -22,19 +23,19 @@ part 'vehicle_behavior_engine.g.dart';
 /// Every automatic behavior of the vehicle. Like safety rules, a behavior whose
 /// commands target signals the profile lacks simply gets `notSupported` from the dispatcher.
 @Riverpod(keepAlive: true)
-List<VehicleBehavior> activeVehicleBehaviors(Ref ref) {
-  final driverSide = ref.watch(activeVehicleProfileProvider.select((profile) => profile.driverSide));
-  return [
-    SpeedAutoLockBehavior(),
-    ParkAutoUnlockBehavior(),
-    DiffLockAutoReleaseBehavior(),
-    DiffLockEscBehavior(),
-    AutoParkBehavior(driverSide),
-    SuspensionAutoLevelBehavior(),
-    CrashResponseBehavior(),
-    ValetSpeedCapBehavior(),
-  ];
-}
+List<VehicleBehavior> activeVehicleBehaviors(Ref ref) => [
+  SpeedAutoLockBehavior(),
+  ParkAutoUnlockBehavior(),
+  DiffLockAutoReleaseBehavior(),
+  DiffLockEscBehavior(),
+  AutoParkBehavior(),
+  SuspensionAutoLevelBehavior(),
+  CrashResponseBehavior(),
+  ValetSpeedCapBehavior(),
+  ClimateSyncBehavior(),
+  MaxDefrostBehavior(),
+  EmptySeatClimateBehavior(),
+];
 
 /// Runs the behaviors: watches the broker and dispatches what they decide.
 /// Read it at app boot, like the zonal ECUs.

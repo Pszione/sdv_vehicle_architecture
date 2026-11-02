@@ -7,7 +7,7 @@ void main() {
       Vss.Vehicle.Powertrain.Transmission.SelectedGear.path: Gear.park,
       Vss.Vehicle.Powertrain.TractionBattery.StateOfCharge.path: 80.0,
       for (final door in VehicleGroups.doors) door.lock.path: true,
-      Vss.Vehicle.Seat.Row2.Left.IsOccupied.path: true,
+      Vss.Vehicle.Cabin.Seat.Row2.PassengerSide.OccupancyStatus.path: SeatOccupancy.occupied,
     });
 
     final result = OtaInstallSafetyRule().validate(
@@ -16,6 +16,6 @@ void main() {
     );
 
     expect(result?.status, CommandStatus.rejectedBySafetyRule);
-    expect(result?.message, contains('Rear left seat is occupied'));
+    expect(result?.message, contains('Rear passenger side seat is occupied'));
   });
 }

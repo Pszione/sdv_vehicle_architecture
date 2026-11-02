@@ -30,3 +30,21 @@ abstract final class SentryMode {
   static const off = 'OFF';
   static const armed = 'ARMED';
 }
+
+abstract final class SeatOccupancy {
+  static const unknown = 'UNKNOWN';
+  static const occupied = 'OCCUPIED';
+  static const empty = 'EMPTY';
+}
+
+abstract final class AirDistribution {
+  static const up = 'UP';
+  static const middle = 'MIDDLE';
+  static const down = 'DOWN';
+}
+
+abstract final class MassageType {
+  static const wave = 'WAVE';
+  static const pulse = 'PULSE';
+  static const stretch = 'STRETCH';
+}

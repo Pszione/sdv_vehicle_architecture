@@ -11,7 +11,7 @@ const entryProfile = VehicleProfile(
   driverSide: DriverSide.left,
   supportedPaths: {
     'Vehicle.Speed',
-    'Vehicle.Cabin.Door.Row1.Left.IsLocked',
-    'Vehicle.Cabin.Door.Row1.Left.IsAjar',
+    'Vehicle.Cabin.Door.Row1.DriverSide.IsLocked',
+    'Vehicle.Cabin.Door.Row1.DriverSide.IsOpen',
   },
 );
