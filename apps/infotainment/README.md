@@ -7,7 +7,7 @@ Three tabs, switched from a side `NavigationRail` (bottom `NavigationBar` on pho
 |---|---|
 | **Vehicle** | Production controls: gear, ESC, rear diff lock, air suspension, driver assistance (ACC, lane keeping, hill descent), battery preconditioning, door locks, tailgate/frunk/charge port, sunroof, seat massage, parked modes (Dog/Camp/Sentry/V2L), Valet Mode, software update and media (locked while driving) |
 | **Climate** | Full-screen 3-zone climate (driver, passenger, rear): temperature per zone, animated cabin airflow, seat heat/vent and steering wheel heat, AUTO, A/C, recirculation, max/rear defrost, SYNC, rear lock, fan and airflow. Mirrors for RHD |
-| **Simulator** | Left: scenarios, simulated sensors (speed, steering, brake pedal, occupants and belts, doors, trunk, trailer, charging, SoC, temperature), sunroof fault injection and forced actuator states. Middle: the same production controls reacting live. Right: live audit log |
+| **Simulator** | Left: scenarios, key & power (START, power modes, 12 V, zone bus states), simulated sensors (speed, steering, brake pedal, occupants and belts, doors, trunk, trailer, charging, SoC, temperature), sunroof fault injection, E2E signal faults and forced actuator states. Middle: the same production controls reacting live. Right: live audit log |
 
 Every control goes through the `CommandDispatcher`. Buttons stay enabled: a blocked tap is
 rejected by the safety rules (red SnackBar + orange `REJECTED` entry in the audit log), and an
@@ -29,6 +29,10 @@ opened by hand in the simulator as amber `MANUAL` entries.
    *Force actuator state* → diff locked at highway speed.
 8. Climate: *Summer heat* + AUTO cools the cabin (Central ECU thermal model); *Lock rear* + the
    *Rear passenger panel* card is rejected; SoC 5% + fan 100% hits range protection.
+9. Power: **Key & power** → *Brake + START*; *Walk away* and watch the zones fall asleep;
+   cruise control while only ON → `Available when the vehicle is READY.`
+10. E2E: *Highway*, then *E2E signal faults* → speed → *Frozen sender*: purple `SIGNAL` entry,
+    and the tailgate is rejected with "Vehicle speed unavailable".
 
 ## Composition root
 
@@ -39,10 +43,15 @@ final container = ProviderContainer(overrides: [
   initialVehicleProfileProvider.overrideWithValue(luxuryEvSuvProfile), // car model
   commandSinkProvider.overrideWith((ref) => ref.watch(zonalCommandSinkProvider)),
 ]);
+// Listen, not read: Riverpod 3 does not re-evaluate providers nobody listens to.
 container
-  ..read(zonalSystemProvider)           // boot the zonal ECUs
-  ..read(vehicleLoggerProvider)         // audit log
-  ..read(vehicleBehaviorEngineProvider); // automatic behaviors
+  ..listen(zonalSystemProvider, (_, _) {})           // zonal ECUs, vehicle mode manager, network management
+  ..listen(vehicleLoggerProvider, (_, _) {})         // audit log
+  ..listen(vehicleBehaviorEngineProvider, (_, _) {}) // automatic behaviors
+  ..listen(e2eReceiverProvider, (_, _) {})           // E2E gateway
+  ..listen(telemetrySimulatorProvider, (_, _) {});   // simulated sensor ECUs
+container.read(e2eReceiverProvider.notifier).startDeadlineMonitoring();
+container.read(telemetrySimulatorProvider.notifier).startCyclicTransmission();
 ```
 
 For another model (e.g. a sedan), create another app or flavor with a different profile

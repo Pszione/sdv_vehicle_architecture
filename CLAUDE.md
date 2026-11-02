@@ -17,32 +17,42 @@ packages/
   vss_gen/          builders only (dev_dependency). vss_tree: *.vss.json -> Vss tree + vssCatalog.
                     vss_profile: *.profile.json -> const VehicleProfile, validated against the spec.
   vehicle_domain/   pure Dart. Master spec lib/src/vss/vehicle.vss.json, VehicleProfile + active
-                    profile, VssBroker, CommandDispatcher/CommandValidator, SafetyRules, VehicleLogger.
+                    profile, VssBroker, CommandDispatcher/CommandValidator, SafetyRules, VehicleLogger,
+                    power/ (PowerMode derived from COVESA signals, PowerModeAvailability),
+                    e2e/ (E2E protection, E2eReceiver gateway, signal status), hmi/ (lockouts,
+                    cluster telltales, DriverMessageCenter).
                     Knows nothing about zones: approved commands go to the CommandSink interface.
   vehicle_profiles/ pure Dart -> domain. Factory trims as lib/src/profiles/*.profile.json.
   zonal_system/     pure Dart -> domain. ZonalCommandBus (plain stream), ZonalRoute table,
                     ZonalCommandSink, zone ECUs: West/East (BodySideEcu: doors, shades, seats of that
                     physical side, LHD/RHD aware) and Central (sunroof, HVAC + CabinThermalModel, gateway
                     echo for domain ECUs: powertrain, chassis, ADAS). No other zones.
+                    power/: VehicleModeManager (12 V state, HV pre-charge, sleep, 12 V model) and
+                    ZoneNetworkManagement (bus sleep, wake-up latency for commands).
   vehicle_simulators/ pure Dart -> domain. TelemetrySimulator: report() sensors, command() actuators via
                     the dispatcher, operateManually() for by-hand actuators (doors, logged MANUAL),
-                    forceActuatorState() bypasses rules (logged FORCED). Scenarios = steps.
+                    forceActuatorState() bypasses rules (logged FORCED). Scenarios = steps (can wait).
+                    Protected sensors go through E2eTransmitter (faults injectable). DrivingSimulator:
+                    30 Hz drive (ACC, lead car, lanes, power, odometer).
   vehicle_ui_kit/   Flutter -> domain. VehicleFeatureGuard, SafetyPrecheckBanner, VehicleControlCard,
-                    WidgetRef.watchSignal/dispatchCommand.
+                    PowerModeChip, WidgetRef.watchSignal/watchSignalStatus/dispatchCommand.
 apps/
   infotainment/     composition root in main.dart; Vehicle tab (production cards), Climate tab
                     (full-screen 3-zone HVAC, rail stays visible) and Simulator tab
                     (sensors | reactive cards | audit log). Targets iPad Air 11" landscape.
-  digital_cluster/  still the Flutter template.
+  digital_cluster/  read-only Tesla/Rivian-style cluster (iPad landscape), standalone vehicle core +
+                    dev/DemoDriveBar until the IPC bridge exists (docs/ipc-bridge.md).
 ```
 
 ## Command flow (core invariant)
 UI -> `ref.dispatchCommand(context, VehicleCommand(signal: Vss..., value: ...))`
 -> `CommandValidator`: signal in profile -> is actuator -> value within spec min/max/allowed
--> every `SafetyRule` whose `target` is the signal (first rejection wins, logged)
+-> available in the current power mode (`PowerModeAvailability`) -> every `SafetyRule` whose `target` is the signal (first rejection wins, logged)
 -> `CommandSink` (app wires `ZonalCommandSink`) -> `ZonalRoute` -> bus -> zone ECU -> actuator
 -> ECU publishes the *confirmed* value to `VssBroker`. UI reads only the broker, never the command.
-Only zonal ECUs and `TelemetrySimulator` publish telemetry; widgets never write to the broker.
+Only zonal ECUs, the `E2eReceiver` and `TelemetrySimulator` publish telemetry; widgets never write to the broker.
+E2E-protected sensors (`E2eProtectedSignals`) reach the broker only through the `E2eReceiver`;
+`SignalReader.read()` returns `null` unless their status is VALID, so rules must fail safe (`FailSafe`).
 `VehicleBehavior`s (auto-lock, auto-park...) react to broker changes and issue commands through the
 dispatcher on the next cycle (`VehicleBehaviorEngine`), so rules always apply. HMI lockouts
 (`hmiLockoutReasonProvider`) are UI policy, not commands.
@@ -70,6 +80,15 @@ the UI (VehicleFeatureGuard), the dispatcher (notSupported) and the broker.
 - No `print` (use `dart:developer` `log`). Never edit `*.g.dart`.
 - **Everything in English**: docs (READMEs, CLAUDE.md), dartdoc/comments, UI text and rule messages.
 - Formatter page width 120.
+- Boot with `container.listen(provider, (_, _) {})`, not `read`: Riverpod 3 does not re-evaluate
+  providers nobody listens to, so an ECU's own `ref.listen`s would stay silent. In a Notifier's
+  `build`, never `ref.read` an autoDispose provider (it schedules a disposal on the provider
+  scheduler and stalls widget tests); read the keepAlive profile instead.
+- Periodic timers (cyclic E2E sends, deadline monitoring) start from explicit `start...()` calls at
+  boot, never in `build`, so widget tests leave no pending timer.
+- Spec `default`s are the simulated car's boot snapshot (driver seated with the key, ignition ON, P).
+- Custom (non-COVESA) signals say `Custom (not in COVESA VSS).` in their description.
+- Feature docs live in `docs/` and end with "Gaps vs. a production ECU".
 
 ## Commands
 ```
@@ -94,4 +113,5 @@ values a mock was told to return. Avoid editing existing tests unless broken.
   simulator's `operateManually`). Custom: `HVAC.IsAutoActive/IsSyncActive/IsRearControlLocked`,
   `Door.SoftCloseState`. Row2 middle seat not modeled.
 - Switching profile resets the broker but not the actuators' internal state.
-- digital_cluster and the 30 Hz ADAS simulator are not wired yet.
+- The cluster runs its own vehicle core (standalone); the IPC bridge is designed, not built.
+- Each docs/ guide lists its gaps vs. a production ECU (power modes, E2E, cluster).

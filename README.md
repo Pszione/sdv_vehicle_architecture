@@ -29,10 +29,19 @@ sdv_vehicle_architecture/
 │   │   │       └── simulator/                      # Simulator tab (sensors, scenarios, audit log)
 │   │   └── pubspec.yaml                            # Depends on the domain/zonal/sim/UI packages
 │   │
-│   └── digital_cluster/                            # Flutter app for the Instrument Cluster (template)
+│   └── digital_cluster/                            # Flutter app for the Instrument Cluster (Tesla/Rivian style)
 │       ├── lib/
-│       │   └── main.dart
+│       │   ├── main.dart                           # Composition root (standalone vehicle core)
+│       │   ├── core/                               # Palette, 30 Hz -> 60 FPS interpolation
+│       │   ├── dev/                                # Standalone demo inputs
+│       │   └── features/cluster/                   # Telltales, speed, PRND, ADAS view, messages
 │       └── pubspec.yaml
+│
+├── docs/                                           # Feature guides: benefits, design, gaps vs. a real ECU
+│   ├── power-modes.md                              # Vehicle mode manager, network management, 12 V
+│   ├── e2e-signal-protection.md                    # AUTOSAR-style E2E, signal status, fail-safe rules
+│   ├── digital-cluster.md                          # Cluster design and rendering budget
+│   └── ipc-bridge.md                               # Design: sharing one vehicle core between HMIs
 │
 └── packages/                                       # REUSABLE DOMAIN MODULES
     │
@@ -55,7 +64,9 @@ sdv_vehicle_architecture/
     │   │   │   ├── dispatcher/                     # CommandDispatcher, CommandValidator, CommandSink
     │   │   │   ├── safety_rules/                   # 19 rules: DiffLock, BrakeToShift, OtaInstall...
     │   │   │   ├── behaviors/                      # VehicleBehaviors: auto-lock, auto-park, ESC...
-    │   │   │   ├── hmi/                            # HMI lockouts while driving (video, keyboard)
+    │   │   │   ├── power/                          # PowerMode, functional availability
+    │   │   │   ├── e2e/                            # E2E protection, E2eReceiver, signal status
+    │   │   │   ├── hmi/                            # HMI lockouts, cluster telltales, message center
     │   │   │   └── logger/                         # VehicleLogger (audit log)
     │   │   └── vehicle_domain.dart
     │   ├── build.yaml                              # Enables vss_gen:vss_tree
@@ -69,6 +80,7 @@ sdv_vehicle_architecture/
     │   │   │   ├── controllers/                    # West, East and Central zone ECUs
     │   │   │   ├── modules/                        # BodySideEcu (doors, shades, seats per side)
     │   │   │   ├── hvac/                           # CabinThermalModel (cabin temp + AUTO fan)
+    │   │   │   ├── power/                          # VehicleModeManager, ZoneNetworkManagement
     │   │   │   ├── actuators/                      # DumbDoorActuator, DumbSunroofActuator
     │   │   │   └── zonal_system_bootstrap.dart     # Boots one ECU per zone
     │   │   └── zonal_system.dart
@@ -87,6 +99,8 @@ sdv_vehicle_architecture/
     │   ├── lib/
     │   │   ├── src/
     │   │   │   ├── telemetry_simulator.dart        # Sensors, commands, MANUAL and FORCED
+    │   │   │   ├── e2e_transmitter.dart            # Protected sensor frames + fault injection
+    │   │   │   ├── driving_simulator.dart          # 30 Hz drive: ACC, lead car, lanes, power
     │   │   │   └── simulation_scenario.dart        # Scenarios: readings + commands
     │   │   └── vehicle_simulators.dart
     │   └── pubspec.yaml
@@ -126,7 +140,7 @@ sdv_vehicle_architecture/
 ## Command flow
 
 ```
-UI ──▶ CommandDispatcher ──▶ CommandValidator (profile → actuator → range → SafetyRules)
+UI ──▶ CommandDispatcher ──▶ CommandValidator (profile → actuator → range → power mode → SafetyRules)
                                    │
                          approved  ▼
                      ZonalCommandSink ──▶ ZonalRoute ──▶ ZonalCommandBus
@@ -135,8 +149,8 @@ UI ──▶ CommandDispatcher ──▶ CommandValidator (profile → actuator 
                                          │
 UI ◀── vssValueProvider ◀── VssBroker ◀──┘  (confirmed telemetry)
                              ▲    │
-   TelemetrySimulator ───────┘    └──▶ VehicleBehaviorEngine ──▶ CommandDispatcher (auto-lock, ...)
-   (sensor readings)
+   E2eReceiver (CRC, counter,     └──▶ VehicleBehaviorEngine ──▶ CommandDispatcher (auto-lock, ...)
+   deadline) ◀── TelemetrySimulator (protected sensor frames, cyclic)
 ```
 
 The UI never reads back the command it sent: it only shows what the ECU confirmed in the broker.
@@ -192,10 +206,22 @@ committed; run `generate` after editing the spec, a profile or a `@riverpod` pro
 | `infotainment` | App | [apps/infotainment](apps/infotainment/README.md) |
 | `digital_cluster` | App | [apps/digital_cluster](apps/digital_cluster/README.md) |
 
+## Feature guides
+
+| Guide | What |
+|---|---|
+| [Power modes](docs/power-modes.md) | OFF/ACC/ON/READY/CHARGING, HV pre-charge, sleep and wake-up, 12 V battery, functional availability |
+| [E2E signal protection](docs/e2e-signal-protection.md) | Alive counter + CRC, signal status, fail-safe rules, fault injection |
+| [Digital cluster](docs/digital-cluster.md) | Tesla/Rivian-style cluster, telltales, message center, 60 FPS rendering |
+| [IPC bridge](docs/ipc-bridge.md) | Design for sharing one vehicle core between the HMIs |
+
+Each guide ends with **Gaps vs. a production ECU**.
+
 ## Roadmap
 
-1. Harden the base: fail-safe policy for missing signals, reset actuators on profile switch.
-2. Finish the COVESA alignment (sunroof %, `Trunk.Rear`, gear) + an overlay file for custom signals.
-3. 30 Hz ADAS and EV power-flow simulators, and the `digital_cluster` at 60 FPS.
-4. Features: drive modes, richer Sentry/Camp/Dog Mode behavior, Row2 middle seat.
-5. CI (analyze, tests, generated-code check) and `riverpod_lint`.
+1. IPC bridge so the cluster reads the infotainment's car ([docs/ipc-bridge.md](docs/ipc-bridge.md)).
+2. Diagnostics: DTCs with freeze frames, UDS-style read/clear, limp modes tied to E2E faults.
+3. Deterministic scheduler (1/10/100 ms tasks, virtual clock), record & replay of drives.
+4. Actuator protection: commanded vs. actual, stall detection, anti-pinch.
+5. Overlay file for custom signals; reset actuators on profile switch; Row2 middle seat.
+6. CI (analyze, tests, generated-code check) and `riverpod_lint`.
