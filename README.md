@@ -25,6 +25,7 @@ sdv_vehicle_architecture/
 │   │   │   ├── app/                                # MaterialApp + NavigationRail shell
 │   │   │   └── features/
 │   │   │       ├── settings/                       # Vehicle tab (Gear, ESC, 4x4, ADAS, OTA, Valet...)
+│   │   │       ├── climate/                        # Climate tab (3-zone HVAC, seat/wheel heat, airflow)
 │   │   │       └── simulator/                      # Simulator tab (sensors, scenarios, audit log)
 │   │   └── pubspec.yaml                            # Depends on the domain/zonal/sim/UI packages
 │   │
@@ -65,7 +66,9 @@ sdv_vehicle_architecture/
     │   │   ├── src/
     │   │   │   ├── bus/                            # ZonalCommandBus & ZonalCommandSink
     │   │   │   ├── domain/                         # VehicleZone, ZonalRoute, ZonalCommand
-    │   │   │   ├── controllers/                    # TopZone, DoorZone(west/east), GenericZone...
+    │   │   │   ├── controllers/                    # West, East and Central zone ECUs
+    │   │   │   ├── modules/                        # BodySideEcu (doors, shades, seats per side)
+    │   │   │   ├── hvac/                           # CabinThermalModel (cabin temp + AUTO fan)
     │   │   │   ├── actuators/                      # DumbDoorActuator, DumbSunroofActuator
     │   │   │   └── zonal_system_bootstrap.dart     # Boots one ECU per zone
     │   │   └── zonal_system.dart
@@ -192,7 +195,7 @@ committed; run `generate` after editing the spec, a profile or a `@riverpod` pro
 ## Roadmap
 
 1. Harden the base: fail-safe policy for missing signals, reset actuators on profile switch.
-2. Align paths with COVESA VSS 5 (`DriverSide`/`PassengerSide`) + an overlay for custom signals.
+2. Finish the COVESA alignment (sunroof %, `Trunk.Rear`, gear) + an overlay file for custom signals.
 3. 30 Hz ADAS and EV power-flow simulators, and the `digital_cluster` at 60 FPS.
-4. Features: quad-zone HVAC UI, drive modes, richer Sentry/Camp/Dog Mode behavior.
+4. Features: drive modes, richer Sentry/Camp/Dog Mode behavior, Row2 middle seat.
 5. CI (analyze, tests, generated-code check) and `riverpod_lint`.

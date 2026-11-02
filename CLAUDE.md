@@ -21,14 +21,17 @@ packages/
                     Knows nothing about zones: approved commands go to the CommandSink interface.
   vehicle_profiles/ pure Dart -> domain. Factory trims as lib/src/profiles/*.profile.json.
   zonal_system/     pure Dart -> domain. ZonalCommandBus (plain stream), ZonalRoute table,
-                    ZonalCommandSink, zone ECUs (Top, Door west/east, Generic south/central), actuators.
+                    ZonalCommandSink, zone ECUs: West/East (BodySideEcu: doors, shades, seats of that
+                    physical side, LHD/RHD aware) and Central (sunroof, HVAC + CabinThermalModel, gateway
+                    echo for domain ECUs: powertrain, chassis, ADAS). No other zones.
   vehicle_simulators/ pure Dart -> domain. TelemetrySimulator: report() sensors, command() actuators via
                     the dispatcher, forceActuatorState() bypasses rules (logged FORCED). Scenarios = steps.
   vehicle_ui_kit/   Flutter -> domain. VehicleFeatureGuard, SafetyPrecheckBanner, VehicleControlCard,
                     WidgetRef.watchSignal/dispatchCommand.
 apps/
-  infotainment/     composition root in main.dart; Vehicle tab (production cards) and
-                    Simulator tab (sensors | reactive cards | audit log). Targets iPad landscape.
+  infotainment/     composition root in main.dart; Vehicle tab (production cards), Climate tab
+                    (full-screen 3-zone HVAC, rail stays visible) and Simulator tab
+                    (sensors | reactive cards | audit log). Targets iPad Air 11" landscape.
   digital_cluster/  still the Flutter template.
 ```
 
@@ -54,8 +57,10 @@ the UI (VehicleFeatureGuard), the dispatcher (notSupported) and the broker.
 ## Conventions
 - Never hardcode VSS strings: use `Vss.Vehicle...` (const `VssSignal<T>`). New signals: edit
   `vehicle.vss.json` (official vss-tools JSON shape, follow the latest COVESA VSS naming), rebuild.
-- String signal values come from `vss_values.dart` (`Gear.park`, `EscMode.off`...); door/seat groups and the
-  LHD/RHD driver door/seat from `VehicleGroups`.
+- Seats/doors use COVESA `DriverSide`/`PassengerSide`, HVAC stations `Driver`/`Passenger`: logical, so
+  LHD/RHD never changes the path. `ZonalRoute` maps them to the physical west/east zone.
+- String signal values come from `vss_values.dart` (`Gear.park`, `SeatOccupancy.empty`...); door/seat/HVAC
+  station groups and the driver door/seat from `VehicleGroups`.
 - SafetyRule: declare `target` and `inputs`, read via `SignalReader`, return `null` when safe.
   Releasing actions (unlock, close, disengage) are always allowed. State the fallback when an input is missing.
 - Widgets watch single signals (`ref.watchSignal`), never the whole broker map; use `.select` on profile fields.
@@ -82,7 +87,8 @@ Capture outputs with a recording fake (e.g. a `CommandSink` that stores commands
 values a mock was told to return. Avoid editing existing tests unless broken.
 
 ## Known gaps
-- Spec paths keep the original project naming; several differ from official VSS 5
-  (e.g. `Vehicle.Cabin.Seat.Row1.DriverSide`, `Door...IsOpen`, `SelectedGear` int8).
+- Still non-COVESA: `Sunroof.Position` (0..1, official int8 %), `Trunk.IsAjar` (official `Trunk.Rear.IsOpen`),
+  `SelectedGear` string. `Door.IsOpen` is modeled as a sensor. Custom: `HVAC.IsAutoActive/IsSyncActive/
+  IsRearControlLocked`, `Door.SoftCloseState`. Row2 middle seat not modeled.
 - Switching profile resets the broker but not the actuators' internal state.
 - digital_cluster and the 30 Hz ADAS simulator are not wired yet.
